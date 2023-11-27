@@ -15,11 +15,18 @@
   },
   "devDependencies": {
     "typescript": "^5",
+    "@ozymandiasthegreat/vad": "^2.0.7",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@typescript-eslint/eslint-plugin": "^5.59.9",
+    "@typescript-eslint/parser": "^5.59.9",
     "autoprefixer": "^10.0.1",
+    "livekit-client": "^1.14.4",
+    "mpg123-decoder": "^0.4.9",
     "postcss": "^8",
+    "react-swipeable": "^7.0.1",
+    "sentence-splitter": "^4.2.1",
     "tailwindcss": "^3.3.0",
     "eslint": "^8",
     "eslint-config-next": "14.0.3"
