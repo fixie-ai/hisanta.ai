@@ -1,12 +1,4 @@
 import {
-  createSpeechRecognition,
-  normalizeText,
-  SpeechRecognitionBase,
-  MicManager,
-  Transcript,
-} from '../lib/asr/asr';
-import { createTextToSpeech, BuildUrlOptions, TextToSpeechBase, TextToSpeechProtocol } from 'ai-jsx/lib/tts/tts';
-import {
   createLocalTracks,
   DataPacket_Kind,
   LocalAudioTrack,
@@ -17,42 +9,6 @@ import {
   Track,
   TrackEvent,
 } from 'livekit-client';
-
-const DEFAULT_ASR_FRAME_SIZE = 20;
-
-/**
- * Retrieves an ephemeral token from the server for use in an ASR service.
- */
-async function getAsrToken(provider: string) {
-  const response = await fetch('/asr/api', {
-    method: 'POST',
-    body: JSON.stringify({ provider }),
-  });
-  const json = await response.json();
-  return json.token;
-}
-
-/**
- * Retrieves an ephemeral token from the server for use in an ASR service.
- */
-async function getTtsToken(provider: string) {
-  const response = await fetch('/tts/api/token/edge', {
-    method: 'POST',
-    body: JSON.stringify({ provider }),
-  });
-  const json = await response.json();
-  return json.token;
-}
-
-/**
- * Builds a URL for use in a TTS service.
- */
-function buildTtsUrl(options: BuildUrlOptions) {
-  const runtime = options.provider.endsWith('-grpc') ? 'nodejs' : 'edge';
-  const params = new URLSearchParams();
-  Object.entries(options).forEach(([k, v]) => v != undefined && params.set(k, v.toString()));
-  return `/tts/api/generate/${runtime}?${params}`;
-}
 
 /**
  * A single message in the chat history.
