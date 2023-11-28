@@ -4,8 +4,8 @@ import {
   SpeechRecognitionBase,
   MicManager,
   Transcript,
-} from './lib/asr/asr';
-import { createTextToSpeech, BuildUrlOptions, TextToSpeechBase, TextToSpeechProtocol } from './lib/tts/tts';
+} from '../lib/asr/asr';
+import { createTextToSpeech, BuildUrlOptions, TextToSpeechBase, TextToSpeechProtocol } from 'ai-jsx/lib/tts/tts';
 import {
   createLocalTracks,
   DataPacket_Kind,
