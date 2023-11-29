@@ -2,37 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
-/* :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+@font-face {
+  font-family: 'Luckiest Guy';
+  src: url('/fonts/LuckiestGuy-Regular.ttf') format('truetype');
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+@font-face {
+  font-family: 'Inter-SemiBold';
+  src: url('/fonts/Inter-SemiBold.ttf') format('truetype');
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-} */
+@font-face {
+  font-family: 'Inter-Regular';
+  src: url('/fonts/Inter-Regular.ttf') format('truetype');
+}
 
 :root {
-  --foreground-rgb: 0, 0, 0;
+  --foreground-rgb: 47, 70, 101; /*  #2F4665; */
   --background-start-rgb: 234, 233, 223;
   --background-end-rgb: 255, 255, 255;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
 }
+
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image: url('/images/winter-wonderland-full-res.jpeg');
+  background-size: cover;
+  opacity: 0.2; /* Adjust this value to change the opacity */
+  z-index: -1; /* This ensures the pseudo-element is behind the body content */
+}
+
+/* bg-white opacity-60 h-screen object-cover absolute */

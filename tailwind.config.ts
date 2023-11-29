@@ -8,8 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        'body-bg': "url('/public/santa/winter-wonderland.png')",
+      fontFamily: {
+        sans: ['Luckiest Guy', 'sans-serif'],
+        serif: ['Luckiest Guy', 'sans-serif'],
       },
     },
   },
