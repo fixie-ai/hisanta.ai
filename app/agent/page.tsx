@@ -376,10 +376,10 @@ const AgentPageComponent: React.FC = () => {
       )}
       <div className="w-full flex flex-col items-center justify-center text-center">
         <div>
-          <Image src="/voice-logo.svg" alt="Fixie Voice" width={322} height={98} priority={true} />
+          <Image src="/images/voice-logo.svg" alt="Fixie Voice" width={322} height={98} priority={true} />
         </div>
         <div className="flex justify-center p-4" {...swipeHandlers}>
-          <Image priority={true} width="384" height="384" src="/santa/santa-svg.svg" alt="santa" />
+          <Image priority={true} width="384" height="384" src="/images/santa-svg.svg" alt="santa" />
         </div>
         <div>
           {showOutput && (
@@ -397,7 +397,7 @@ const AgentPageComponent: React.FC = () => {
             </div>
           )}
         </div>
-        <p className="py-4 text-xl">{helpText}</p>
+        <p className="py-4 text-3xl">{helpText}</p>
         <div className="w-full max-w-sm p-4">
           <Visualizer
             height={64}
