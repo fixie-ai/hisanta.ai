@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useSwipeable } from 'react-swipeable';
 import { ChatManager, ChatManagerState, createChatManager } from './chat';
-import { getAgent, getAgentImageUrl } from './agents';
 import Image from 'next/image';
 import '../globals.css';
 
@@ -56,7 +55,7 @@ const LLM_MODELS = [
   'gpt-3.5-turbo',
   'gpt-3.5-turbo-16k',
 ];
-const AGENT_IDS = ['ai-friend', 'dr-donut', 'rubber-duck']; //, 'spanish-tutor', 'justin/ultravox', 'justin/fixie'];
+const AGENT_IDS = ['ai-friend', 'dr-donut', 'rubber-duck'];
 const LATENCY_THRESHOLDS: { [key: string]: LatencyThreshold } = {
   ASR: { good: 300, fair: 500 },
   LLM: { good: 300, fair: 500 },
@@ -211,15 +210,14 @@ const Button: React.FC<{ onClick: () => void; disabled: boolean; children: React
 const AgentPageComponent: React.FC = () => {
   const searchParams = useSearchParams();
   const agentId = searchParams.get('agent') || 'dr-donut';
-  const agentVoice = getAgent(agentId)?.ttsVoice;
   const tapOrClick = typeof window != 'undefined' && 'ontouchstart' in window ? 'Tap' : 'Click';
   const idleText = `${tapOrClick} anywhere to start!`;
   const asrProvider = searchParams.get('asr') || DEFAULT_ASR_PROVIDER;
   const asrLanguage = searchParams.get('asrLanguage') || undefined;
   const ttsProvider = searchParams.get('tts') || DEFAULT_TTS_PROVIDER;
   const ttsModel = searchParams.get('ttsModel') || undefined;
-  const ttsVoice = searchParams.get('ttsVoice') || agentVoice;
-  const model = getAgent(agentId) === undefined ? 'fixie' : searchParams.get('llm') || DEFAULT_LLM;
+  const ttsVoice = searchParams.get('ttsVoice') || undefined;
+  const model = searchParams.get('llm') || DEFAULT_LLM;
   const docs = searchParams.get('docs') !== null;
   const webrtcUrl = searchParams.get('webrtc') ?? undefined;
   const [showChooser, setShowChooser] = useState(searchParams.get('chooser') !== null);
@@ -379,7 +377,7 @@ const AgentPageComponent: React.FC = () => {
           <Image src="/voice-logo.svg" alt="Fixie Voice" width={322} height={98} priority={true} />
         </div>
         <div className="flex justify-center p-4" {...swipeHandlers}>
-          <Image priority={true} width="384" height="384" src={getAgentImageUrl(agentId)} alt={agentId} />
+          <Image priority={true} width="384" height="384" src="/santa/santa-svg.svg" alt="santa" />
         </div>
         <div>
           {showOutput && (
