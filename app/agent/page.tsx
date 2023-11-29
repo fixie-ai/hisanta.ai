@@ -209,6 +209,7 @@ const Button: React.FC<{ onClick: () => void; disabled: boolean; children: React
 
 const AgentPageComponent: React.FC = () => {
   const searchParams = useSearchParams();
+  // @ts-expect-error
   const agentId = searchParams.get('agent') || 'dr-donut';
   const tapOrClick = typeof window != 'undefined' && 'ontouchstart' in window ? 'Tap' : 'Click';
   const idleText = `${tapOrClick} anywhere to start!`;

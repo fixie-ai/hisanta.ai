@@ -1,3 +1,5 @@
+"use client";
+
 import {
   createLocalTracks,
   DataPacket_Kind,
@@ -124,7 +126,8 @@ export class WebRtcChatManager implements ChatManager {
   }
   async stop() {
     console.log('[chat] stopping');
-    clearInterval(this.pinger);
+    // clearInterval(this.pinger);
+    clearInterval(this.pinger as unknown as number);
     this.pinger = undefined;
     await this.room?.disconnect();
     this.room = undefined;
