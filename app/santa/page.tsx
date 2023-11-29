@@ -126,7 +126,6 @@ export default function Santa() {
         src="/santa/santa-svg.svg"
         alt="Santa Image"
         layout="fill"
-        zIndex={1}
       />
       <div className={styles.content}>
         <h1 className={styles.title}>talk to santa, live from the north pole!</h1>
