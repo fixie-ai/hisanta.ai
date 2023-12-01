@@ -3,16 +3,15 @@ import Image from 'next/image';
 
 const ComingSoon = () => {
   return (
-    <div className="flex flex-col w-full mt-4">
+    <div className="flex flex-col items-center w-full mt-8">
       {/* Santa Image */}
       <div className="m-1">
-        <Image src="/images/santa-svg.svg" alt="Santa Image" width={500} height={500} />
+        <Image src="/images/santa-svg.svg" alt="Santa Image" width={450} height={400} />
       </div>
-      {/* Text */}
-      <div className="flex flex-col items-center">
-        <h1 className="text-3xl font-bold">Coming Soon</h1>
+      {/* Coming Soon Image */}
+      <div className="">
+        <Image src="/images/coming-soon-sticker.svg" alt="Coming Soon..." width={800} height={500} />
       </div>
-      
     </div>
     
   );
