@@ -4,7 +4,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useSwipeable } from 'react-swipeable';
-import { ChatManager, ChatManagerState, createChatManager } from './chat';
+// import { ChatManager, ChatManagerState, createChatManager } from './chat';
+import { FixieClient } from 'fixie';
+import { VoiceSessionState } from 'fixie/src/voice';
 import Image from 'next/image';
 import '../globals.css';
 
@@ -116,7 +118,7 @@ const Stat: React.FC<{ name: string; latency: number }> = ({ name, latency }) =>
 const Visualizer: React.FC<{
   width?: number;
   height?: number;
-  state?: ChatManagerState;
+  state?: VoiceSessionState;
   inputAnalyzer?: AnalyserNode;
   outputAnalyzer?: AnalyserNode;
 }> = ({ width, height, state, inputAnalyzer, outputAnalyzer }) => {
@@ -138,7 +140,7 @@ const Visualizer: React.FC<{
     outputAnalyzer.maxDecibels = 0;
     outputAnalyzer.minDecibels = -70;
   }
-  const draw = (canvas: HTMLCanvasElement, state: ChatManagerState, freqData: Uint8Array) => {
+  const draw = (canvas: HTMLCanvasElement, state: VoiceSessionState, freqData: Uint8Array) => {
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     const marginWidth = 2;
     const barWidth = canvas.width / freqData.length - marginWidth * 2;
@@ -149,11 +151,11 @@ const Visualizer: React.FC<{
       const x = barHeight + 25 * (i / freqData.length);
       const y = 250 * (i / freqData.length);
       const z = 50;
-      if (state == ChatManagerState.LISTENING) {
+      if (state == VoiceSessionState.LISTENING) {
         ctx.fillStyle = `rgb(${x},${y},${z})`;
-      } else if (state == ChatManagerState.THINKING) {
+      } else if (state == VoiceSessionState.THINKING) {
         ctx.fillStyle = `rgb(${z},${x},${y})`;
-      } else if (state == ChatManagerState.SPEAKING) {
+      } else if (state == VoiceSessionState.SPEAKING) {
         ctx.fillStyle = `rgb(${y},${z},${x})`;
       }
       ctx.fillRect(i * totalWidth + marginWidth, canvas.height - barHeight, barWidth, barHeight);
@@ -162,13 +164,13 @@ const Visualizer: React.FC<{
   const render = useCallback(() => {
     let freqData: Uint8Array = new Uint8Array(0);
     switch (state) {
-      case ChatManagerState.LISTENING:
+      case VoiceSessionState.LISTENING:
         if (!inputAnalyzer) return;
         freqData = new Uint8Array(inputAnalyzer!.frequencyBinCount);
         inputAnalyzer!.getByteFrequencyData(freqData);
         freqData = freqData.slice(0, 16);
         break;
-      case ChatManagerState.THINKING:
+      case VoiceSessionState.THINKING:
         freqData = new Uint8Array(16);
         // make the data have random pulses based on performance.now, which decay over time
         const now = performance.now();
@@ -176,14 +178,14 @@ const Visualizer: React.FC<{
           freqData[i] = Math.max(0, Math.sin((now - i * 100) / 100) * 128 + 128) / 2;
         }
         break;
-      case ChatManagerState.SPEAKING:
+      case VoiceSessionState.SPEAKING:
         if (!outputAnalyzer) return;
         freqData = new Uint8Array(outputAnalyzer!.frequencyBinCount);
         outputAnalyzer!.getByteFrequencyData(freqData);
         freqData = freqData.slice(0, 16);
         break;
     }
-    draw(canvasRef.current!, state ?? ChatManagerState.IDLE, freqData);
+    draw(canvasRef.current!, state ?? VoiceSessionState.IDLE, freqData);
     requestAnimationFrame(render);
   }, [state, inputAnalyzer, outputAnalyzer]);
   useEffect(() => render(), [state]);
@@ -227,7 +229,7 @@ const AgentPageComponent: React.FC = () => {
   const showInput = searchParams.get('input') !== null;
   const showOutput = searchParams.get('output') !== null;
   const [showStats, setShowStats] = useState(searchParams.get('stats') !== null);
-  const [chatManager, setChatManager] = useState<ChatManager | null>();
+  const [voiceSession, setVoiceSession] = useState<VoiceSession | null>();
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
   const [helpText, setHelpText] = useState(idleText);
@@ -235,11 +237,13 @@ const AgentPageComponent: React.FC = () => {
   const [llmResponseLatency, setLlmResponseLatency] = useState(0);
   const [llmTokenLatency, setLlmTokenLatency] = useState(0);
   const [ttsLatency, setTtsLatency] = useState(0);
-  const active = () => chatManager && chatManager!.state != ChatManagerState.IDLE;
+  const active = () => voiceSession && voiceSession!.state != VoiceSessionState.IDLE;
   useEffect(() => init(), [asrProvider, asrLanguage, ttsProvider, ttsModel, ttsVoice, model, agentId, docs]);
   const init = () => {
     console.log(`[page] init asr=${asrProvider} tts=${ttsProvider} llm=${model} agent=${agentId} docs=${docs}`);
-    const manager = createChatManager({
+    const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
+    const fixieClient = new FixieClient({ apiKey: API_KEY });
+    const session = fixieClient.createVoiceSession({
       asrProvider,
       asrLanguage,
       ttsProvider,
@@ -250,23 +254,23 @@ const AgentPageComponent: React.FC = () => {
       docs,
       webrtcUrl,
     });
-    setChatManager(manager);
-    manager.onStateChange = (state) => {
+    setVoiceSession(session);
+    session.onStateChange = (state) => {
       switch (state) {
-        case ChatManagerState.LISTENING:
+        case VoiceSessionState.LISTENING:
           setHelpText('Listening...');
           break;
-        case ChatManagerState.THINKING:
+        case VoiceSessionState.THINKING:
           setHelpText(`Thinking... ${tapOrClick.toLowerCase()} to cancel`);
           break;
-        case ChatManagerState.SPEAKING:
+        case VoiceSessionState.SPEAKING:
           setHelpText(`Speaking... ${tapOrClick.toLowerCase()} to interrupt`);
           break;
         default:
           setHelpText(idleText);
       }
     };
-    manager.onInputChange = (text, final, latency) => {
+    session.onInputChange = (text, final, latency) => {
       setInput(text);
       if (final && latency) {
         setAsrLatency(latency);
@@ -275,23 +279,23 @@ const AgentPageComponent: React.FC = () => {
         setTtsLatency(0);
       }
     };
-    manager.onOutputChange = (text, final, latency) => {
+    session.onOutputChange = (text, final, latency) => {
       setOutput(text);
       if (final) {
         setInput('');
       }
       setLlmResponseLatency((prev) => (prev ? prev : latency));
     };
-    manager.onAudioGenerate = (latency) => {
+    session.onAudioGenerate = (latency) => {
       setLlmTokenLatency(latency);
     };
-    manager.onAudioStart = (latency) => {
+    session.onAudioStart = (latency) => {
       setTtsLatency(latency);
     };
-    manager.onError = () => {
-      manager.stop();
+    session.onError = () => {
+      session.stop();
     };
-    return () => manager.stop();
+    return () => session.stop();
   };
   const changeAgent = (delta: number) => {
     const index = AGENT_IDS.indexOf(agentId);
@@ -305,12 +309,12 @@ const AgentPageComponent: React.FC = () => {
     setLlmResponseLatency(0);
     setLlmTokenLatency(0);
     setTtsLatency(0);
-    chatManager!.start('');
+    voiceSession!.start('');
   };
   const handleStop = () => {
-    chatManager!.stop();
+    voiceSession!.stop();
   };
-  const speak = () => (active() ? chatManager!.interrupt() : handleStart());
+  const speak = () => (active() ? voiceSession!.interrupt() : handleStart());
   // Click/tap starts or interrupts.
   const onClick = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
@@ -402,9 +406,9 @@ const AgentPageComponent: React.FC = () => {
         <div className="w-full max-w-sm p-4">
           <Visualizer
             height={64}
-            state={chatManager?.state}
-            inputAnalyzer={chatManager?.inputAnalyzer}
-            outputAnalyzer={chatManager?.outputAnalyzer}
+            state={voiceSession?.state}
+            inputAnalyzer={voiceSession?.inputAnalyzer}
+            outputAnalyzer={voiceSession?.outputAnalyzer}
           />
         </div>
         <div className="w-full flex justify-center mt-3">

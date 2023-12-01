@@ -40,3 +40,11 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ## Running hisanta.ai
 
 http://localhost:3000/?webrtc=wss://wsapi.fixie.ai
+
+
+
+
+## Linking to the local fixie package
+In order to use a local version of the fixie SDK (i.e. not having to publish to npm every time):
+* Go to the folder where you have the fixie SDK repo
+* 
