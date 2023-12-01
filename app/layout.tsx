@@ -2,8 +2,8 @@ import Image from 'next/image';
 import './globals.css';
 
 export const metadata = {
-  title: 'Fixie | Voice',
-  description: 'Fixie Voice is a platform for building conversational voice AI experiences.',
+  title: 'Hi Santa',
+  description: 'Talk to Santa this holiday season. Powered by Fixie.ai.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
