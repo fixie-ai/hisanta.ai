@@ -4,9 +4,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useSwipeable } from 'react-swipeable';
-// import { ChatManager, ChatManagerState, createChatManager } from './chat';
 import { FixieClient } from 'fixie';
-import { VoiceSessionState } from 'fixie/src/voice';
+import { VoiceSessionInit, VoiceSessionState } from 'fixie/src/voice';
 import Image from 'next/image';
 import '../globals.css';
 
@@ -213,7 +212,6 @@ const Button: React.FC<{ onClick: () => void; disabled: boolean; children: React
 
 const AgentPageComponent: React.FC = () => {
   const searchParams = useSearchParams();
-  // const agentId = searchParams.get('agent') || 'dr-donut';
   const agentId = '5d37e2c5-1e96-4c48-b3f1-98ac08d40b9a';
   const tapOrClick = typeof window != 'undefined' && 'ontouchstart' in window ? 'Tap' : 'Click';
   const idleText = `${tapOrClick} anywhere to start!`;
@@ -241,19 +239,10 @@ const AgentPageComponent: React.FC = () => {
   useEffect(() => init(), [asrProvider, asrLanguage, ttsProvider, ttsModel, ttsVoice, model, agentId, docs]);
   const init = () => {
     console.log(`[page] init asr=${asrProvider} tts=${ttsProvider} llm=${model} agent=${agentId} docs=${docs}`);
+    const voiceInit: VoiceSessionInit = { asrProvider: asrProvider, ttsProvider: ttsProvider, model: model };
     const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
     const fixieClient = new FixieClient({ apiKey: API_KEY });
-    const session = fixieClient.createVoiceSession({
-      asrProvider,
-      asrLanguage,
-      ttsProvider,
-      ttsModel,
-      ttsVoice,
-      model,
-      agentId,
-      docs,
-      webrtcUrl,
-    });
+    const session = fixieClient.createVoiceSession({ agentId: agentId, init: voiceInit });
     setVoiceSession(session);
     session.onStateChange = (state) => {
       switch (state) {
