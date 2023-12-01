@@ -1,5 +1,5 @@
-import AgentPageComponent from './agent/page';
+import ComingSoon from './components/ComingSoon';
 
 export default function Home() {
-  return <AgentPageComponent />;
+  return <ComingSoon />;
 }
