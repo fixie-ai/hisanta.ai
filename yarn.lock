@@ -1547,10 +1547,10 @@ find-up@^5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
-fixie@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/fixie/-/fixie-6.0.1.tgz#2610bdacc7414792f155310b6940a24c17e18c2d"
-  integrity sha512-mPbiiu0Rrwo2ESEIpWpcOEyv5T9LemUlKSpKGxkCP39ZZ5stfqSCYFDECUP6jFQZS+zEJThibyy+KI49lrInmQ==
+fixie@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/fixie/-/fixie-6.1.0.tgz#81ae1b801123af562ee2d7619ce41ec7492996d7"
+  integrity sha512-umdOfU7lZ39cxGSLLbJ8/DUjB48d9Uc2KwuS8Te6sziA2usM2H3+T2jdp5IVQFCNh3SdMUuJg3wY+4l0aU4nag==
   dependencies:
     "@apollo/client" "^3.8.1"
     "@types/apollo-upload-client" "^17.0.2"
@@ -1562,6 +1562,7 @@ fixie@^6.0.1:
     extract-files "^13.0.0"
     graphql "^16.8.0"
     js-yaml "^4.1.0"
+    livekit-client "^1.15.2"
     open "^9.1.0"
     ora "^7.0.1"
     terminal-kit "^3.0.0"
