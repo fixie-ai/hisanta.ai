@@ -5,7 +5,3 @@ export type CharacterType = {
   bio: string
   location: string
 }
-
-export interface ActiveCallProps {
-  currentCharacter: CharacterType;
-}

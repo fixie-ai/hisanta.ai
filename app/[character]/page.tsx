@@ -1,8 +1,6 @@
-import config from '@/lib/config';
-import ActiveCall from '../components/ActiveCall';
-import Image from 'next/image'
+import config, { getCharacter } from '@/lib/config';
 import {notFound} from 'next/navigation'
-import StartNewCall from '../components/StartNewCall';
+import { CallCharacter } from '../components/CallCharacter';
 
 // Set the runtime to Edge.
 // @see https://nextjs.org/docs/app/building-your-application/rendering/edge-and-nodejs-runtimes#segment-runtime-option
@@ -30,33 +28,21 @@ export async function generateStaticParams() {
   }))
 }
 
-// TODO -> Do we want to have dynamic metadata for each character page?
-// https://nextjs.org/docs/app/building-your-application/optimizing/metadata#dynamic-metadata
-
-async function getCharacter(characterId: string) {
-  console.log(`getCharacter: ${characterId}`);
-  const result = characters.find(obj => obj.characterId === characterId);
-  return result ? result : null;
-}
-
 /**
  * The character page.
  */
 export default async function Page({params}: {params: {character: string}}) {
   // Get the content for the character.
   console.log(`Character: ${params.character}`);
-  const character = await getCharacter(params.character)
-
-  // No character? Bail...
+  const character = getCharacter(params.character);
   if (!character) {
     notFound()
   }
 
   return (
-    <div className="w-full">
-      <div className="text-4xl">Live from {character.location}</div>
-      <ActiveCall currentCharacter={character} />
-      <StartNewCall currentCharacter={character} />
+    <div className="w-full mt-8">
+      <div className="text-4xl">Live from {character.location}!</div>
+      <CallCharacter character={character} />
     </div>
   )
 }
