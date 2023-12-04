@@ -2,6 +2,7 @@ import config from '@/lib/config';
 import ActiveCall from '../components/ActiveCall';
 import Image from 'next/image'
 import {notFound} from 'next/navigation'
+import StartNewCall from '../components/StartNewCall';
 
 // Set the runtime to Edge.
 // @see https://nextjs.org/docs/app/building-your-application/rendering/edge-and-nodejs-runtimes#segment-runtime-option
@@ -52,8 +53,11 @@ export default async function Page({params}: {params: {character: string}}) {
   }
 
   return (
-    <ActiveCall currentCharacter={character} />
-
+    <div className="w-full">
+      <div className="text-4xl">Live from {character.location}</div>
+      <ActiveCall currentCharacter={character} />
+      <StartNewCall currentCharacter={character} />
+    </div>
   )
 }
 

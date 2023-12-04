@@ -3,7 +3,7 @@ import React from 'react';
 import Image from 'next/image';
 import { ActiveCallProps } from '@/lib/types';
 
-const ActiveCall = ({ currentCharacter }: ActiveCallProps) => {
+const StartNewCall = ({ currentCharacter }: ActiveCallProps) => {
   return (
     <div>
       <br />
@@ -38,4 +38,4 @@ const ActiveCall = ({ currentCharacter }: ActiveCallProps) => {
   );
 };
 
-export default ActiveCall;
+export default StartNewCall;

@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
-const CallSanta = () => {
+const CallSantaButton = () => {
   return (
     <div className="bg-white rounded-3xl border-black border-2 flex space-x-2 w-full mt-4">
       <div className="w-12 h-12 bg-gray-500 rounded-full border-2 border-black items-center justify-center m-2">
@@ -20,4 +20,4 @@ const CallSanta = () => {
   );
 };
 
-export default CallSanta;
+export default CallSantaButton;

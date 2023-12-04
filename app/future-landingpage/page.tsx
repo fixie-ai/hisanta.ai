@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import CallSanta from '../components/CallSanta';
+import CallSantaButton from '../components/CallSantaButton';
 
 export default function Page() {
 
@@ -14,7 +14,7 @@ export default function Page() {
         <br />
         <h1 className="text-5xl">Talk to santa, Live from the North Pole!</h1>
         <div className="text-black font-['Inter-Regular']">Ready for a holiday surprise? Connect with Santa and share your Christmas wishes directly with the Jolliest man in the North Pole!</div>
-        <CallSanta />
+        <CallSantaButton />
       </div>
       <div className="w-1/2 mt-36">
         <Image
