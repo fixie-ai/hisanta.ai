@@ -17,6 +17,7 @@ const StartNewCall = ({
       </div>
       <div className="mx-auto">
         <Image
+          className="drop-shadow-md"
           src={`/images/${character.image}`}
           alt={`${character.name} image`}
           width={300}

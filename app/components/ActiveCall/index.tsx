@@ -18,6 +18,7 @@ const ActiveCall = ({
       </div>
         <div className="mx-auto">
           <Image
+            className="drop-shadow-md"
             src={`/images/${character.image}`}
             alt="Santa Image"
             width={300}
