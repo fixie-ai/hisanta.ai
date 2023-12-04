@@ -9,3 +9,8 @@ export type CharacterType = {
 export interface ActiveCallProps {
   currentCharacter: CharacterType;
 }
+
+export interface NameInputProps {
+  inputValue: string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}

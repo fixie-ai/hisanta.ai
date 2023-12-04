@@ -22,7 +22,7 @@ const config = {
     },
     {
       "characterId": "santa",
-      "name": "Santa Claus",
+      "name": "Santa",
       "image": "santa-svg.svg",
       "bio": "It's Santa.",
       "location": "The North Pole",
