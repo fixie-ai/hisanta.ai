@@ -3,6 +3,8 @@ const config = {
   siteDescription: 'Talk to Santa Claus and his friends.',
   siteUrl: 'https://hisanta.ai',
   githubUrl: 'https://github.com/fixie-ai/hisanta.ai',
+  referralUrl: 'https://fixie.ai',
+  footerText: 'A Holiday Experiment by',
   availableCharacters: [
     {
       "characterId": "grinch",
