@@ -1,8 +1,9 @@
 "use client";
 import React from 'react';
 import Image from 'next/image';
+import { ActiveCallProps } from '@/lib/types';
 
-const ActiveCall = ({ currentCharacter }) => {
+const ActiveCall = ({ currentCharacter }: ActiveCallProps) => {
   return (
     <div>
       <br />

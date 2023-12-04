@@ -32,7 +32,7 @@ export async function generateStaticParams() {
 // TODO -> Do we want to have dynamic metadata for each character page?
 // https://nextjs.org/docs/app/building-your-application/optimizing/metadata#dynamic-metadata
 
-async function getCharacter(characterId) {
+async function getCharacter(characterId: string) {
   console.log(`getCharacter: ${characterId}`);
   const result = characters.find(obj => obj.characterId === characterId);
   return result ? result : null;
