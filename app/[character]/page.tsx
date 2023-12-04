@@ -1,4 +1,5 @@
 import config from '@/lib/config';
+import ActiveCall from '../components/ActiveCall';
 import Image from 'next/image'
 import {notFound} from 'next/navigation'
 
@@ -51,11 +52,9 @@ export default async function Page({params}: {params: {character: string}}) {
   }
 
   return (
-    <article>
-      <header>
-        <h2>{character.name}</h2>
-      </header>
-      <div>{character.image}</div>
-    </article>
+    <ActiveCall currentCharacter={character} />
+
   )
 }
+
+

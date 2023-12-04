@@ -9,26 +9,30 @@ const config = {
     {
       "characterId": "grinch",
       "name": "The Grinch",
-      "image": "foxie-coal.svg",
-      "bio": "He's a mean one, Mr. Grinch."
+      "image": "grinch-placeholder.png",
+      "bio": "He's a mean one, Mr. Grinch.",
+      "location": "Whoville",
     },
     {
       "characterId": "rudolph",
       "name": "Rudolph",
-      "image": "foxie-coal.svg",
-      "bio": "Rudolph, the red-nosed reindeer."
+      "image": "rudolph-placeholder.png",
+      "bio": "Rudolph, the red-nosed reindeer.",
+      "location": "Santa's Stables",
     },
     {
       "characterId": "santa",
       "name": "Santa Claus",
       "image": "santa-svg.svg",
-      "bio": "It's Santa."
+      "bio": "It's Santa.",
+      "location": "The North Pole",
     },
     {
       "characterId": "elf",
       "name": "Elfie",
-      "image": "foxie-coal.svg",
-      "bio": "She is one of Santa's top helpers."
+      "image": "elfie-placeholder.png",
+      "bio": "She is one of Santa's top helpers.",
+      "location": "Santa's Workshop",
     }
   ],
 }
