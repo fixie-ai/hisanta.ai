@@ -16,11 +16,11 @@ const CharacterPicker = () => {
 
   return (
     <div>      
-      <Image src={`/images/${mainCharacter}`} alt="Main" width={500} height={500} className="object-cover" />
+      <Image src={`/images/${mainCharacter}`} alt="Main" width={500} height={500} className="object-cover rounded-full" />
       <div className="flex space-x-4 mt-4">
         {characters.map((character, index) => (
           <div key={index} onClick={() => changeCharacter(character.image)}>
-            <Image src={`/images/${character.image}`} alt={`Thumbnail ${index + 1}`} width={100} height={100} className="object-cover cursor-pointer" />
+            <Image src={`/images/${character.image}`} alt={`Thumbnail ${index + 1}`} width={100} height={100} className="object-cover cursor-pointer rounded-full" />
             <p>{character.name}</p>
           </div>
         ))}

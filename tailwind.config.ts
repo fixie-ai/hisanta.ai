@@ -12,6 +12,17 @@ const config: Config = {
         sans: ['Luckiest Guy', 'sans-serif'],
         serif: ['Luckiest Guy', 'sans-serif'],
       },
+      colors: {
+        'Holiday-Green': '#0D5753',
+        'Pill-Green': '#A2D7BF',
+        'AI-Green': '#D3F2F5',
+        'Light-Green': '#C6D5C5',
+        'Light-Red': '#D0BABC',
+
+      },
+      borderRadius: {
+        '32': '32px',
+      },
     },
   },
   plugins: [],
