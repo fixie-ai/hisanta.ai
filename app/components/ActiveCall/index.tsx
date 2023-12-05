@@ -17,8 +17,10 @@ interface LatencyThreshold {
 }
 
 const FIXIE_AGENT_ID = "5d37e2c5-1e96-4c48-b3f1-98ac08d40b9a";
+const DEFAULT_TTS_VOICE = "Kp00queBTLslXxHCu1jq";
 const DEFAULT_ASR_PROVIDER = "deepgram";
-const DEFAULT_TTS_PROVIDER = "playht";
+//const DEFAULT_TTS_PROVIDER = "playht";
+const DEFAULT_TTS_PROVIDER = "eleven-ws";
 const DEFAULT_LLM = "gpt-4-1106-preview";
 const ASR_PROVIDERS = ["aai", "deepgram", "gladia", "revai", "soniox"];
 const TTS_PROVIDERS = [
@@ -65,7 +67,7 @@ function Conversation({
   const asrLanguage = searchParams.get("asrLanguage") || undefined;
   const ttsProvider = searchParams.get("tts") || DEFAULT_TTS_PROVIDER;
   const ttsModel = searchParams.get("ttsModel") || undefined;
-  const ttsVoice = searchParams.get("ttsVoice") || undefined;
+  const ttsVoice = searchParams.get("ttsVoice") || DEFAULT_TTS_VOICE;
   const model = searchParams.get("llm") || DEFAULT_LLM;
   const docs = searchParams.get("docs") !== null;
   const webrtcUrl = searchParams.get("webrtc") ?? undefined;
@@ -91,11 +93,12 @@ function Conversation({
   useEffect(() => {
     const init = () => {
       console.log(
-        `[VoiceSession] init asr=${asrProvider} tts=${ttsProvider} llm=${model} agent=${FIXIE_AGENT_ID} docs=${docs}`
+        `[VoiceSession] init asr=${asrProvider} tts=${ttsProvider} ttsVoice=${ttsVoice} llm=${model} agent=${FIXIE_AGENT_ID} docs=${docs}`
       );
       const voiceInit: VoiceSessionInit = {
         asrProvider: asrProvider,
         ttsProvider: ttsProvider,
+        ttsVoice: ttsVoice,
         model: model,
       };
       const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
