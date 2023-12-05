@@ -1,5 +1,7 @@
 import config, { getCharacter } from '@/lib/config';
 import {notFound} from 'next/navigation'
+import ActiveCall from '../components/ActiveCall';
+import InCall from '../components/InCall';
 import { CallCharacter } from '../components/CallCharacter';
 
 // Set the runtime to Edge.
@@ -41,7 +43,11 @@ export default async function Page({params}: {params: {character: string}}) {
 
   return (
     <div className="w-full mt-8">
-      <div className="text-4xl">Live from {character.location}!</div>
+      <br />
+      <div className="text-4xl">Live from {character.location}</div>
+      { /* @ts-ignore */}
+      <ActiveCall currentCharacter={character} />
+      <InCall currentCharacter={character} />
       <CallCharacter character={character} />
     </div>
   )
