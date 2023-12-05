@@ -1552,7 +1552,7 @@ find-up@^5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
-fixie@^6.1.0:
+fixie@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/fixie/-/fixie-6.2.0.tgz#402e750b2c248735a7c2c26ccad22bedd1b54cab"
   integrity sha512-VgnbK8xHOCrbInBFvWcnQcVV4kC7ENuw49czlllsnnk6BgKkaBGRNKdLVRAPYMwOqlWLaT+A48Ld2FsImGVSew==
