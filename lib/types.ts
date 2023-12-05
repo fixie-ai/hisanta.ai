@@ -4,4 +4,5 @@ export type CharacterType = {
   image: string
   bio: string
   location: string
+  ringtone: string
 }
