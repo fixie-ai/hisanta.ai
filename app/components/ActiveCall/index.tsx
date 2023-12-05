@@ -1,5 +1,11 @@
 "use client";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { CharacterType } from "@/lib/types";
@@ -10,12 +16,14 @@ import {
   VoiceSessionInit,
   VoiceSessionState,
 } from "fixie/src/voice";
+import { set } from "lodash";
 
 interface LatencyThreshold {
   good: number;
   fair: number;
 }
 
+const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
 const FIXIE_AGENT_ID = "5d37e2c5-1e96-4c48-b3f1-98ac08d40b9a";
 const DEFAULT_TTS_VOICE = "Kp00queBTLslXxHCu1jq";
 const DEFAULT_ASR_PROVIDER = "deepgram";
@@ -55,6 +63,65 @@ const LATENCY_THRESHOLDS: { [key: string]: LatencyThreshold } = {
   Total: { good: 1300, fair: 2000 },
 };
 
+
+let voiceSession: VoiceSession | null = null;
+
+function makeVoiceSession({
+  asrProvider,
+  ttsProvider,
+  ttsVoice,
+  model,
+  onInputChange,
+  onOutputChange,
+  onLatencyChange,
+  onStateChange,
+}: {
+  asrProvider: string;
+  ttsProvider: string;
+  ttsVoice: string;
+  model: string;
+  onInputChange: (text: string, final: boolean) => void;
+  onOutputChange: (text: string, final: boolean) => void;
+  onLatencyChange: (kind: string, latency: number) => void;
+  onStateChange: (state: VoiceSessionState) => void;
+}): VoiceSession {
+  if (voiceSession) {
+    return voiceSession;
+  }
+
+  const fixieClient = new FixieClient({ apiKey: API_KEY });
+  const voiceInit: VoiceSessionInit = {
+    asrProvider: asrProvider,
+    ttsProvider: ttsProvider,
+    ttsVoice: ttsVoice,
+    model: model,
+  };
+  const session = fixieClient.createVoiceSession({
+    agentId: FIXIE_AGENT_ID,
+    init: voiceInit,
+  });
+  console.log(
+    `[makeVoiceSession] created voice session ${JSON.stringify(session)}`
+  );
+  session.onInputChange = onInputChange;
+  session.onOutputChange = onOutputChange;
+  session.onLatencyChange = onLatencyChange;
+  session.onStateChange = onStateChange;
+  session.onError = () => {
+    session.stop();
+  };
+
+  // TODO(mdw): I am not sure what happened to these.
+  // session.onAudioGenerate = (latency) => {
+  //   setLlmTokenLatency(latency);
+  // };
+  // session.onAudioStart = (latency) => {
+  //   setTtsLatency(latency);
+  // };
+  voiceSession = session;
+  return session;
+}
+
 function Conversation({
   character,
   onCallEnd,
@@ -62,15 +129,23 @@ function Conversation({
   character: CharacterType;
   onCallEnd: () => void;
 }) {
+  console.log(
+    `[Conversation] called with character ${JSON.stringify(character)}`
+  );
+
   const searchParams = useSearchParams();
   const asrProvider = searchParams.get("asr") || DEFAULT_ASR_PROVIDER;
-  const asrLanguage = searchParams.get("asrLanguage") || undefined;
   const ttsProvider = searchParams.get("tts") || DEFAULT_TTS_PROVIDER;
   const ttsModel = searchParams.get("ttsModel") || undefined;
   const ttsVoice = searchParams.get("ttsVoice") || DEFAULT_TTS_VOICE;
   const model = searchParams.get("llm") || DEFAULT_LLM;
-  const docs = searchParams.get("docs") !== null;
-  const webrtcUrl = searchParams.get("webrtc") ?? undefined;
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
+  const [asrLatency, setAsrLatency] = useState(0);
+  const [llmResponseLatency, setLlmResponseLatency] = useState(0);
+  const [llmTokenLatency, setLlmTokenLatency] = useState(0);
+  const [ttsLatency, setTtsLatency] = useState(0);
+
   const [showChooser, setShowChooser] = useState(
     searchParams.get("chooser") !== null
   );
@@ -79,103 +154,99 @@ function Conversation({
   const [showStats, setShowStats] = useState(
     searchParams.get("stats") !== null
   );
-  const [voiceSession, setVoiceSession] = useState<VoiceSession | null>();
-  const [input, setInput] = useState("");
-  const [output, setOutput] = useState("");
-  const [asrLatency, setAsrLatency] = useState(0);
-  const [llmResponseLatency, setLlmResponseLatency] = useState(0);
-  const [llmTokenLatency, setLlmTokenLatency] = useState(0);
-  const [ttsLatency, setTtsLatency] = useState(0);
+  const [voiceSession, setVoiceSession] = useState<VoiceSession | null>(null);
+  const [sessionState, setSessionState] = useState<VoiceSessionState | null>(
+    null
+  );
+  const [starting, setStarting] = useState(false);
 
-  const active = () =>
-    voiceSession && voiceSession!.state != VoiceSessionState.IDLE;
-
-  useEffect(() => {
-    const init = () => {
-      console.log(
-        `[VoiceSession] init asr=${asrProvider} tts=${ttsProvider} ttsVoice=${ttsVoice} llm=${model} agent=${FIXIE_AGENT_ID} docs=${docs}`
-      );
-      const voiceInit: VoiceSessionInit = {
-        asrProvider: asrProvider,
-        ttsProvider: ttsProvider,
-        ttsVoice: ttsVoice,
-        model: model,
-      };
-      const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
-      const fixieClient = new FixieClient({ apiKey: API_KEY });
-      const session = fixieClient.createVoiceSession({
-        agentId: FIXIE_AGENT_ID,
-        init: voiceInit,
+  if (voiceSession == null && !starting) {
+    setStarting(true);
+    const session = makeVoiceSession({
+        asrProvider,
+        ttsProvider,
+        ttsVoice,
+        model,
+        onInputChange: (text, final) => {
+          setInput(text);
+        },
+        onOutputChange: (text, final) => {
+          setOutput(text);
+          if (final) {
+            setInput("");
+          }
+        },
+        onLatencyChange: (kind, latency) => {
+          switch (kind) {
+            case "asr":
+              setAsrLatency(latency);
+              setLlmResponseLatency(0);
+              setLlmTokenLatency(0);
+              setTtsLatency(0);
+              break;
+            case "llm":
+              setLlmResponseLatency(latency);
+              break;
+            case "llmt":
+              setLlmTokenLatency(latency);
+              break;
+            case "tts":
+              setTtsLatency(latency);
+              break;
+          }
+        },
+        onStateChange: (state) => {
+          setSessionState(state);
+        },
       });
-      setVoiceSession(session);
 
-      session.onInputChange = (text, final) => {
-        setInput(text);
-      };
-      session.onOutputChange = (text, final) => {
-        setOutput(text);
-        if (final) {
-          setInput('');
-        }
-      };
-      session.onLatencyChange = (kind, latency) => {
-        switch (kind) {
-          case 'asr':
-            setAsrLatency(latency);
-            setLlmResponseLatency(0);
-            setLlmTokenLatency(0);
-            setTtsLatency(0);
-            break;
-          case 'llm':
-            setLlmResponseLatency(latency);
-            break;
-          case 'llmt':
-            setLlmTokenLatency(latency);
-            break;
-          case 'tts':
-            setTtsLatency(latency);
-            break;
-        }
-      };
-
-      // TODO(mdw): I am not sure what happened to these.
-      // session.onAudioGenerate = (latency) => {
-      //   setLlmTokenLatency(latency);
-      // };
-      // session.onAudioStart = (latency) => {
-      //   setTtsLatency(latency);
-      // };
-      session.onError = () => {
-        session.stop();
-      };
-
-      return () => session.stop();
-    };
-    init();
-  }, [asrProvider, asrLanguage, ttsProvider, ttsModel, ttsVoice, model, docs]);
-
-  const updateSearchParams = (param: string, value: string) => {
-    const params = new URLSearchParams(window.location.search);
-    params.set(param, value);
-    window.location.search = params.toString();
-  };
-
-  const handleStart = () => {
-      setInput("");
-      setOutput("");
-      setAsrLatency(0);
-      setLlmResponseLatency(0);
-      setLlmTokenLatency(0);
-      setTtsLatency(0);
-      voiceSession!.start();
+    console.log("[VoiceSession] doStart");
+    //setInput("");
+    //setOutput("");
+    //setAsrLatency(0);
+    //setLlmResponseLatency(0);
+    //setLlmTokenLatency(0);
+    //setTtsLatency(0);
+    session.start();
+    setVoiceSession(session);
   }
 
+  // // Start the voice session.
+  // const doStart = async () => {
+  //   console.log("[VoiceSession] doStart");
+  //   setInput("");
+  //   setOutput("");
+  //   setAsrLatency(0);
+  //   setLlmResponseLatency(0);
+  //   setLlmTokenLatency(0);
+  //   setTtsLatency(0);
+  //   voiceSession.start();
+  // };
+
+  // Handle end call event.
   const handleStop = async () => {
-    await voiceSession!.stop();
+    await voiceSession?.stop();
     onCallEnd();
   };
 
-  const onInterruptClick = () => active() ? voiceSession!.interrupt() : handleStart();
+  // Handle interrupt click.
+  const onInterruptClick = () => {
+    if (sessionState != VoiceSessionState.IDLE) {
+      voiceSession?.interrupt();
+    }
+  };
+
+  const showState = () => {
+    if (sessionState == null) {
+      return "Initializing...";
+    } else if (sessionState == VoiceSessionState.IDLE) {
+      return "Idle";
+    } else if (sessionState == VoiceSessionState.LISTENING) {
+      return "Listening...";
+    } else {
+      return "Speaking...";
+    }
+  }
 
   return (
     <>
@@ -184,7 +255,7 @@ function Conversation({
         <div className="bg-white rounded-3xl align-middle justify-center items-center p-2 flex flex-row m-1">
           <MicrophoneIcon className="w-6 h-6" />
           <div className="text-lg mt-1">
-            {active() ? "Interrupt" : "Start talking"}
+            { showState() }
           </div>
         </div>
       </button>

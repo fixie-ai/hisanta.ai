@@ -5,10 +5,12 @@ import ActiveCall from "../ActiveCall";
 import StartNewCall from "../StartNewCall";
 
 export function CallCharacter({ character }: { character: CharacterType }) {
-  const [call, setCall] = useState<any>(null);
-  return call !== null ? (
-    <ActiveCall onCallEnd={() => setCall(null)} character={character} />
+  console.log(`CallCharacter: ${character.name} rendering`);
+  const [inCall, setInCall] = useState(false);
+
+  return inCall ? (
+    <ActiveCall onCallEnd={() => setInCall(false)} character={character} />
   ) : (
-    <StartNewCall onCallStart={setCall} character={character} />
+    <StartNewCall onCallStart={() => setInCall(true)} character={character} />
   );
 }
