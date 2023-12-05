@@ -106,29 +106,42 @@ function Conversation({
       });
       setVoiceSession(session);
 
-      // TODO(mdw): The below handlers need to be updated to use the latest Fixie voice API.
-      session.onInputChange = (text, final, latency) => {
+      session.onInputChange = (text, final) => {
         setInput(text);
-        if (final && latency) {
-          setAsrLatency(latency);
-          setLlmResponseLatency(0);
-          setLlmTokenLatency(0);
-          setTtsLatency(0);
-        }
       };
-      session.onOutputChange = (text, final, latency) => {
+      session.onOutputChange = (text, final) => {
         setOutput(text);
         if (final) {
-          setInput("");
+          setInput('');
         }
-        setLlmResponseLatency((prev) => (prev ? prev : latency));
       };
-      session.onAudioGenerate = (latency) => {
-        setLlmTokenLatency(latency);
+      session.onLatencyChange = (kind, latency) => {
+        switch (kind) {
+          case 'asr':
+            setAsrLatency(latency);
+            setLlmResponseLatency(0);
+            setLlmTokenLatency(0);
+            setTtsLatency(0);
+            break;
+          case 'llm':
+            setLlmResponseLatency(latency);
+            break;
+          case 'llmt':
+            setLlmTokenLatency(latency);
+            break;
+          case 'tts':
+            setTtsLatency(latency);
+            break;
+        }
       };
-      session.onAudioStart = (latency) => {
-        setTtsLatency(latency);
-      };
+
+      // TODO(mdw): I am not sure what happened to these.
+      // session.onAudioGenerate = (latency) => {
+      //   setLlmTokenLatency(latency);
+      // };
+      // session.onAudioStart = (latency) => {
+      //   setTtsLatency(latency);
+      // };
       session.onError = () => {
         session.stop();
       };
@@ -136,7 +149,7 @@ function Conversation({
       return () => session.stop();
     };
     init();
-  }, [asrProvider, asrLanguage, voiceSession, ttsProvider, ttsModel, ttsVoice, model, docs]);
+  }, [asrProvider, asrLanguage, ttsProvider, ttsModel, ttsVoice, model, docs]);
 
   const updateSearchParams = (param: string, value: string) => {
     const params = new URLSearchParams(window.location.search);
