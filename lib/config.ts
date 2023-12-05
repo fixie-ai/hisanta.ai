@@ -1,3 +1,6 @@
+import { CharacterType } from './types';
+
+/** Defines the top-level application config. */
 const config = {
   siteName: 'Hisanta.ai',
   siteDescription: 'Talk to Santa Claus and his friends.',
@@ -36,5 +39,9 @@ const config = {
     }
   ],
 }
+export default config;
 
-export default config
+/** Return metadata associated with the given character. */
+export function getCharacter(characterId: string): CharacterType | null {
+  return config.availableCharacters.find(obj => obj.characterId === characterId) ?? null;
+}

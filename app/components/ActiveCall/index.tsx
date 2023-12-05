@@ -1,39 +1,43 @@
 "use client";
-import React from 'react';
-import Image from 'next/image';
-import { ActiveCallProps } from '@/lib/types';
+import React from "react";
+import Image from "next/image";
+import { CharacterType } from "@/lib/types";
+import { MicrophoneIcon, PhoneIcon } from "@heroicons/react/24/outline";
 
-const ActiveCall = ({ currentCharacter }: ActiveCallProps) => {
+const ActiveCall = ({
+  character,
+  onCallEnd,
+}: {
+  character: CharacterType;
+  onCallEnd: () => void;
+}) => {
   return (
-    <div>
-      <br />
-      <div className="bg-white rounded-3xl border-black border-2 flex flex-col w-full mt-4">
-        
-        {/* Character Image */}
-        <div className="m-1">
-          <Image src={`/images/${currentCharacter.image}`} alt="Santa Image" width={300} height={300} />
-        </div>
-        <div className="text=xl">{currentCharacter.name}</div>
-        {/* Call Status */}
-        <div>
-          <div className="bg-slate-100 h-20  mx-3 rounded-lg align-middle text-white justify-center p-2 flex flex-row m-1 ">
-              <div className="mt-1 flex items-center">
-                <Image src="/images/dialing.svg" alt="Santa Image" width={20} height={600} />
-              </div>
-              <div className="text-sm mt-1 text-gray-800 font-['Inter-Regular'] flex items-center">&nbsp;Dialing...</div>
-          </div>
-        </div>
-          
-        {/* End Call Button */}
-        <div>
-          <div className="bg-red-600 rounded-3xl align-middle text-white justify-center p-2 flex flex-row m-1 border-black border-2">
-            <div className="mt-1">
-              <Image src="/images/phone.svg" alt="Santa Image" width={20} height={600} />
-            </div>
-            <div className="text-lg mt-1">&nbsp;End call</div>
-          </div>
-        </div>
+    <div className="bg-slate-100 rounded-3xl border-black border-4 flex flex-col w-full mt-4 gap-4">
+      <div className="mt-4 mx-auto text-3xl text-[#881425]">
+        {character.name}
       </div>
+        <div className="mx-auto">
+          <Image
+            className="drop-shadow-md"
+            src={`/images/${character.image}`}
+            alt="Santa Image"
+            width={300}
+            height={300}
+          />
+        </div>
+        <button className="mt-1">
+          <div>
+            <div className="bg-white rounded-3xl align-middle justify-center items-center p-2 flex flex-row m-1">
+              <MicrophoneIcon className="w-6 h-6" /><div className="text-lg mt-1">Tap to interrupt</div>
+            </div>
+          </div>
+        </button>
+        <button onClick={onCallEnd} className="mt-1">
+            <div className="bg-white rounded-3xl align-middle text-[#881425] justify-center p-2 flex flex-row m-1 border-[#881425] border-2">
+              <PhoneIcon className="w-6 h-6" />
+              <div className="text-lg mt-1">&nbsp;End call</div>
+            </div>
+        </button>
     </div>
   );
 };
