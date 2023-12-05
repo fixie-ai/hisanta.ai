@@ -63,7 +63,6 @@ const LATENCY_THRESHOLDS: { [key: string]: LatencyThreshold } = {
   Total: { good: 1300, fair: 2000 },
 };
 
-
 let voiceSession: VoiceSession | null = null;
 
 function makeVoiceSession({
@@ -129,9 +128,9 @@ function Conversation({
   character: CharacterType;
   onCallEnd: () => void;
 }) {
-  console.log(
-    `[Conversation] called with character ${JSON.stringify(character)}`
-  );
+  // console.log(
+  //   `[Conversation] called with character ${JSON.stringify(character)}`
+  // );
 
   const searchParams = useSearchParams();
   const asrProvider = searchParams.get("asr") || DEFAULT_ASR_PROVIDER;
@@ -160,9 +159,13 @@ function Conversation({
   );
   const [starting, setStarting] = useState(false);
 
-  if (voiceSession == null && !starting) {
-    setStarting(true);
-    const session = makeVoiceSession({
+  const cleanupPromiseRef = useRef<Promise<void>>();
+
+  useEffect(() => {
+    let createdSession = false;
+    if (!starting) {
+      setStarting(true);
+      const session = makeVoiceSession({
         asrProvider,
         ttsProvider,
         ttsVoice,
@@ -200,16 +203,33 @@ function Conversation({
         },
       });
 
-    console.log("[VoiceSession] doStart");
-    //setInput("");
-    //setOutput("");
-    //setAsrLatency(0);
-    //setLlmResponseLatency(0);
-    //setLlmTokenLatency(0);
-    //setTtsLatency(0);
-    session.start();
-    setVoiceSession(session);
-  }
+      //setInput("");
+      //setOutput("");
+      //setAsrLatency(0);
+      //setLlmResponseLatency(0);
+      //setLlmTokenLatency(0);
+      //setTtsLatency(0);
+
+      createdSession = true;
+      console.log("[VoiceSession] doStart");
+      session.start();
+      setVoiceSession(session);
+    }
+
+    return createdSession ? () => {
+        cleanupPromiseRef.current = new Promise<void>(
+          async (resolve, reject) => {
+            console.log(`Cleanup calling session.stop`);
+            await voiceSession?.stop();
+            resolve();
+          }
+        );
+        cleanupPromiseRef.current.then(() => {
+          console.log(`Finalized session stop`);
+        });
+      } : undefined;
+
+  }, [asrProvider, model, ttsProvider, ttsVoice, voiceSession, starting]);
 
   // // Start the voice session.
   // const doStart = async () => {
@@ -246,7 +266,7 @@ function Conversation({
     } else {
       return "Speaking...";
     }
-  }
+  };
 
   return (
     <>
@@ -254,9 +274,7 @@ function Conversation({
       <button className="mt-1" onClick={onInterruptClick}>
         <div className="bg-white rounded-3xl align-middle justify-center items-center p-2 flex flex-row m-1">
           <MicrophoneIcon className="w-6 h-6" />
-          <div className="text-lg mt-1">
-            { showState() }
-          </div>
+          <div className="text-lg mt-1">{showState()}</div>
         </div>
       </button>
       <button onClick={handleStop} className="mt-1">
