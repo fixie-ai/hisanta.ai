@@ -278,6 +278,7 @@ function Visualizer({
 }) {
   const inputCanvasRef = useRef<HTMLCanvasElement>(null);
   const outputCanvasRef = useRef<HTMLCanvasElement>(null);
+  const [outputVu, setOutputVu] = useState(0);
 
   if (voiceSession && voiceSession.inputAnalyzer) {
     voiceSession.inputAnalyzer.fftSize = 64;
@@ -299,27 +300,36 @@ function Visualizer({
     const canvas = outputCanvasRef.current;
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const grd = ctx.createRadialGradient(
+      canvas.width / 2,
+      canvas.height / 2,
+      20,
+      canvas.width / 2,
+      canvas.height / 2,
+      canvas.width / 2
+    );
+    grd.addColorStop(0, "rgb(13,87,83,1)");
+    grd.addColorStop(1, "white");
+    ctx.fillStyle = grd;
+
     if (freqData) {
-      const baseRadius = canvas.width / 4;
-      const totalBins = freqData.length;
-      freqData.reverse().forEach((freqVal, i) => {
-        const index = totalBins - i;
-        const radius = baseRadius + index * 10;
-        const transparency = Math.max(0.0, Math.min(1.0, freqVal / 128));
-        ctx.lineWidth = 20;
-        ctx.beginPath();
-        ctx.strokeStyle = `rgb(13,87,83,${transparency})`;
-        ctx.ellipse(
-          canvas.width / 2,
-          canvas.height / 2,
-          radius,
-          radius,
-          0,
-          0,
-          2 * Math.PI
-        );
-        ctx.stroke();
-      });
+      const vu = Math.floor(
+        freqData.reduce((a, b) => a + b, 0) / freqData.length
+      );
+      const smoothed = vu * 0.5 + outputVu * 0.5;
+      setOutputVu(smoothed);
+      const radius = (canvas.width / 8) + ((smoothed / 128) * canvas.width * 1.75);
+      ctx.beginPath();
+      ctx.ellipse(
+        canvas.width / 2,
+        canvas.height / 2,
+        radius,
+        radius,
+        0,
+        0,
+        2 * Math.PI
+      );
+      ctx.fill();
     }
   };
 
@@ -392,20 +402,22 @@ function Visualizer({
 
   return (
     <>
-      <div className="relative w-full h-[300px]">
+      <div className="mx-auto relative w-[40vh] h-[40vh]">
         <canvas
-          className="absolute top-0 left-0 w-full h-full z-25 blur-sm"
+          className="absolute top-0 left-0 w-full h-full z-25"
           ref={outputCanvasRef}
           width={300}
           height={300}
         />
-        <img
-          className="absolute top-0 left-0 w-full h-full z-20"
-          src={`/images/${character.image}`}
-          alt="Santa Image"
-          width={200}
-          height={200}
-        />
+        <div className="absolute top-0 left-0 w-full h-full z-30">
+          <img
+            className="mx-auto my-auto w-[250px] h-full"
+            src={`/images/${character.image}`}
+            alt="Santa Image"
+            width={250}
+            height={250}
+          />
+        </div>
       </div>
       <div className="bg-white relative w-full h-12 rounded-full items-center">
         <canvas
