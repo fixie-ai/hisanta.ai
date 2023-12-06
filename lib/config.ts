@@ -36,6 +36,13 @@ const config = {
       "image": "elfie-placeholder.png",
       "bio": "She is one of Santa's top helpers.",
       "location": "Santa's Workshop",
+    },
+    {
+      "characterId": "snowman",
+      "name": "Snowman",
+      "image": "elfie-placeholder.png",
+      "bio": "Snowman is a jolly, happy soul.",
+      "location": "Melting in the Sun.",
     }
   ],
 }

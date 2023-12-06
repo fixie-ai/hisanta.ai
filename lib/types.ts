@@ -13,3 +13,8 @@ export interface NameInputProps {
   inputValue: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
+
+export type PickerButtonProps = {
+  className?: string;
+  currentCharacter: CharacterType;
+}

@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 const CallSantaButton = () => {
   return (
-    <div>
+    <div className="ml-4 mt-8">
       <div className="bg-Light-Green rounded-32 flex items-center w-[390px] h-[64px] mt-4">
         <div className="ml-2">
           <Image src="/images/santa-pc.png" alt="Santa Image" width={48} height={48} className="border-black border-solid border rounded-full" />

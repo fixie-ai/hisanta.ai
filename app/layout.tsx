@@ -14,9 +14,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="">
       <head />
-      <body className="max-w-fit mx-auto w-80 md:w-9/12 lg:w-10/12 xl:w-9/12 min-h-full" >
-        <Header />
-        <main>{children}</main>
+      <body>
+      <Header />
+        <main className="mt-28 mx-2 w-[530px] sm:w-full">{children}</main>
+        {/* max-w-fit mx-auto w-[390px] min-h-full md:w-9/12 lg:w-10/12 xl:w-9/12 */}
         <Footer />
       </body>
     </html>
