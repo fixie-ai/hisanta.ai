@@ -65,16 +65,15 @@ body::before {
   width: 100%;
   height: 100%;
   border-radius: 36px;
-  background: #072A28;
 }
+
 .front {
   display: block;
   position: relative;
   padding: 10px 42px;
+  padding-top: 16px;
   border-radius: 36px;
   font-size: 1.25rem;
-  color: white;
-  background: #0D5753;
   transform: translateY(-4px);
 }
 

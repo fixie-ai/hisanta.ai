@@ -57,7 +57,7 @@ const CharacterPicker = () => {
                 height={64}
                 className={`object-cover w-16 h-16 ring-2 ring-inset-2 ring-white shadow-lg cursor-pointer items-center justify-center rounded-full ${
                   character === selectedCharacter
-                    ? "ring-Holiday-Green ring-4"
+                    ? "ring-Holiday-Blue ring-4"
                     : ""
                 } `}
               />

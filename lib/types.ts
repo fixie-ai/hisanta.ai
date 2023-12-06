@@ -21,3 +21,9 @@ export type PickerButtonProps = {
   className?: string;
   currentCharacter: CharacterType;
 }
+
+export interface EpicButtonProps {
+  children: React.ReactNode;
+  type?: 'primary' | 'secondaryGreen' | 'secondaryRed';
+  className?: string;
+}
