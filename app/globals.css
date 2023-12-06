@@ -35,7 +35,7 @@ body::before {
   bottom: 0;
   left: 0;
   backdrop-filter: blur(6px);
-  background-image: linear-gradient(to bottom, rgba(53, 128, 232, 0.764), rgba(255, 255, 255, 0.00)), url('/images/winter-wonderland-full-res.jpeg');
+  background-image: linear-gradient(to bottom, rgba(53, 128, 232, 0.919), rgba(255, 255, 255, 0.00)), url('/images/winter-wonderland-full-res.jpeg');
   background-size: cover;
   opacity: 0.15; /* Adjust this value to change the opacity */
   z-index: -1; /* This ensures the pseudo-element is behind the body content */
@@ -65,7 +65,7 @@ body::before {
   width: 100%;
   height: 100%;
   border-radius: 36px;
-  background: #67000F;
+  background: #072A28;
 }
 .front {
   display: block;
@@ -74,7 +74,7 @@ body::before {
   border-radius: 36px;
   font-size: 1.25rem;
   color: white;
-  background: #A91A2F;
+  background: #0D5753;
   transform: translateY(-4px);
 }
 

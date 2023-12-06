@@ -5,6 +5,8 @@ export type CharacterType = {
   bio: string
   location: string
   ringtone: string
+  agent_id: string
+  voice_id: string
 }
 export interface ActiveCallProps {
   currentCharacter: CharacterType;
