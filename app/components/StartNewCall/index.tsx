@@ -41,7 +41,7 @@ const StartNewCall = ({
       </div> */}
 
       <button onClick={onMakeCall} className="mt-1">
-        <div className="bg-[#0D5753] rounded-3xl align-middle text-white justify-center p-2 flex flex-row m-1 border-black border-2">
+        <div className="bg-[#0D5753] rounded-3xl align-middle text-white justify-center w-11/12 p-2 flex flex-row mx-auto mb-4 border-black border-2">
           <div className="text-lg mt-1">Call {character.name}</div>
         </div>
       </button>

@@ -259,10 +259,8 @@ function Conversation({
         character={character}
         voiceSession={voiceSession || undefined}
       />
-
-      <button onClick={handleStop} className="mt-1">
-        <div className="bg-white rounded-3xl align-middle text-[#881425] justify-center p-2 flex flex-row m-1 border-[#881425] border-2">
-          <PhoneIcon className="w-6 h-6" />
+      <button onClick={handleStop}>
+        <div className="bg-white rounded-3xl align-middle text-[#881425] justify-center w-11/12 p-2 flex flex-row mx-auto mb-4 border-[#881425] border">
           <div className="text-lg mt-1">&nbsp;End call</div>
         </div>
       </button>
@@ -310,7 +308,7 @@ function Visualizer({
       canvas.width / 2
     );
     grd.addColorStop(0, "rgb(13,87,83,1)");
-    grd.addColorStop(1, "white");
+    grd.addColorStop(1, "rgb(13,87,83,0)");
     ctx.fillStyle = grd;
 
     if (freqData) {
@@ -391,9 +389,9 @@ function Visualizer({
 
   const showState = () => {
     if (voiceSession == null) {
-      return "Initializing...";
+      return "Calling...";
     } else if (voiceSession.state === VoiceSessionState.IDLE) {
-      return "Idle";
+      return "Calling...";
     } else if (voiceSession.state === VoiceSessionState.LISTENING) {
       return "Listening...";
     } else {
@@ -403,7 +401,8 @@ function Visualizer({
 
   return (
     <>
-      <div className="mx-auto relative w-[40vh] h-[40vh]">
+      {/* Output indicator */}
+      <div className="mx-auto relative w-[40vmin] h-[40vmin]">
         <canvas
           className="absolute top-0 left-0 w-full h-full z-25"
           ref={outputCanvasRef}
@@ -420,7 +419,9 @@ function Visualizer({
           />
         </div>
       </div>
-      <div className="bg-white relative w-full h-12 rounded-full items-center">
+
+      {/* Speaking indicator */}
+      <div className="bg-white relative mx-auto w-11/12 h-12 rounded-full items-center">
         <canvas
           className="absolute top-0 left-0 w-full h-full z-25 rounded-full"
           ref={inputCanvasRef}
@@ -448,7 +449,7 @@ export default function ActiveCall({
   stopRingtone: () => void;
 }) {
   return (
-    <div className="bg-slate-100 rounded-3xl border-black border-4 flex flex-col w-full mt-4 gap-4">
+    <div className="bg-slate-100 rounded-3xl border-black border-2 flex flex-col w-11/12 mx-auto md:mt-4 gap-4">
       <div className="mt-4 mx-auto text-3xl text-[#881425]">
         {character.name}
       </div>
