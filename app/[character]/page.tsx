@@ -44,8 +44,8 @@ export default async function Page({
   }
 
   return (
-    <div className="mx-auto w-3/5 mt-8">
-      <div className="text-4xl">Live from {character.location}!</div>
+    <div className="mx-auto flex flex-col w-full mt-4">
+      <div className="text-center mx-auto text-lg sm:text-2xl">Live from {character.location}!</div>
       <CallCharacter character={character} />
     </div>
   );

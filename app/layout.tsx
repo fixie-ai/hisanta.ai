@@ -21,7 +21,6 @@ export default function RootLayout({
       <body>
         <Header />
         <main>{children}</main>
-        {/* max-w-fit mx-auto w-[390px] min-h-full md:w-9/12 lg:w-10/12 xl:w-9/12 */}
         <Footer />
         <Analytics />
       </body>
