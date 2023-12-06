@@ -16,7 +16,6 @@ import {
   VoiceSessionInit,
   VoiceSessionState,
 } from "fixie/src/voice";
-import { set } from "lodash";
 
 interface LatencyThreshold {
   good: number;
@@ -124,14 +123,12 @@ function makeVoiceSession({
 function Conversation({
   character,
   onCallEnd,
+  stopRingtone,
 }: {
   character: CharacterType;
   onCallEnd: () => void;
+  stopRingtone: () => void;
 }) {
-  // console.log(
-  //   `[Conversation] called with character ${JSON.stringify(character)}`
-  // );
-
   const searchParams = useSearchParams();
   const asrProvider = searchParams.get("asr") || DEFAULT_ASR_PROVIDER;
   const ttsProvider = searchParams.get("tts") || DEFAULT_TTS_PROVIDER;
@@ -155,13 +152,13 @@ function Conversation({
   );
   const [voiceSession, setVoiceSession] = useState<VoiceSession | null>(null);
   const [starting, setStarting] = useState(false);
-
   const cleanupPromiseRef = useRef<Promise<void>>();
 
   useEffect(() => {
     let createdSession = false;
     if (!starting) {
       setStarting(true);
+
       const session = makeVoiceSession({
         asrProvider,
         ttsProvider,
@@ -195,7 +192,11 @@ function Conversation({
               break;
           }
         },
-        onStateChange: (state) => {},
+        onStateChange: (state) => {
+          // Stop ringtone.
+          console.log("Stopping ringtone");
+          stopRingtone();
+        },
       });
 
       //setInput("");
@@ -318,7 +319,7 @@ function Visualizer({
       );
       const smoothed = vu * 0.5 + outputVu * 0.5;
       setOutputVu(smoothed);
-      const radius = (canvas.width / 8) + ((smoothed / 128) * canvas.width * 1.75);
+      const radius = canvas.width / 5 + (smoothed / 128) * canvas.width * 2;
       ctx.beginPath();
       ctx.ellipse(
         canvas.width / 2,
@@ -440,16 +441,18 @@ function Visualizer({
 export default function ActiveCall({
   character,
   onCallEnd,
+  stopRingtone,
 }: {
   character: CharacterType;
   onCallEnd: () => void;
+  stopRingtone: () => void;
 }) {
   return (
     <div className="bg-slate-100 rounded-3xl border-black border-4 flex flex-col w-full mt-4 gap-4">
       <div className="mt-4 mx-auto text-3xl text-[#881425]">
         {character.name}
       </div>
-      <Conversation character={character} onCallEnd={onCallEnd} />
+      <Conversation stopRingtone={stopRingtone} character={character} onCallEnd={onCallEnd} />
     </div>
   );
 }
