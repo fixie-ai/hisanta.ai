@@ -42,12 +42,10 @@ export default async function Page({params}: {params: {character: string}}) {
   }
 
   return (
-    <div className="w-full mt-8">
+    <div className="mx-auto w-3/5 mt-8">
       <br />
-      <div className="text-4xl">Live from {character.location}</div>
+      <div className="text-4xl">Live from {character.location}!</div>
       { /* @ts-ignore */}
-      <ActiveCall currentCharacter={character} />
-      <InCall currentCharacter={character} />
       <CallCharacter character={character} />
     </div>
   )
