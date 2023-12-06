@@ -23,10 +23,12 @@ const StartNewCall = ({
 
   const onMakeCall = () => {
     console.log("Making call");
-    if (!ringtonePlaying) {
-      setRingtonePlaying(true);
-      playRingtone();
-    }
+    onCallStart({ callId: "call ID" });
+
+    //if (!ringtonePlaying) {
+    //  setRingtonePlaying(true);
+    //  playRingtone();
+    //}
   };
 
   return (
@@ -39,8 +41,8 @@ const StartNewCall = ({
           className="drop-shadow-md"
           src={`/images/${character.image}`}
           alt={`${character.name} image`}
-          width={300}
-          height={300}
+          width={250}
+          height={250}
         />
       </div>
       <div className="mx-auto font-['Inter-SemiBold']">

@@ -154,9 +154,6 @@ function Conversation({
     searchParams.get("stats") !== null
   );
   const [voiceSession, setVoiceSession] = useState<VoiceSession | null>(null);
-  const [sessionState, setSessionState] = useState<VoiceSessionState | null>(
-    null
-  );
   const [starting, setStarting] = useState(false);
 
   const cleanupPromiseRef = useRef<Promise<void>>();
@@ -198,9 +195,7 @@ function Conversation({
               break;
           }
         },
-        onStateChange: (state) => {
-          setSessionState(state);
-        },
+        onStateChange: (state) => {},
       });
 
       //setInput("");
@@ -216,19 +211,20 @@ function Conversation({
       setVoiceSession(session);
     }
 
-    return createdSession ? () => {
-        cleanupPromiseRef.current = new Promise<void>(
-          async (resolve, reject) => {
-            console.log(`Cleanup calling session.stop`);
-            await voiceSession?.stop();
-            resolve();
-          }
-        );
-        cleanupPromiseRef.current.then(() => {
-          console.log(`Finalized session stop`);
-        });
-      } : undefined;
-
+    return createdSession
+      ? () => {
+          cleanupPromiseRef.current = new Promise<void>(
+            async (resolve, reject) => {
+              console.log(`Cleanup calling session.stop`);
+              await voiceSession?.stop();
+              resolve();
+            }
+          );
+          cleanupPromiseRef.current.then(() => {
+            console.log(`Finalized session stop`);
+          });
+        }
+      : undefined;
   }, [asrProvider, model, ttsProvider, ttsVoice, voiceSession, starting]);
 
   // // Start the voice session.
@@ -251,32 +247,18 @@ function Conversation({
 
   // Handle interrupt click.
   const onInterruptClick = () => {
-    if (sessionState != VoiceSessionState.IDLE) {
-      voiceSession?.interrupt();
-    }
-  };
-
-  const showState = () => {
-    if (sessionState == null) {
-      return "Initializing...";
-    } else if (sessionState == VoiceSessionState.IDLE) {
-      return "Idle";
-    } else if (sessionState == VoiceSessionState.LISTENING) {
-      return "Listening...";
-    } else {
-      return "Speaking...";
+    if (voiceSession && voiceSession.state != VoiceSessionState.IDLE) {
+      voiceSession.interrupt();
     }
   };
 
   return (
     <>
-      <Visualizer character={character} />
-      <button className="mt-1" onClick={onInterruptClick}>
-        <div className="bg-white rounded-3xl align-middle justify-center items-center p-2 flex flex-row m-1">
-          <MicrophoneIcon className="w-6 h-6" />
-          <div className="text-lg mt-1">{showState()}</div>
-        </div>
-      </button>
+      <Visualizer
+        character={character}
+        voiceSession={voiceSession || undefined}
+      />
+
       <button onClick={handleStop} className="mt-1">
         <div className="bg-white rounded-3xl align-middle text-[#881425] justify-center p-2 flex flex-row m-1 border-[#881425] border-2">
           <PhoneIcon className="w-6 h-6" />
@@ -289,25 +271,157 @@ function Conversation({
 
 function Visualizer({
   character,
-  state,
-  inputAnalyzer,
-  outputAnalyzer,
+  voiceSession,
 }: {
   character: CharacterType;
-  state?: VoiceSessionState;
-  inputAnalyzer?: AnalyserNode;
-  outputAnalyzer?: AnalyserNode;
+  voiceSession?: VoiceSession;
 }) {
+  const inputCanvasRef = useRef<HTMLCanvasElement>(null);
+  const outputCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  if (voiceSession && voiceSession.inputAnalyzer) {
+    voiceSession.inputAnalyzer.fftSize = 64;
+    voiceSession.inputAnalyzer.maxDecibels = 0;
+    voiceSession.inputAnalyzer.minDecibels = -70;
+  }
+
+  if (voiceSession && voiceSession.outputAnalyzer) {
+    // We use a larger FFT size for the output analyzer because it's typically fullband,
+    // versus the wideband input analyzer, resulting in a similar bin size for each.
+    // Then, when we grab the lowest 16 bins from each, we get a similar spectrum.
+    voiceSession.outputAnalyzer.fftSize = 256;
+    voiceSession.outputAnalyzer.maxDecibels = 0;
+    voiceSession.outputAnalyzer.minDecibels = -70;
+  }
+
+  const visualizeOutput = (freqData?: Uint8Array) => {
+    if (!outputCanvasRef.current) return;
+    const canvas = outputCanvasRef.current;
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (freqData) {
+      const baseRadius = canvas.width / 4;
+      const totalBins = freqData.length;
+      freqData.reverse().forEach((freqVal, i) => {
+        const index = totalBins - i;
+        const radius = baseRadius + index * 10;
+        const transparency = Math.max(0.0, Math.min(1.0, freqVal / 128));
+        ctx.lineWidth = 20;
+        ctx.beginPath();
+        ctx.strokeStyle = `rgb(13,87,83,${transparency})`;
+        ctx.ellipse(
+          canvas.width / 2,
+          canvas.height / 2,
+          radius,
+          radius,
+          0,
+          0,
+          2 * Math.PI
+        );
+        ctx.stroke();
+      });
+    }
+  };
+
+  const visualizeInput = (freqData?: Uint8Array) => {
+    if (!inputCanvasRef.current) return;
+    const canvas = inputCanvasRef.current;
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (freqData) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const vu =
+        Math.floor(freqData.reduce((a, b) => a + b, 0) / freqData.length) * 2;
+      ctx.fillStyle = "rgb(13,87,83,0.5)";
+      ctx.fillRect(0, canvas.height - vu, canvas.width, vu);
+    }
+  };
+
+  const render = () => {
+    //console.log(`[Visualizer] render: ${voiceSession?.state}`);
+    if (!voiceSession) return;
+    let freqData: Uint8Array = new Uint8Array(0);
+    switch (voiceSession.state) {
+      case VoiceSessionState.IDLE:
+        break;
+
+      case VoiceSessionState.LISTENING:
+        if (!voiceSession.inputAnalyzer) return;
+        freqData = new Uint8Array(voiceSession.inputAnalyzer.frequencyBinCount);
+        voiceSession.inputAnalyzer.getByteFrequencyData(freqData);
+        freqData = freqData.slice(0, 16);
+        visualizeInput(freqData);
+        requestAnimationFrame(render);
+        break;
+
+      // For now, "THINKING" also means "SPEAKING".
+      case VoiceSessionState.THINKING:
+      case VoiceSessionState.SPEAKING:
+        if (!voiceSession.outputAnalyzer) return;
+        freqData = new Uint8Array(
+          voiceSession.outputAnalyzer.frequencyBinCount
+        );
+        voiceSession.outputAnalyzer.getByteFrequencyData(freqData);
+        freqData = freqData.slice(0, 16);
+        visualizeOutput(freqData);
+        requestAnimationFrame(render);
+        break;
+    }
+  };
+
+  useEffect(() => {
+    render();
+  }, [
+    voiceSession,
+    voiceSession?.state,
+    voiceSession?.inputAnalyzer,
+    voiceSession?.outputAnalyzer,
+  ]);
+
+  const showState = () => {
+    if (voiceSession == null) {
+      return "Initializing...";
+    } else if (voiceSession.state === VoiceSessionState.IDLE) {
+      return "Idle";
+    } else if (voiceSession.state === VoiceSessionState.LISTENING) {
+      return "Listening...";
+    } else {
+      return "Speaking...";
+    }
+  };
+
   return (
-    <div className="mx-auto">
-      <Image
-        className="drop-shadow-md"
-        src={`/images/${character.image}`}
-        alt="Santa Image"
-        width={300}
-        height={300}
-      />
-    </div>
+    <>
+      <div className="relative w-full h-[300px]">
+        <canvas
+          className="absolute top-0 left-0 w-full h-full z-25 blur-sm"
+          ref={outputCanvasRef}
+          width={300}
+          height={300}
+        />
+        <img
+          className="absolute top-0 left-0 w-full h-full z-20"
+          src={`/images/${character.image}`}
+          alt="Santa Image"
+          width={200}
+          height={200}
+        />
+      </div>
+      <div className="bg-white relative w-full h-12 rounded-full items-center">
+        <canvas
+          className="absolute top-0 left-0 w-full h-full z-25 rounded-full"
+          ref={inputCanvasRef}
+          width={300}
+          height={300}
+        />
+        <div className="absolute top-0 left-0 w-full h-full z-10">
+          <div className="flex flex-row justify-center items-center align-middle p-2">
+            <MicrophoneIcon className="w-6 h-6" />
+            <div className="text-lg mt-1">{showState()}</div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
