@@ -68,6 +68,7 @@ function makeVoiceSession({
   asrProvider,
   ttsProvider,
   ttsVoice,
+  fixieAgentId,
   model,
   onInputChange,
   onOutputChange,
@@ -77,6 +78,7 @@ function makeVoiceSession({
   asrProvider: string;
   ttsProvider: string;
   ttsVoice: string;
+  fixieAgentId: string;
   model: string;
   onInputChange: (text: string, final: boolean) => void;
   onOutputChange: (text: string, final: boolean) => void;
@@ -95,7 +97,7 @@ function makeVoiceSession({
     model: model,
   };
   const session = fixieClient.createVoiceSession({
-    agentId: FIXIE_AGENT_ID,
+    agentId: fixieAgentId,
     init: voiceInit,
   });
   console.log(
@@ -133,7 +135,10 @@ function Conversation({
   const asrProvider = searchParams.get("asr") || DEFAULT_ASR_PROVIDER;
   const ttsProvider = searchParams.get("tts") || DEFAULT_TTS_PROVIDER;
   const ttsModel = searchParams.get("ttsModel") || undefined;
-  const ttsVoice = searchParams.get("ttsVoice") || DEFAULT_TTS_VOICE;
+  const ttsVoice =
+    character.voice_id || searchParams.get("ttsVoice") || DEFAULT_TTS_VOICE;
+  const fixieAgentId =
+    character.agent_id || searchParams.get("agentId") || FIXIE_AGENT_ID;
   const model = searchParams.get("llm") || DEFAULT_LLM;
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
@@ -163,6 +168,7 @@ function Conversation({
         asrProvider,
         ttsProvider,
         ttsVoice,
+        fixieAgentId,
         model,
         onInputChange: (text, final) => {
           setInput(text);
@@ -453,7 +459,11 @@ export default function ActiveCall({
       <div className="mt-4 mx-auto text-3xl text-[#881425]">
         {character.name}
       </div>
-      <Conversation stopRingtone={stopRingtone} character={character} onCallEnd={onCallEnd} />
+      <Conversation
+        stopRingtone={stopRingtone}
+        character={character}
+        onCallEnd={onCallEnd}
+      />
     </div>
   );
 }

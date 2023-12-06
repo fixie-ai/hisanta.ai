@@ -30,19 +30,20 @@ const CharacterPicker = () => {
     <div>
       {/* Card */}
 
-      <div className="flex flex-col items-center bg-White-75 align-middle rounded-jumbo py-2.5 px-3 h-[492px] w-[340px] text-center text-black text-sm border border-black items-center overflow-x-hidden relative">
+      <div className="flex flex-col items-center bg-White-75 align-middle rounded-jumbo py-2.5 px-3 h-[492px] w-[340px] text-center text-black text-sm border border-black items-center overflow-x-hidden relative shadow-lg">
         <div className="text-Holiday-Red text-xl">{mainCharacter?.name}</div>
         {/* Selected Character */}
         <div className="flex justify-center mt-8">
           <Image
             src={`/images/${mainCharacter?.image}`}
             alt="Main"
-            width={150}
-            height={150}
+            width={175}
+            height={175}
+            className="drop-shadow-avatar"
           />
         </div>
 
-        <div className="flex space-x-5 mt-12">
+        <div className="flex space-x-5 mt-12 absolute bottom-[110px]">
           {characters.map((character, index) => (
             <div
               key={index}
@@ -55,7 +56,9 @@ const CharacterPicker = () => {
                 width={64}
                 height={64}
                 className={`object-cover w-16 h-16 ring-2 ring-inset-2 ring-white shadow-lg cursor-pointer items-center justify-center rounded-full ${
-                  character === selectedCharacter ? "ring-[#2F4665] ring-4" : ""
+                  character === selectedCharacter
+                    ? "ring-Holiday-Blue ring-4"
+                    : ""
                 } `}
               />
             </div>
