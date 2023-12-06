@@ -34,6 +34,14 @@ const config = {
       ringtone: "/sounds/deckthehalls.mp3",
     },
     {
+      characterId: "snowman",
+      name: "Snowman",
+      image: "elfie-placeholder.png",
+      bio: "Snowman is a jolly, happy soul.",
+      location: "Melting in the Sun.",
+      ringtone: "/sounds/deckthehalls.mp3",
+    },
+    {
       characterId: "rudolph",
       name: "Rudolph",
       image: "rudolph-placeholder.png",
