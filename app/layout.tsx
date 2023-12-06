@@ -1,9 +1,10 @@
-import Image from 'next/image';
 import { Metadata } from 'next';
 import config from '@/lib/config';
 import './globals.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import { Analytics } from '@vercel/analytics/react';
+
 
 export const metadata: Metadata = {
   title: config.siteName,
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="mt-28 mx-2 w-[530px] sm:w-full">{children}</main>
         {/* max-w-fit mx-auto w-[390px] min-h-full md:w-9/12 lg:w-10/12 xl:w-9/12 */}
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
