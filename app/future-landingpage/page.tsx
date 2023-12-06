@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import CallSantaButton from '../components/CallSantaButton';
+import CallSantaButton from '../components/Button-CallSanta';
 
 export default function Page() {
 
