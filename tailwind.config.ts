@@ -18,12 +18,13 @@ const config: Config = {
         'Pill-Green': '#A2D7BF',
         'AI-Green': '#D3F2F5',
         'Light-Green': '#C6D5C5',
+        'Holiday-Blue': '#2F4665',
         'Light-Red': '#D0BABC',
         'White-75': 'rgba(255, 255, 255, 0.75)',
 
       },
       borderRadius: {
-        '32': '32px',
+        'jumbo': '32px',
       },
     },
   },
