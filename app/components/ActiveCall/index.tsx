@@ -86,7 +86,6 @@ export function makeVoiceSession({
   if (voiceSession) {
     return voiceSession;
   }
-
   const fixieClient = new FixieClient({ apiKey: API_KEY });
   const voiceInit: VoiceSessionInit = {
     asrProvider: asrProvider || DEFAULT_ASR_PROVIDER,
@@ -106,16 +105,9 @@ export function makeVoiceSession({
   session.onLatencyChange = onLatencyChange;
   session.onStateChange = onStateChange;
   session.onError = () => {
+    console.log("*********************** Voice session error");
     session.stop();
   };
-
-  // TODO(mdw): I am not sure what happened to these.
-  // session.onAudioGenerate = (latency) => {
-  //   setLlmTokenLatency(latency);
-  // };
-  // session.onAudioStart = (latency) => {
-  //   setTtsLatency(latency);
-  // };
   voiceSession = session;
   return session;
 }
@@ -123,35 +115,13 @@ export function makeVoiceSession({
 function Conversation({
   character,
   onCallEnd,
-  stopRingtone,
   voiceSession,
 }: {
   character: CharacterType;
   onCallEnd: () => void;
-  stopRingtone: () => void;
   voiceSession: VoiceSession;
 }) {
   const searchParams = useSearchParams();
-  const asrProvider = searchParams.get("asr") || DEFAULT_ASR_PROVIDER;
-  const ttsProvider = searchParams.get("tts") || DEFAULT_TTS_PROVIDER;
-  const ttsModel = searchParams.get("ttsModel") || undefined;
-  const ttsVoice = searchParams.get("ttsVoice") || DEFAULT_TTS_VOICE;
-  const model = searchParams.get("llm") || DEFAULT_LLM;
-  const [input, setInput] = useState("");
-  const [output, setOutput] = useState("");
-  const [asrLatency, setAsrLatency] = useState(0);
-  const [llmResponseLatency, setLlmResponseLatency] = useState(0);
-  const [llmTokenLatency, setLlmTokenLatency] = useState(0);
-  const [ttsLatency, setTtsLatency] = useState(0);
-
-  const [showChooser, setShowChooser] = useState(
-    searchParams.get("chooser") !== null
-  );
-  const showInput = searchParams.get("input") !== null;
-  const showOutput = searchParams.get("output") !== null;
-  const [showStats, setShowStats] = useState(
-    searchParams.get("stats") !== null
-  );
 
   // Handle end call event.
   const handleStop = async () => {
@@ -355,12 +325,10 @@ function Visualizer({
 export default function ActiveCall({
   character,
   onCallEnd,
-  stopRingtone,
   voiceSession,
 }: {
   character: CharacterType;
   onCallEnd: () => void;
-  stopRingtone: () => void;
   voiceSession: VoiceSession;
 }) {
   return (
@@ -368,7 +336,7 @@ export default function ActiveCall({
       <div className="mt-4 mx-auto text-3xl text-[#881425]">
         {character.name}
       </div>
-      <Conversation voiceSession={voiceSession} stopRingtone={stopRingtone} character={character} onCallEnd={onCallEnd} />
+      <Conversation voiceSession={voiceSession} character={character} onCallEnd={onCallEnd} />
     </div>
   );
 }

@@ -10,7 +10,6 @@ import { set } from "lodash";
 
 export function CallCharacter({ character }: { character: CharacterType }) {
   const [inCall, setInCall] = useState(false);
-  const [numRings, setNumRings] = useState(0);
   const [stopRequested, setStopRequested] = useState(false);
   const [playRingtone, { stop }] = useSound(character.ringtone, {
     volume: 0.5,
@@ -120,7 +119,6 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   return (inCall && voiceSession) ? (
     <ActiveCall
       voiceSession={voiceSession}
-      stopRingtone={stopRingtone}
       onCallEnd={onCallEnd}
       character={character}
     />
