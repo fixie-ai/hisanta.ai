@@ -6,7 +6,7 @@ export default function Page() {
   return (
     <div className="mx-auto max-w-5xl">
       <div className="flex flex-col md:flex-row pt-10">
-        <div className="md:w-2/3 mb-5 md:mr-5">
+        <div className="md:w-2/3 mb-5 md:mr-10 md:mt-16">
           <Badges />
           <h1 className="text-[32px] leading-none mt-4 text-center sm:text-[40px] px-1 md:pl-0 sm:text-left sm:mx-0">
             Talk to Santa & Friends, Live from the North Pole!
