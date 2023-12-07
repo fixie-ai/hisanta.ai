@@ -64,7 +64,7 @@ const LATENCY_THRESHOLDS: { [key: string]: LatencyThreshold } = {
 
 let voiceSession: VoiceSession | null = null;
 
-function makeVoiceSession({
+export function makeVoiceSession({
   asrProvider,
   ttsProvider,
   ttsVoice,
@@ -74,14 +74,14 @@ function makeVoiceSession({
   onLatencyChange,
   onStateChange,
 }: {
-  asrProvider: string;
-  ttsProvider: string;
-  ttsVoice: string;
-  model: string;
-  onInputChange: (text: string, final: boolean) => void;
-  onOutputChange: (text: string, final: boolean) => void;
-  onLatencyChange: (kind: string, latency: number) => void;
-  onStateChange: (state: VoiceSessionState) => void;
+  asrProvider?: string;
+  ttsProvider?: string;
+  ttsVoice?: string;
+  model?: string;
+  onInputChange?: (text: string, final: boolean) => void;
+  onOutputChange?: (text: string, final: boolean) => void;
+  onLatencyChange?: (kind: string, latency: number) => void;
+  onStateChange?: (state: VoiceSessionState) => void;
 }): VoiceSession {
   if (voiceSession) {
     return voiceSession;
@@ -89,10 +89,10 @@ function makeVoiceSession({
 
   const fixieClient = new FixieClient({ apiKey: API_KEY });
   const voiceInit: VoiceSessionInit = {
-    asrProvider: asrProvider,
-    ttsProvider: ttsProvider,
-    ttsVoice: ttsVoice,
-    model: model,
+    asrProvider: asrProvider || DEFAULT_ASR_PROVIDER,
+    ttsProvider: ttsProvider || DEFAULT_TTS_PROVIDER,
+    ttsVoice: ttsVoice || DEFAULT_TTS_VOICE,
+    model: model || DEFAULT_LLM,
   };
   const session = fixieClient.createVoiceSession({
     agentId: FIXIE_AGENT_ID,
@@ -124,10 +124,12 @@ function Conversation({
   character,
   onCallEnd,
   stopRingtone,
+  voiceSession,
 }: {
   character: CharacterType;
   onCallEnd: () => void;
   stopRingtone: () => void;
+  voiceSession: VoiceSession;
 }) {
   const searchParams = useSearchParams();
   const asrProvider = searchParams.get("asr") || DEFAULT_ASR_PROVIDER;
@@ -150,105 +152,16 @@ function Conversation({
   const [showStats, setShowStats] = useState(
     searchParams.get("stats") !== null
   );
-  const [voiceSession, setVoiceSession] = useState<VoiceSession | null>(null);
-  const [starting, setStarting] = useState(false);
-  const cleanupPromiseRef = useRef<Promise<void>>();
-
-  useEffect(() => {
-    let createdSession = false;
-    if (!starting) {
-      setStarting(true);
-
-      const session = makeVoiceSession({
-        asrProvider,
-        ttsProvider,
-        ttsVoice,
-        model,
-        onInputChange: (text, final) => {
-          setInput(text);
-        },
-        onOutputChange: (text, final) => {
-          setOutput(text);
-          if (final) {
-            setInput("");
-          }
-        },
-        onLatencyChange: (kind, latency) => {
-          switch (kind) {
-            case "asr":
-              setAsrLatency(latency);
-              setLlmResponseLatency(0);
-              setLlmTokenLatency(0);
-              setTtsLatency(0);
-              break;
-            case "llm":
-              setLlmResponseLatency(latency);
-              break;
-            case "llmt":
-              setLlmTokenLatency(latency);
-              break;
-            case "tts":
-              setTtsLatency(latency);
-              break;
-          }
-        },
-        onStateChange: (state) => {
-          // Stop ringtone.
-          console.log("Stopping ringtone");
-          stopRingtone();
-        },
-      });
-
-      //setInput("");
-      //setOutput("");
-      //setAsrLatency(0);
-      //setLlmResponseLatency(0);
-      //setLlmTokenLatency(0);
-      //setTtsLatency(0);
-
-      createdSession = true;
-      console.log("[VoiceSession] doStart");
-      session.start();
-      setVoiceSession(session);
-    }
-
-    return createdSession
-      ? () => {
-          cleanupPromiseRef.current = new Promise<void>(
-            async (resolve, reject) => {
-              console.log(`Cleanup calling session.stop`);
-              await voiceSession?.stop();
-              resolve();
-            }
-          );
-          cleanupPromiseRef.current.then(() => {
-            console.log(`Finalized session stop`);
-          });
-        }
-      : undefined;
-  }, [asrProvider, model, ttsProvider, ttsVoice, voiceSession, starting]);
-
-  // // Start the voice session.
-  // const doStart = async () => {
-  //   console.log("[VoiceSession] doStart");
-  //   setInput("");
-  //   setOutput("");
-  //   setAsrLatency(0);
-  //   setLlmResponseLatency(0);
-  //   setLlmTokenLatency(0);
-  //   setTtsLatency(0);
-  //   voiceSession.start();
-  // };
 
   // Handle end call event.
   const handleStop = async () => {
-    await voiceSession?.stop();
+    await voiceSession.stop();
     onCallEnd();
   };
 
   // Handle interrupt click.
   const onInterruptClick = () => {
-    if (voiceSession && voiceSession.state != VoiceSessionState.IDLE) {
+    if (voiceSession.state != VoiceSessionState.IDLE) {
       voiceSession.interrupt();
     }
   };
@@ -257,7 +170,7 @@ function Conversation({
     <>
       <Visualizer
         character={character}
-        voiceSession={voiceSession || undefined}
+        voiceSession={voiceSession}
       />
       <button onClick={handleStop}>
         <div className="bg-white rounded-3xl align-middle text-[#881425] justify-center w-11/12 p-2 flex flex-row mx-auto mb-4 border-[#881425] border">
@@ -443,17 +356,19 @@ export default function ActiveCall({
   character,
   onCallEnd,
   stopRingtone,
+  voiceSession,
 }: {
   character: CharacterType;
   onCallEnd: () => void;
   stopRingtone: () => void;
+  voiceSession: VoiceSession;
 }) {
   return (
     <div className="bg-slate-100 rounded-3xl border-black border-2 flex flex-col w-11/12 mx-auto md:mt-4 gap-4">
       <div className="mt-4 mx-auto text-3xl text-[#881425]">
         {character.name}
       </div>
-      <Conversation stopRingtone={stopRingtone} character={character} onCallEnd={onCallEnd} />
+      <Conversation voiceSession={voiceSession} stopRingtone={stopRingtone} character={character} onCallEnd={onCallEnd} />
     </div>
   );
 }
