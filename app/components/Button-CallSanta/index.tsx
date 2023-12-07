@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const CallSantaButton = () => {
   return (
-    <div className="mt-8 hidden md:block">
+    <div className="mt-8 hidden lg:block">
       <div className="bg-Light-Green rounded-jumbo flex items-center w-[390px] h-[64px] mt-4">
         <div className="ml-2">
           <Image

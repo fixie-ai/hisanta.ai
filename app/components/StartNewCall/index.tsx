@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { CharacterType } from "@/lib/types";
+import EpicButton from "../Buttons";
 
 const StartNewCall = ({
   character,
@@ -18,7 +19,7 @@ const StartNewCall = ({
   };
 
   return (
-    <div className="bg-slate-100 rounded-3xl border-black border-2 flex flex-col w-11/12 mx-auto md:mt-4 gap-4">
+    <div className="bg-White-75 rounded-jumbo border-black border flex flex-col mx-auto md:mt-4 gap-4 w-[340px] h-[600px] justify-between">
       <div className="mt-4 mx-auto text-3xl text-[#881425]">
         {character.name}
       </div>
@@ -27,8 +28,8 @@ const StartNewCall = ({
           className="drop-shadow-md"
           src={`/images/${character.image}`}
           alt={`${character.name} image`}
-          width={250}
-          height={250}
+          width={200}
+          height={2000}
         />
       </div>
       {/* 
@@ -38,18 +39,26 @@ const StartNewCall = ({
       <div className="m-2">
         <input placeholder="Your name" className="w-full h-12 p-1 text-center px-4 mx-auto font-['Inter-Regular'] rounded-xl border-black border-2" />
       </div> */}
-
-      {startCallEnabled ? (
-        <button disabled={!startCallEnabled} onClick={onMakeCall}>
-          <div className="bg-[#0D5753] rounded-3xl align-middle text-white justify-center w-11/12 p-2 flex flex-row mx-auto mb-4 border-black border-2">
-            <div className="text-lg mt-1">Call {character.name}</div>
+      <div className="m-4 h-1/5 flex flex-col justify-end">
+        {startCallEnabled ? (
+          <div className="w-full">
+            <EpicButton
+              disabled={!startCallEnabled}
+              onClick={onMakeCall}
+              type="primary"
+              className="w-full"
+            >
+              Call {character.name}
+            </EpicButton>
           </div>
-        </button>
-      ) : (
-        <div className="bg-slate-400 rounded-3xl align-middle text-white justify-center w-11/12 p-2 flex flex-row mx-auto mb-4 border-black border-2">
-          <div className="text-lg mt-1">Dialing {character.name}...</div>
-        </div>
-      )}
+        ) : (
+          <div className="rounded-full align-middle justify-center w-full flex flex-row mx-auto border border-Holiday-Green p-4">
+            <div className="text-lg color-Holiday-Green">
+              Dialing {character.name}...
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

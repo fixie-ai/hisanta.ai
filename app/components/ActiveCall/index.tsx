@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { CharacterType } from "@/lib/types";
 import { MicrophoneIcon } from "@heroicons/react/24/outline";
 import { VoiceSession, VoiceSessionState } from "fixie/src/voice";
+import EpicButton from "../Buttons";
 
 function Conversation({
   character,
@@ -31,10 +32,10 @@ function Conversation({
   return (
     <>
       <Visualizer character={character} voiceSession={voiceSession} />
-      <button onClick={handleStop}>
-        <div className="bg-white rounded-3xl align-middle text-[#881425] justify-center w-11/12 p-2 flex flex-row mx-auto mb-4 border-[#881425] border">
-          <div className="text-lg mt-1">&nbsp;End call</div>
-        </div>
+      <button onClick={handleStop} className="m-4">
+        <EpicButton type="secondaryRed" className="w-full">
+          End call
+        </EpicButton>
       </button>
     </>
   );
@@ -123,7 +124,7 @@ function Visualizer({
     grd.addColorStop(0, "rgb(13,87,83,1)");
     grd.addColorStop(1, "rgb(13,87,83,0.3)");
     ctx.fillStyle = grd;
-
+    console.log(freqData);
     if (freqData) {
       const vu = Math.max(...freqData);
       if (vu < 1) return;
@@ -178,20 +179,20 @@ function Visualizer({
   return (
     <>
       {/* Output indicator */}
-      <div className="mx-auto relative w-[40vmin] h-[40vmin]">
+      <div className="mx-auto relative w-full h-[400px] overflow-x-hidden overflow-y-hid">
         <canvas
-          className="absolute top-0 left-0 w-full h-full z-25"
+          className="absolute top-0 left-0 w-full h-full z-25 overflow-y-hidden"
           ref={outputCanvasRef}
-          width={300}
-          height={300}
+          width={500}
+          height={500}
         />
-        <div className="absolute top-0 left-0 w-full h-full z-30">
+        <div className="absolute top-[60px] left-0 w-full h-full z-30">
           <img
-            className="mx-auto my-auto w-[250px] h-full"
+            className="mx-auto my-auto drop-shadow-md"
             src={`/images/${character.image}`}
             alt="Santa Image"
-            width={250}
-            height={250}
+            width={200}
+            height={200}
           />
         </div>
       </div>
@@ -226,7 +227,7 @@ export default function ActiveCall({
 }) {
   console.log("ActiveCall: rendering");
   return (
-    <div className="bg-slate-100 rounded-3xl border-black border-2 flex flex-col w-11/12 mx-auto md:mt-4 gap-4">
+    <div className="bg-slate-100 rounded-jumbo border border-black flex flex-col w-11/12 mx-auto md:mt-4 gap-4 w-[340px] h-[600px] justify-between">
       <div className="mt-4 mx-auto text-3xl text-[#881425]">
         {character.name}
       </div>

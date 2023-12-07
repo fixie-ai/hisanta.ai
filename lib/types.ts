@@ -26,4 +26,6 @@ export interface EpicButtonProps {
   children: React.ReactNode;
   type?: 'primary' | 'secondaryGreen' | 'secondaryRed';
   className?: string;
+  onClick?: () => void;
+  disabled?: boolean;
 }
