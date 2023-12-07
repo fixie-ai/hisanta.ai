@@ -120,6 +120,13 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   const [startRequested, setStartRequested] = useState(false);
   //const cleanupPromiseRef = useRef<Promise<void>>();
 
+  useEffect(() => {
+    setInCall(false);
+    setVoiceSession(null);
+    setStartingCall(false);
+    setStartRequested(false);
+  }, [character.characterId]);
+
   const ringtone = new Howl({
     src: [character.ringtone],
     preload: true,
