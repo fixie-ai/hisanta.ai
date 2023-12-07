@@ -109,16 +109,25 @@ function makeVoiceSession({
 export function CallCharacter({ character }: { character: CharacterType }) {
   const [inCall, setInCall] = useState(false);
   const [voiceSession, setVoiceSession] = useState<VoiceSession | null>(null);
-  const [initialized, setInitialized] = useState(false);
+  const [startingCall, setStartingCall] = useState(false);
   const [startRequested, setStartRequested] = useState(false);
   //const cleanupPromiseRef = useRef<Promise<void>>();
 
   const ringtone = new Howl({
     src: [character.ringtone],
     preload: true,
-    volume: 0.5,
+    volume: 0.7,
     onend: function () {
       onRingtoneFinished();
+    },
+  });
+
+  const hangup = new Howl({
+    src: "/sounds/hangup.mp3",
+    preload: true,
+    volume: 0.2,
+    onend: function () {
+      onHangupFinished();
     },
   });
 
@@ -126,6 +135,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     if (startRequested && voiceSession) {
       console.log(`CallCharacter: onRingtoneFinished - starting voice session`);
       voiceSession.start();
+      setStartingCall(false);
       setInCall(true);
     }
   }, [startRequested, voiceSession]);
@@ -170,23 +180,27 @@ export function CallCharacter({ character }: { character: CharacterType }) {
 
   const onCallStart = () => {
     console.log(`CallCharacter: onCallStart`);
-    if (!initialized) {
-      setInitialized(true);
-      // This can be slow since it is doing a WebRTC connection. Instead it should return
-      // immediately and we can initiate the warmup asynchronously.
-      const session = makeVoiceSession({
-        onInputChange: (text, final) => {},
-        onOutputChange: (text, final) => {},
-        onLatencyChange: (kind, latency) => {},
-        onStateChange: (state) => {
-          console.log(`CallCharacter: session state: ${state}`);
-        },
-      });
-      console.log(`CallCharacter: created voice session`);
-      setVoiceSession(session);
-      ringtone.play();
-      setInCall(true);
+    if (startingCall) {
+      console.log(`CallCharacter: onCallStart - already starting call`);
+      return;
     }
+    setStartingCall(true);
+    // This can be slow since it is doing a WebRTC connection. Instead it should return
+    // immediately and we can initiate the warmup asynchronously.
+    const session = makeVoiceSession({
+      onInputChange: (text, final) => {},
+      onOutputChange: (text, final) => {},
+      onLatencyChange: (kind, latency) => {},
+      onStateChange: (state) => {
+        console.log(`CallCharacter: session state: ${state}`);
+      },
+    });
+    console.log(`CallCharacter: created voice session`);
+    setVoiceSession(session);
+    // Wait a beat before starting the ringtone.
+    setTimeout(() => {
+      ringtone.play();
+    }, 200);
   };
 
   const onRingtoneFinished = () => {
@@ -196,7 +210,14 @@ export function CallCharacter({ character }: { character: CharacterType }) {
 
   const onCallEnd = () => {
     console.log(`CallCharacter: onCallEnd`);
+    hangup.play();
     voiceSession?.stop();
+    setVoiceSession(null);
+    setStartRequested(false);
+  };
+
+  const onHangupFinished = () => {
+    console.log(`CallCharacter: onHangupFinished`);
     setInCall(false);
   };
 
@@ -208,7 +229,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     />
   ) : (
     <StartNewCall
-      startCallEnabled={true}
+      startCallEnabled={!startingCall}
       onCallStart={onCallStart}
       character={character}
     />

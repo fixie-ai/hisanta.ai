@@ -3,9 +3,6 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { CharacterType } from "@/lib/types";
 import { MicrophoneIcon } from "@heroicons/react/24/outline";
 import { VoiceSession, VoiceSessionState } from "fixie/src/voice";
-import { clear } from "console";
-import { set } from "lodash";
-import { init } from "next/dist/compiled/webpack/webpack";
 
 function Conversation({
   character,
@@ -70,10 +67,10 @@ function Visualizer({
     const inputPollInterval = setInterval(() => {
       if (!voiceSession.inputAnalyzer) return;
       if (!initializedInputAnalyzer) {
-        voiceSession.inputAnalyzer.fftSize = 256;
+        voiceSession.inputAnalyzer.fftSize = 64;
         voiceSession.inputAnalyzer.maxDecibels = 0;
         voiceSession.inputAnalyzer.minDecibels = -70;
-        setInitializedOutputAnalyzer(true);
+        setInitializedInputAnalyzer(true);
       }
       let inputData = new Uint8Array(
         voiceSession.inputAnalyzer.frequencyBinCount
@@ -124,14 +121,14 @@ function Visualizer({
       canvas.width / 2
     );
     grd.addColorStop(0, "rgb(13,87,83,1)");
-    grd.addColorStop(1, "rgb(13,87,83,0)");
+    grd.addColorStop(1, "rgb(13,87,83,0.5)");
     ctx.fillStyle = grd;
 
     if (freqData) {
       const vu = Math.floor(
         freqData.reduce((a, b) => a + b, 0) / freqData.length
       );
-      const radius = canvas.width / 5 + (vu / 128) * canvas.width * 2;
+      const radius = canvas.width / 5 + (vu / 256) * (canvas.width / 2);
       ctx.beginPath();
       ctx.ellipse(
         canvas.width / 2,
