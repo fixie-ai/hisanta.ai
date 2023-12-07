@@ -7,7 +7,7 @@ const config = {
   siteUrl: 'https://hisanta.ai',
   githubUrl: 'https://github.com/fixie-ai/hisanta.ai',
   referralUrl: 'https://fixie.ai',
-  footerText: 'A Holiday Experiment by Fixie',
+  footerText: 'A Holiday Experiment by ',
   availableCharacters: [
     {
       characterId: "santa",

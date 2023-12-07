@@ -9,7 +9,7 @@ const Badges = () => {
   ];
 
   return (
-    <div className="flex space-x-3 justify-center sm:justify-normal">
+    <div className="flex space-x-3 justify-center lg:justify-normal">
       {badges.map((b, index) => (
         <div
           key={index}
