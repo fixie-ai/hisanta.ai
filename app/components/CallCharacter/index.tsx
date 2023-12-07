@@ -120,8 +120,41 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     },
   });
 
-  useEffect(() => {
-    let createdSession = false;
+  // useEffect(() => {
+  //   let createdSession = false;
+  //   if (!initialized) {
+  //     setInitialized(true);
+  //     const session = makeVoiceSession({
+  //       onInputChange: (text, final) => {},
+  //       onOutputChange: (text, final) => {},
+  //       onLatencyChange: (kind, latency) => {},
+  //       onStateChange: (state) => {
+  //         console.log(`CallCharacter: session state: ${state}`);
+  //       },
+  //     });
+  //     createdSession = true;
+  //     setVoiceSession(session);
+  //   }
+  //   return createdSession
+  //     ? () => {
+  //         cleanupPromiseRef.current = new Promise<void>(
+  //           async (resolve, reject) => {
+  //             console.log(`Cleanup calling session.stop`);
+  //             await voiceSession?.stop();
+  //             resolve();
+  //           }
+  //         );
+  //         cleanupPromiseRef.current.then(() => {
+  //           console.log(`Finalized session stop`);
+  //         });
+  //       }
+  //     : undefined;
+  // }, [voiceSession, initialized]);
+
+  const onCallStart = () => {
+    console.log(`CallCharacter: onCallStart`);
+
+    // XXX MDW EXTREME HACKING
     if (!initialized) {
       setInitialized(true);
       const session = makeVoiceSession({
@@ -132,28 +165,12 @@ export function CallCharacter({ character }: { character: CharacterType }) {
           console.log(`CallCharacter: session state: ${state}`);
         },
       });
-      createdSession = true;
       setVoiceSession(session);
+      session.start();
     }
-    return createdSession
-      ? () => {
-          cleanupPromiseRef.current = new Promise<void>(
-            async (resolve, reject) => {
-              console.log(`Cleanup calling session.stop`);
-              await voiceSession?.stop();
-              resolve();
-            }
-          );
-          cleanupPromiseRef.current.then(() => {
-            console.log(`Finalized session stop`);
-          });
-        }
-      : undefined;
-  }, [voiceSession, initialized]);
+    setInCall(true);
 
-  const onCallStart = () => {
-    console.log(`CallCharacter: onCallStart`);
-    ringtone.play();
+    //ringtone.play();
   };
 
   const onRingtoneFinished = () => {
@@ -182,7 +199,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     />
   ) : (
     <StartNewCall
-      startCallEnabled={voiceSession !== null}
+      startCallEnabled={true}
       onCallStart={onCallStart}
       character={character}
     />
