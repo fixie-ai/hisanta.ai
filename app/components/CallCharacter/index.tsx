@@ -6,82 +6,39 @@ import StartNewCall from "../StartNewCall";
 import useSound from "use-sound";
 import { makeVoiceSession } from "../ActiveCall";
 import { VoiceSession } from "fixie/src/voice";
-import { set } from "lodash";
 
 export function CallCharacter({ character }: { character: CharacterType }) {
   const [inCall, setInCall] = useState(false);
+  const [startRequested, setStartRequested] = useState(false);
   const [stopRequested, setStopRequested] = useState(false);
-  const [playRingtone, { stop }] = useSound(character.ringtone, {
-    volume: 0.5,
-    onend: () => {
-      if (stopRequested) {
-        setStopRequested(false);
-        stop();
-      }
-    },
-  });
+  // const [playRingtone, { stop }] = useSound(character.ringtone, {
+  //   volume: 0.5,
+  //   onend: () => {
+  //     if (stopRequested) {
+  //       setStopRequested(false);
+  //       stop();
+  //     }
+  //   },
+  // });
   const [voiceSession, setVoiceSession] = useState<VoiceSession | null>(null);
-  const [starting, setStarting] = useState(false);
+  const [initialized, setInitialized] = useState(false);
   const cleanupPromiseRef = useRef<Promise<void>>();
-
-  const [input, setInput] = useState("");
-  const [output, setOutput] = useState("");
-  const [asrLatency, setAsrLatency] = useState(0);
-  const [llmResponseLatency, setLlmResponseLatency] = useState(0);
-  const [llmTokenLatency, setLlmTokenLatency] = useState(0);
-  const [ttsLatency, setTtsLatency] = useState(0);
 
   useEffect(() => {
     let createdSession = false;
-    if (!starting) {
-      setStarting(true);
-
+    if (!initialized) {
+      setInitialized(true);
       const session = makeVoiceSession({
-        onInputChange: (text, final) => {
-          setInput(text);
-        },
-        onOutputChange: (text, final) => {
-          setOutput(text);
-          if (final) {
-            setInput("");
-          }
-        },
-        onLatencyChange: (kind, latency) => {
-          switch (kind) {
-            case "asr":
-              setAsrLatency(latency);
-              setLlmResponseLatency(0);
-              setLlmTokenLatency(0);
-              setTtsLatency(0);
-              break;
-            case "llm":
-              setLlmResponseLatency(latency);
-              break;
-            case "llmt":
-              setLlmTokenLatency(latency);
-              break;
-            case "tts":
-              setTtsLatency(latency);
-              break;
-          }
-        },
+        onInputChange: (text, final) => {},
+        onOutputChange: (text, final) => {},
+        onLatencyChange: (kind, latency) => {},
         onStateChange: (state) => {
           // Stop ringtone.
           console.log("Stopping ringtone");
           stopRingtone();
         },
       });
-
-      //setInput("");
-      //setOutput("");
-      //setAsrLatency(0);
-      //setLlmResponseLatency(0);
-      //setLlmTokenLatency(0);
-      //setTtsLatency(0);
-
       createdSession = true;
-      //console.log("[VoiceSession] doStart");
-      //session.start();
       setVoiceSession(session);
     }
     return createdSession
@@ -98,15 +55,19 @@ export function CallCharacter({ character }: { character: CharacterType }) {
           });
         }
       : undefined;
-  }, [voiceSession, starting]);
+  }, [voiceSession, initialized]);
 
   const stopRingtone = () => {
     setStopRequested(true);
   };
 
-  const onCallStart = (call: any) => {
+  const onCallStart = () => {
     console.log(`CallCharacter: onCallStart - voiceSession is ${JSON.stringify(voiceSession)}`);
-    voiceSession?.start();
+    if (!voiceSession) {
+      console.error(`CallCharacter: onCallStart - voiceSession not yet initialized`);
+      return;
+    }
+    voiceSession.start();
     setInCall(true);
   };
 
@@ -124,7 +85,6 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     />
   ) : (
     <StartNewCall
-      playRingtone={playRingtone}
       onCallStart={onCallStart}
       character={character}
     />

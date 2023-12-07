@@ -1,13 +1,9 @@
 "use client";
 import React, {
-  useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
-import { useSearchParams } from "next/navigation";
-import Image from "next/image";
 import { CharacterType } from "@/lib/types";
 import { MicrophoneIcon, PhoneIcon } from "@heroicons/react/24/outline";
 import { FixieClient } from "fixie";
@@ -121,8 +117,6 @@ function Conversation({
   onCallEnd: () => void;
   voiceSession: VoiceSession;
 }) {
-  const searchParams = useSearchParams();
-
   // Handle end call event.
   const handleStop = async () => {
     await voiceSession.stop();

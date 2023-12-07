@@ -6,16 +6,13 @@ import { CharacterType } from "@/lib/types";
 const StartNewCall = ({
   character,
   onCallStart,
-  playRingtone,
 }: {
   character: CharacterType;
-  onCallStart: (call: any) => void;
-  playRingtone: () => void;
+  onCallStart: () => void;
 }) => {
   const onMakeCall = () => {
     console.log("Making call");
-    playRingtone();
-    onCallStart({ callId: "call ID" });
+    onCallStart();
   };
 
   return (
