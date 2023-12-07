@@ -6,9 +6,11 @@ import { CharacterType } from "@/lib/types";
 const StartNewCall = ({
   character,
   onCallStart,
+  startCallEnabled,
 }: {
   character: CharacterType;
   onCallStart: () => void;
+  startCallEnabled: boolean;
 }) => {
   const onMakeCall = () => {
     console.log("Making call");
@@ -29,7 +31,7 @@ const StartNewCall = ({
           height={250}
         />
       </div>
-{/* 
+      {/* 
       <div className="mx-auto font-['Inter-SemiBold']">
         Tell {character.name} your name (optional)
       </div>
@@ -37,8 +39,18 @@ const StartNewCall = ({
         <input placeholder="Your name" className="w-full h-12 p-1 text-center px-4 mx-auto font-['Inter-Regular'] rounded-xl border-black border-2" />
       </div> */}
 
-      <button onClick={onMakeCall} className="mt-1">
-        <div className="bg-[#0D5753] rounded-3xl align-middle text-white justify-center w-11/12 p-2 flex flex-row mx-auto mb-4 border-black border-2">
+      <button
+        disabled={!startCallEnabled}
+        onClick={onMakeCall}
+        className="mt-1"
+      >
+        <div
+          className={
+            startCallEnabled
+              ? "bg-[#0D5753] rounded-3xl align-middle text-white justify-center w-11/12 p-2 flex flex-row mx-auto mb-4 border-black border-2"
+              : "bg-slate-500 rounded-3xl align-middle text-white justify-center w-11/12 p-2 flex flex-row mx-auto mb-4 border-black border-2"
+          }
+        >
           <div className="text-lg mt-1">Call {character.name}</div>
         </div>
       </button>
