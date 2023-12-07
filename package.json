@@ -14,16 +14,17 @@
     "@vercel/analytics": "^1.1.1",
     "autoprefixer": "^10.0.1",
     "fixie": "^6.2.0",
+    "howler": "^2.2.4",
     "livekit-client": "^1.15.2",
     "lodash": "^4.17.21",
     "next": "14.0.3",
     "postcss": "^8",
     "react": "^18",
     "react-dom": "^18",
-    "react-swipeable": "^7.0.1",
-    "use-sound": "^4.0.1"
+    "react-swipeable": "^7.0.1"
   },
   "devDependencies": {
+    "@types/howler": "^2.2.11",
     "@types/lodash": "^4.14.195",
     "@types/node": "^20",
     "@types/react": "^18",

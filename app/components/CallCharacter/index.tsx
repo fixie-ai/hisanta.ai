@@ -3,27 +3,26 @@ import { useEffect, useRef, useState } from "react";
 import { CharacterType } from "@/lib/types";
 import ActiveCall from "../ActiveCall";
 import StartNewCall from "../StartNewCall";
-import useSound from "use-sound";
 import { makeVoiceSession } from "../ActiveCall";
 import { VoiceSession } from "fixie/src/voice";
+import {Howl, Howler} from 'howler';
+
 
 export function CallCharacter({ character }: { character: CharacterType }) {
   const [inCall, setInCall] = useState(false);
-  const [startRequested, setStartRequested] = useState(false);
-  const [stopRequested, setStopRequested] = useState(false);
-  // const [playRingtone, { stop }] = useSound(character.ringtone, {
-  //   volume: 0.5,
-  //   onend: () => {
-  //     if (stopRequested) {
-  //       setStopRequested(false);
-  //       stop();
-  //     }
-  //   },
-  // });
   const [voiceSession, setVoiceSession] = useState<VoiceSession | null>(null);
   const [initialized, setInitialized] = useState(false);
   const cleanupPromiseRef = useRef<Promise<void>>();
 
+  const ringtone = new Howl({
+    src: [character.ringtone],
+    preload: true,
+    volume: 0.5,
+    onend: function() {
+      onRingtoneFinished();
+    }
+  });
+  
   useEffect(() => {
     let createdSession = false;
     if (!initialized) {
@@ -32,11 +31,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
         onInputChange: (text, final) => {},
         onOutputChange: (text, final) => {},
         onLatencyChange: (kind, latency) => {},
-        onStateChange: (state) => {
-          // Stop ringtone.
-          console.log("Stopping ringtone");
-          stopRingtone();
-        },
+        onStateChange: (state) => {}
       });
       createdSession = true;
       setVoiceSession(session);
@@ -57,14 +52,15 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       : undefined;
   }, [voiceSession, initialized]);
 
-  const stopRingtone = () => {
-    setStopRequested(true);
-  };
-
   const onCallStart = () => {
     console.log(`CallCharacter: onCallStart - voiceSession is ${JSON.stringify(voiceSession)}`);
+    ringtone.play();
+  };
+
+  const onRingtoneFinished = () => {
+    console.log(`CallCharacter: onRingtoneFinished - voiceSession is ${JSON.stringify(voiceSession)}`);
     if (!voiceSession) {
-      console.error(`CallCharacter: onCallStart - voiceSession not yet initialized`);
+      console.error(`CallCharacter: onRingtoneFinished - voiceSession not yet initialized`);
       return;
     }
     voiceSession.start();
