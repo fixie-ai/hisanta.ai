@@ -62,84 +62,55 @@ function Visualizer({
   const [inputFreqData, setInputFreqData] = useState<number[]>([]);
   const [outputFreqData, setOutputFreqData] = useState<number[]>([]);
 
-  // if (voiceSession.inputAnalyzer) {
-  //   voiceSession.inputAnalyzer.fftSize = 64;
-  //   voiceSession.inputAnalyzer.maxDecibels = 0;
-  //   voiceSession.inputAnalyzer.minDecibels = -70;
-  // }
+  // This polling is a little silly, but we don't know when the VoiceSession's
+  // input or output analyzers will change (it really should emit signals for us).
 
-  // if (voiceSession.outputAnalyzer) {
-  //   voiceSession.outputAnalyzer.fftSize = 64;
-  //   voiceSession.outputAnalyzer.maxDecibels = 0;
-  //   voiceSession.outputAnalyzer.minDecibels = -70;
-  // }
-
-  // XXX XXX XXX MDW STOPPING HERE.
-  // I think this is not going to work, because there's no way for the React component
-  // to know whether the input or output analyzers have changed on the underlying voiceSession
-  // (which changes internally without any signal that we can detect).
-
-  // useEffect(() => {
-  //   console.log(`Visualizer: Setting up input analyzer polling`);
-
-  //   const pollInput = () => {
-  //     requestAnimationFrame(pollInput);
-  //     if (!voiceSessionRef.current.inputAnalyzer) return;
-  //     let inputData = new Uint8Array(
-  //       voiceSessionRef.current.inputAnalyzer.frequencyBinCount
-  //     );
-  //     console.log(`Visualizer: inputData length: ${inputData.length}`);
-  //     voiceSessionRef.current.inputAnalyzer.getByteFrequencyData(inputData);
-  //     inputData = inputData.slice(0, 16);
-  //     console.log(`Visualizer: GOT inputData: ${JSON.stringify([...inputData])}`);
-  //     setInputFreqData([...inputData]);
-  //   };
-  //   pollInput();
-  //   // const inputPollInterval = setInterval(() => {
-  //   //   // We need to poll continually here, since the VoiceSession doesn't tell us when its
-  //   //   // inputAnalyzer has been set, and because it is accessed via a getter, React can't
-  //   //   // tell, either.
-  //   //   if (!voiceSessionRef.current.inputAnalyzer) return;
-  //   //   if (!initializedInputAnalyzer) {
-  //   //     voiceSessionRef.current.inputAnalyzer.fftSize = 64;
-  //   //     voiceSessionRef.current.inputAnalyzer.maxDecibels = 0;
-  //   //     voiceSessionRef.current.inputAnalyzer.minDecibels = -70;
-  //   //     setInitializedInputAnalyzer(true);
-  //   //   }
-  //   //   let inputData = new Uint8Array(
-  //   //     voiceSessionRef.current.inputAnalyzer.frequencyBinCount
-  //   //   );
-  //   //   console.log(`Visualizer: inputData length: ${inputData.length}`);
-  //   //   voiceSessionRef.current.inputAnalyzer.getByteFrequencyData(inputData);
-  //   //   inputData = inputData.slice(0, 16);
-  //   //   console.log(`Visualizer: GOT inputData: ${JSON.stringify([...inputData])}`);
-  //   //   setInputFreqData([...inputData]);
-  //   // }, 100);
-  //   // return () => {
-  //   //   clearInterval(inputPollInterval);
-  //   // };
-  // }, [voiceSession, initializedInputAnalyzer]);
+  useEffect(() => {
+    console.log(`Visualizer: Setting up input analyzer polling`);
+    const inputPollInterval = setInterval(() => {
+      if (!voiceSession.inputAnalyzer) return;
+      if (!initializedInputAnalyzer) {
+        voiceSession.inputAnalyzer.fftSize = 256;
+        voiceSession.inputAnalyzer.maxDecibels = 0;
+        voiceSession.inputAnalyzer.minDecibels = -70;
+        setInitializedOutputAnalyzer(true);
+      }
+      let inputData = new Uint8Array(
+        voiceSession.inputAnalyzer.frequencyBinCount
+      );
+      voiceSession.inputAnalyzer.getByteFrequencyData(inputData);
+      inputData = inputData.slice(0, 16);
+      setInputFreqData([...inputData]);
+    }, 20);
+    return () => {
+      clearInterval(inputPollInterval);
+    };
+  }, [voiceSession, initializedInputAnalyzer]);
 
   useEffect(() => {
     console.log(`Visualizer: Setting up output analyzer polling`);
-    const pollOutput = () => {
-      requestAnimationFrame(pollOutput);
-      if (!voiceSessionRef.current.outputAnalyzer) return;
+    const outputPollInterval = setInterval(() => {
+      if (!voiceSession.outputAnalyzer) return;
+      if (!initializedOutputAnalyzer) {
+        voiceSession.outputAnalyzer.fftSize = 256;
+        voiceSession.outputAnalyzer.maxDecibels = 0;
+        voiceSession.outputAnalyzer.minDecibels = -70;
+        setInitializedOutputAnalyzer(true);
+      }
       let outputData = new Uint8Array(
-        voiceSessionRef.current.outputAnalyzer.frequencyBinCount
+        voiceSession.outputAnalyzer.frequencyBinCount
       );
-      console.log(`Visualizer: outputData length: ${outputData.length}`);
-      voiceSessionRef.current.outputAnalyzer.getByteFrequencyData(outputData);
+      voiceSession.outputAnalyzer.getByteFrequencyData(outputData);
       outputData = outputData.slice(0, 16);
-      console.log(`Visualizer: GOT outputData: ${JSON.stringify([...outputData])}`);
       setOutputFreqData([...outputData]);
+    }, 20);
+    return () => {
+      clearInterval(outputPollInterval);
     };
-    pollOutput();
   }, [voiceSession, initializedOutputAnalyzer]);
 
   // Visualize output data on its canvas.
   const visualizeOutput = (freqData?: number[]) => {
-    console.log(`Visualizer: visualizeOutput with ${JSON.stringify(freqData)}`);
     if (!outputCanvasRef.current) return;
     const canvas = outputCanvasRef.current;
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -177,7 +148,6 @@ function Visualizer({
 
   // Visualize input data on its canvas.
   const visualizeInput = (freqData?: number[]) => {
-    console.log(`Visualizer: visualizeInput with ${JSON.stringify(freqData)}`);
     if (!inputCanvasRef.current) return;
     const canvas = inputCanvasRef.current;
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -219,7 +189,7 @@ function Visualizer({
           width={300}
           height={300}
         />
-        {/* <div className="absolute top-0 left-0 w-full h-full z-30">
+        <div className="absolute top-0 left-0 w-full h-full z-30">
           <img
             className="mx-auto my-auto w-[250px] h-full"
             src={`/images/${character.image}`}
@@ -227,7 +197,7 @@ function Visualizer({
             width={250}
             height={250}
           />
-        </div> */}
+        </div>
       </div>
 
       {/* Speaking indicator */}

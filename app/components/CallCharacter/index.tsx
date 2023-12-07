@@ -10,6 +10,7 @@ import {
   VoiceSessionInit,
   VoiceSessionState,
 } from "fixie/src/voice";
+import { set } from "lodash";
 
 const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
 const FIXIE_AGENT_ID = "5d37e2c5-1e96-4c48-b3f1-98ac08d40b9a";
@@ -109,7 +110,8 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   const [inCall, setInCall] = useState(false);
   const [voiceSession, setVoiceSession] = useState<VoiceSession | null>(null);
   const [initialized, setInitialized] = useState(false);
-  const cleanupPromiseRef = useRef<Promise<void>>();
+  const [startRequested, setStartRequested] = useState(false);
+  //const cleanupPromiseRef = useRef<Promise<void>>();
 
   const ringtone = new Howl({
     src: [character.ringtone],
@@ -119,6 +121,21 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       onRingtoneFinished();
     },
   });
+
+  useEffect(() => {
+    if (startRequested && voiceSession) {
+      console.log(`CallCharacter: onRingtoneFinished - starting voice session`);
+      voiceSession.start();
+      setInCall(true);
+    }
+  }, [startRequested, voiceSession]);
+
+  // XXX MDW - Because the constructor for VoiceSession creates the AudioContext,
+  // we cannot create the VoiceSession "early". It might be possible to fix this by
+  // deferring creation of the VoiceSession AudioContext (or just calling .resume on it)
+  // when we call voiceSession.start(). For now, though, I need to create the VoiceSession
+  // in the click handler for the onCallStart button. We still play the ringtone before we
+  // do a .start(), though, so we have time for the connection to complete.
 
   // useEffect(() => {
   //   let createdSession = false;
@@ -153,10 +170,10 @@ export function CallCharacter({ character }: { character: CharacterType }) {
 
   const onCallStart = () => {
     console.log(`CallCharacter: onCallStart`);
-
-    // XXX MDW EXTREME HACKING
     if (!initialized) {
       setInitialized(true);
+      // This can be slow since it is doing a WebRTC connection. Instead it should return
+      // immediately and we can initiate the warmup asynchronously.
       const session = makeVoiceSession({
         onInputChange: (text, final) => {},
         onOutputChange: (text, final) => {},
@@ -165,24 +182,16 @@ export function CallCharacter({ character }: { character: CharacterType }) {
           console.log(`CallCharacter: session state: ${state}`);
         },
       });
+      console.log(`CallCharacter: created voice session`);
       setVoiceSession(session);
-      session.start();
+      ringtone.play();
+      setInCall(true);
     }
-    setInCall(true);
-
-    //ringtone.play();
   };
 
   const onRingtoneFinished = () => {
     console.log(`CallCharacter: onRingtoneFinished`);
-    if (!voiceSession) {
-      console.error(
-        `CallCharacter: onRingtoneFinished - voiceSession not yet initialized`
-      );
-      return;
-    }
-    voiceSession.start();
-    setInCall(true);
+    setStartRequested(true);
   };
 
   const onCallEnd = () => {
