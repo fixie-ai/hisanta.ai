@@ -13,11 +13,16 @@ import {
 import { set } from "lodash";
 
 const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
-const FIXIE_AGENT_ID = "5d37e2c5-1e96-4c48-b3f1-98ac08d40b9a";
-const DEFAULT_TTS_VOICE = "Kp00queBTLslXxHCu1jq";
 const DEFAULT_ASR_PROVIDER = "deepgram";
 const DEFAULT_TTS_PROVIDER = "eleven-ws";
 const DEFAULT_LLM = "gpt-4-1106-preview";
+
+// Santa.
+const FIXIE_AGENT_ID = "5d37e2c5-1e96-4c48-b3f1-98ac08d40b9a";
+
+// Santa voice.
+const DEFAULT_TTS_VOICE = "Kp00queBTLslXxHCu1jq";
+
 
 // The following are not currently used but will be useful when we bring back debug UI.
 const ASR_PROVIDERS = ["aai", "deepgram", "gladia", "revai", "soniox"];
@@ -61,6 +66,7 @@ let voiceSession: VoiceSession | null = null;
 
 /** Create a VoiceSession with the given parameters. */
 function makeVoiceSession({
+  agentId,
   asrProvider,
   ttsProvider,
   ttsVoice,
@@ -70,6 +76,7 @@ function makeVoiceSession({
   onLatencyChange,
   onStateChange,
 }: {
+  agentId: string,
   asrProvider?: string;
   ttsProvider?: string;
   ttsVoice?: string;
@@ -90,7 +97,7 @@ function makeVoiceSession({
     model: model || DEFAULT_LLM,
   };
   const session = fixieClient.createVoiceSession({
-    agentId: FIXIE_AGENT_ID,
+    agentId,
     init: voiceInit,
   });
   console.log(`[makeVoiceSession] created voice session`);
@@ -188,6 +195,8 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     // This can be slow since it is doing a WebRTC connection. Instead it should return
     // immediately and we can initiate the warmup asynchronously.
     const session = makeVoiceSession({
+      agentId: character.agentId,
+      ttsVoice: character.voiceId,
       onInputChange: (text, final) => {},
       onOutputChange: (text, final) => {},
       onLatencyChange: (kind, latency) => {},

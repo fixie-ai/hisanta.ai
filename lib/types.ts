@@ -5,6 +5,8 @@ export type CharacterType = {
   bio: string
   location: string
   ringtone: string
+  agentId: string
+  voiceId: string
 }
 export interface ActiveCallProps {
   currentCharacter: CharacterType;
@@ -18,4 +20,10 @@ export interface NameInputProps {
 export type PickerButtonProps = {
   className?: string;
   currentCharacter: CharacterType;
+}
+
+export interface EpicButtonProps {
+  children: React.ReactNode;
+  type?: 'primary' | 'secondaryGreen' | 'secondaryRed';
+  className?: string;
 }

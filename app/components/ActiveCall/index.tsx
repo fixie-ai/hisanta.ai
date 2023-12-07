@@ -121,14 +121,13 @@ function Visualizer({
       canvas.width / 2
     );
     grd.addColorStop(0, "rgb(13,87,83,1)");
-    grd.addColorStop(1, "rgb(13,87,83,0.5)");
+    grd.addColorStop(1, "rgb(13,87,83,0.3)");
     ctx.fillStyle = grd;
 
     if (freqData) {
-      const vu = Math.floor(
-        freqData.reduce((a, b) => a + b, 0) / freqData.length
-      );
-      const radius = canvas.width / 5 + (vu / 256) * (canvas.width / 2);
+      const vu = Math.max(...freqData);
+      if (vu < 1) return;
+      const radius = Math.floor(canvas.width / 5 + (vu / 256) * canvas.width);
       ctx.beginPath();
       ctx.ellipse(
         canvas.width / 2,
