@@ -12,7 +12,7 @@
     "@heroicons/react": "^2.0.18",
     "@vercel/analytics": "^1.1.1",
     "autoprefixer": "^10.0.1",
-    "fixie": "^6.2.0",
+    "fixie": "^6.3.0",
     "howler": "^2.2.4",
     "livekit-client": "^1.15.2",
     "lodash": "^4.17.21",
@@ -40,9 +40,5 @@
     "node": "18.16.0",
     "yarn": "3.6.0"
   },
-  "packageManager": "yarn@3.6.0",
-  "resolutions": {
-    "fixie-sdk-monorepo-root": "portal:/Users/mdw/src/fixie/fixie-sdk-js",
-    "fixie": "portal:/Users/mdw/src/fixie/fixie-sdk-js/packages/fixie"
-  }
+  "packageManager": "yarn@3.6.0"
 }
