@@ -124,7 +124,6 @@ function Visualizer({
     grd.addColorStop(0, "rgb(13,87,83,1)");
     grd.addColorStop(1, "rgb(13,87,83,0.3)");
     ctx.fillStyle = grd;
-    console.log(freqData);
     if (freqData) {
       const vu = Math.max(...freqData);
       if (vu < 1) return;
