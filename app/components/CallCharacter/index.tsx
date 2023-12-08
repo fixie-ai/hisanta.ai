@@ -10,7 +10,8 @@ import {
   VoiceSessionInit,
   VoiceSessionState,
 } from "fixie/src/voice";
-import { set } from "lodash";
+import { DebugSheet } from "../DebugSheet";
+
 
 const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
 const DEFAULT_ASR_PROVIDER = "deepgram";
@@ -22,7 +23,6 @@ const FIXIE_AGENT_ID = "5d37e2c5-1e96-4c48-b3f1-98ac08d40b9a";
 
 // Santa voice.
 const DEFAULT_TTS_VOICE = "Kp00queBTLslXxHCu1jq";
-
 
 // The following are not currently used but will be useful when we bring back debug UI.
 const ASR_PROVIDERS = ["aai", "deepgram", "gladia", "revai", "soniox"];
@@ -74,7 +74,7 @@ function makeVoiceSession({
   onLatencyChange,
   onStateChange,
 }: {
-  agentId: string,
+  agentId: string;
   asrProvider?: string;
   ttsProvider?: string;
   ttsVoice?: string;
@@ -112,7 +112,6 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   const [voiceSession, setVoiceSession] = useState<VoiceSession | null>(null);
   const [startingCall, setStartingCall] = useState(false);
   const [startRequested, setStartRequested] = useState(false);
-  //const cleanupPromiseRef = useRef<Promise<void>>();
 
   useEffect(() => {
     setInCall(false);
@@ -121,14 +120,18 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     setStartRequested(false);
   }, [character.characterId]);
 
-  const ringtone = useMemo(() => new Howl({
-    src: [character.ringtone],
-    preload: true,
-    volume: 0.7,
-    onend: function () {
-      onRingtoneFinished();
-    },
-  }), [character.ringtone]);
+  const ringtone = useMemo(
+    () =>
+      new Howl({
+        src: [character.ringtone],
+        preload: true,
+        volume: 0.7,
+        onend: function () {
+          onRingtoneFinished();
+        },
+      }),
+    [character.ringtone]
+  );
 
   const hangup = new Howl({
     src: "/sounds/hangup.mp3",
@@ -141,13 +144,13 @@ export function CallCharacter({ character }: { character: CharacterType }) {
 
   useEffect(() => {
     return () => {
-        ringtone.stop();
-        if (voiceSession) {
-          console.log(`CallCharacter: cleanup - stopping voice session`);
-          voiceSession.stop();
-        }
-    }
-}, [ringtone, voiceSession]);
+      ringtone.stop();
+      if (voiceSession) {
+        console.log(`CallCharacter: cleanup - stopping voice session`);
+        voiceSession.stop();
+      }
+    };
+  }, [ringtone, voiceSession]);
 
   useEffect(() => {
     if (startRequested && voiceSession) {
@@ -205,17 +208,22 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     setInCall(false);
   };
 
-  return inCall && voiceSession ? (
-    <ActiveCall
-      voiceSession={voiceSession}
-      onCallEnd={onCallEnd}
-      character={character}
-    />
-  ) : (
-    <StartNewCall
-      startCallEnabled={!startingCall}
-      onCallStart={onCallStart}
-      character={character}
-    />
+  return (
+    <>
+      {inCall && voiceSession ? (
+        <ActiveCall
+          voiceSession={voiceSession}
+          onCallEnd={onCallEnd}
+          character={character}
+        />
+      ) : (
+        <StartNewCall
+          startCallEnabled={!startingCall}
+          onCallStart={onCallStart}
+          character={character}
+        />
+      )}
+      <DebugSheet />
+    </>
   );
 }
