@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CharacterType } from "@/lib/types";
 import ActiveCall from "../ActiveCall";
 import StartNewCall from "../StartNewCall";
@@ -121,14 +121,14 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     setStartRequested(false);
   }, [character.characterId]);
 
-  const ringtone = new Howl({
+  const ringtone = useMemo(() => new Howl({
     src: [character.ringtone],
     preload: true,
     volume: 0.7,
     onend: function () {
       onRingtoneFinished();
     },
-  });
+  }), [character.ringtone]);
 
   const hangup = new Howl({
     src: "/sounds/hangup.mp3",
@@ -140,6 +140,16 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   });
 
   useEffect(() => {
+    return () => {
+        ringtone.stop();
+        if (voiceSession) {
+          console.log(`CallCharacter: cleanup - stopping voice session`);
+          voiceSession.stop();
+        }
+    }
+}, [ringtone, voiceSession]);
+
+  useEffect(() => {
     if (startRequested && voiceSession) {
       console.log(`CallCharacter: onRingtoneFinished - starting voice session`);
       voiceSession.start();
@@ -147,44 +157,6 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       setInCall(true);
     }
   }, [startRequested, voiceSession]);
-
-  // XXX MDW - Because the constructor for VoiceSession creates the AudioContext,
-  // we cannot create the VoiceSession "early". It might be possible to fix this by
-  // deferring creation of the VoiceSession AudioContext (or just calling .resume on it)
-  // when we call voiceSession.start(). For now, though, I need to create the VoiceSession
-  // in the click handler for the onCallStart button. We still play the ringtone before we
-  // do a .start(), though, so we have time for the connection to complete.
-
-  // useEffect(() => {
-  //   let createdSession = false;
-  //   if (!initialized) {
-  //     setInitialized(true);
-  //     const session = makeVoiceSession({
-  //       onInputChange: (text, final) => {},
-  //       onOutputChange: (text, final) => {},
-  //       onLatencyChange: (kind, latency) => {},
-  //       onStateChange: (state) => {
-  //         console.log(`CallCharacter: session state: ${state}`);
-  //       },
-  //     });
-  //     createdSession = true;
-  //     setVoiceSession(session);
-  //   }
-  //   return createdSession
-  //     ? () => {
-  //         cleanupPromiseRef.current = new Promise<void>(
-  //           async (resolve, reject) => {
-  //             console.log(`Cleanup calling session.stop`);
-  //             await voiceSession?.stop();
-  //             resolve();
-  //           }
-  //         );
-  //         cleanupPromiseRef.current.then(() => {
-  //           console.log(`Finalized session stop`);
-  //         });
-  //       }
-  //     : undefined;
-  // }, [voiceSession, initialized]);
 
   const onCallStart = () => {
     console.log(`CallCharacter: onCallStart`);
