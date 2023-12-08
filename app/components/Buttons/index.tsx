@@ -2,7 +2,13 @@
 import React from "react";
 import { EpicButtonProps } from "@/lib/types";
 
-const EpicButton = ({ children, type, className }: EpicButtonProps) => {
+const EpicButton = ({
+  children,
+  type,
+  className,
+  disabled,
+  onClick,
+}: EpicButtonProps) => {
   const buttonType = type || "primary";
   const mappings = {
     primary: {
@@ -27,7 +33,11 @@ const EpicButton = ({ children, type, className }: EpicButtonProps) => {
   let shadowClass = mappings[buttonType].shadow;
 
   return (
-    <button className={`pushable ${className}`}>
+    <button
+      disabled={disabled}
+      onClick={onClick}
+      className={`pushable ${className}`}
+    >
       <span className={`shadow ${shadowClass}`}></span>
       <span className={`edge ${edgeClass}`}></span>
       <span className={`front ${frontClass}`}>{children}</span>
