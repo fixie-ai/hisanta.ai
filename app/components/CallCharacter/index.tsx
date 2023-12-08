@@ -62,8 +62,6 @@ const LATENCY_THRESHOLDS: { [key: string]: LatencyThreshold } = {
   Total: { good: 1300, fair: 2000 },
 };
 
-let voiceSession: VoiceSession | null = null;
-
 /** Create a VoiceSession with the given parameters. */
 function makeVoiceSession({
   agentId,
@@ -86,9 +84,6 @@ function makeVoiceSession({
   onLatencyChange?: (kind: string, latency: number) => void;
   onStateChange?: (state: VoiceSessionState) => void;
 }): VoiceSession {
-  if (voiceSession) {
-    return voiceSession;
-  }
   const fixieClient = new FixieClient({ apiKey: API_KEY });
   const voiceInit: VoiceSessionInit = {
     asrProvider: asrProvider || DEFAULT_ASR_PROVIDER,
@@ -109,7 +104,6 @@ function makeVoiceSession({
     console.log("*********************** Voice session error");
     session.stop();
   };
-  voiceSession = session;
   return session;
 }
 
