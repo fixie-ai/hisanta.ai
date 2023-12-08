@@ -212,6 +212,8 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       },
     });
     console.log(`CallCharacter: created voice session`);
+    session.startAudio(); // This will prompt for mic permission.
+
     setVoiceSession(session);
     // Wait a beat before starting the ringtone.
     setTimeout(() => {
