@@ -12,7 +12,6 @@ import {
 } from "fixie/src/voice";
 import { DebugSheet } from "../DebugSheet";
 
-
 const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
 const DEFAULT_ASR_PROVIDER = "deepgram";
 const DEFAULT_TTS_PROVIDER = "eleven-ws";
@@ -107,11 +106,27 @@ function makeVoiceSession({
   return session;
 }
 
+export interface VoiceSessionStats {
+  state: VoiceSessionState | null;
+  asrLatency: number;
+  llmResponseLatency: number;
+  llmTokenLatency: number;
+  ttsLatency: number;
+};
+
 export function CallCharacter({ character }: { character: CharacterType }) {
   const [inCall, setInCall] = useState(false);
   const [voiceSession, setVoiceSession] = useState<VoiceSession | null>(null);
   const [startingCall, setStartingCall] = useState(false);
   const [startRequested, setStartRequested] = useState(false);
+  const [debugSheetOpen, setDebugSheetOpen] = useState(false);
+  const [stats, setStats] = useState<VoiceSessionStats>({
+    state: null,
+    asrLatency: -1,
+    llmResponseLatency: -1,
+    llmTokenLatency: -1,
+    ttsLatency: -1,
+  });
 
   useEffect(() => {
     setInCall(false);
@@ -175,9 +190,44 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       ttsVoice: character.voiceId,
       onInputChange: (text, final) => {},
       onOutputChange: (text, final) => {},
-      onLatencyChange: (kind, latency) => {},
+      onLatencyChange: (kind, latency) => {
+        console.log(`CallCharacter: latency: ${kind} ${latency}`);
+        switch (kind) {
+          case "asr":
+            setStats(curStats => ({
+              ...curStats,
+              asrLatency: latency,
+              llmResponseLatency: 0,
+              llmTokenLatency: 0,
+              ttsLatency: 0,
+            }));
+            break;
+          case "llm":
+            setStats(curStats => ({
+              ...curStats,
+              llmResponseLatency: latency,
+            }));
+            break;
+          case "llmt":
+            setStats(curStats => ({
+              ...curStats,
+              llmTokenLatency: latency,
+            }));
+            break;
+          case "tts":
+            setStats(curStats => ({
+              ...curStats,
+              ttsLatency: latency,
+            }));
+            break;
+        }
+      },
       onStateChange: (state) => {
         console.log(`CallCharacter: session state: ${state}`);
+        setStats(curStats => ({
+          ...curStats,
+          state,
+        }));
       },
     });
     console.log(`CallCharacter: created voice session`);
@@ -208,6 +258,10 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     setInCall(false);
   };
 
+  const onDebugOpen = () => {
+    setDebugSheetOpen(true);
+  };
+
   return (
     <>
       {inCall && voiceSession ? (
@@ -215,6 +269,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
           voiceSession={voiceSession}
           onCallEnd={onCallEnd}
           character={character}
+          onDebugOpen={onDebugOpen}
         />
       ) : (
         <StartNewCall
@@ -223,7 +278,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
           character={character}
         />
       )}
-      <DebugSheet />
+      <DebugSheet open={debugSheetOpen} onOpenChange={setDebugSheetOpen} stats={stats} />
     </>
   );
 }
