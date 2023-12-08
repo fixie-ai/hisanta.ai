@@ -4,6 +4,7 @@ import { CharacterType } from "@/lib/types";
 import { MicrophoneIcon } from "@heroicons/react/24/outline";
 import { VoiceSession, VoiceSessionState } from "fixie/src/voice";
 import EpicButton from "../Buttons";
+import Image from "next/image";
 
 function Conversation({
   character,
@@ -178,15 +179,15 @@ function Visualizer({
   return (
     <>
       {/* Output indicator */}
-      <div className="mx-auto relative w-full h-[400px] overflow-x-hidden overflow-y-hid">
+      <div className="mx-auto relative w-full h-[400px] overflow-x-hidden overflow-y-hidden">
         <canvas
           className="absolute top-0 left-0 w-full h-full z-25 overflow-y-hidden"
           ref={outputCanvasRef}
-          width={500}
-          height={500}
+          width={400}
+          height={400}
         />
         <div className="absolute top-[60px] left-0 w-full h-full z-30">
-          <img
+          <Image
             className="mx-auto my-auto drop-shadow-md"
             src={`/images/${character.image}`}
             alt="Santa Image"
