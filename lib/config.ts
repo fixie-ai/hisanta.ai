@@ -37,7 +37,7 @@ const config = {
       location: "Santa's Stables",
       agentId: "7fbf92b7-7348-4025-8eaf-0c3207fe089f",
       voiceId: "e9qncEcV5lKJHWC16xAR",
-      ringtone: "/sounds/rudolph.mp3",
+      ringtone: "/sounds/grandma.mp3",
     },
     {
       characterId: "elfie",
