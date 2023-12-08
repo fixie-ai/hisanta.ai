@@ -12,7 +12,7 @@
     "@heroicons/react": "^2.0.18",
     "@vercel/analytics": "^1.1.1",
     "autoprefixer": "^10.0.1",
-    "fixie": "^6.3.0",
+    "fixie": "6.3.0-rc1",
     "howler": "^2.2.4",
     "livekit-client": "^1.15.2",
     "lodash": "^4.17.21",

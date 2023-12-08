@@ -2251,9 +2251,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fixie@portal:/Users/mdw/src/fixie/fixie-sdk-js/packages/fixie::locator=hisanta.ai%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "fixie@portal:/Users/mdw/src/fixie/fixie-sdk-js/packages/fixie::locator=hisanta.ai%40workspace%3A."
+"fixie@npm:6.3.0-rc1":
+  version: 6.3.0-rc1
+  resolution: "fixie@npm:6.3.0-rc1"
   dependencies:
     "@apollo/client": ^3.8.1
     "@types/apollo-upload-client": ^17.0.2
@@ -2284,9 +2284,10 @@ __metadata:
     react-dom:
       optional: true
   bin:
-    fixie: ./src/main.js
+    fixie: src/main.js
+  checksum: c9c3868de137bc476f9ec8b09b786c6afe1a7c3a7b52ca0414b77f87dfbf51219f421a58a1ed696960b200fa9a8e603db2e56d4d40b63fcd8fe58717a2648f5a
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "flat-cache@npm:^3.0.4":
   version: 3.2.0
@@ -2702,7 +2703,7 @@ __metadata:
     eslint: ^8
     eslint-config-next: 14.0.3
     file-loader: ^6.2.0
-    fixie: ^6.2.0
+    fixie: 6.3.0-rc1
     howler: ^2.2.4
     livekit-client: ^1.15.2
     lodash: ^4.17.21
