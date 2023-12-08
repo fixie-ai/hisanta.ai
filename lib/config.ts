@@ -15,7 +15,7 @@ const config = {
       image: "santa-hdpi.png",
       bio: "It's Santa.",
       location: "The North Pole",
-      ringtone: "/sounds/deckthehalls.mp3",
+      ringtone: "/sounds/jinglebells.mp3",
       agentId: "5d37e2c5-1e96-4c48-b3f1-98ac08d40b9a",
       voiceId: "Kp00queBTLslXxHCu1jq",
     },
@@ -37,7 +37,7 @@ const config = {
       location: "Santa's Stables",
       agentId: "7fbf92b7-7348-4025-8eaf-0c3207fe089f",
       voiceId: "e9qncEcV5lKJHWC16xAR",
-      ringtone: "/sounds/deckthehalls.mp3",
+      ringtone: "/sounds/rudolph.mp3",
     },
     {
       characterId: "elfie",
@@ -45,7 +45,7 @@ const config = {
       image: "elfie-hdpi.png",
       bio: "They are one of Santa's top helpers.",
       location: "Santa's Workshop",
-      ringtone: "/sounds/deckthehalls.mp3",
+      ringtone: "/sounds/twelvedays.mp3",
       agentId: "ab882fa5-286f-41fc-85d9-2b3f5ebbc023",
       voiceId: "3zdD5uMcIVtKzAQocDHU"
     }
