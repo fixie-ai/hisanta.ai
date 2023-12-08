@@ -10,10 +10,12 @@ function Conversation({
   character,
   onCallEnd,
   voiceSession,
+  onDebugOpen,
 }: {
   character: CharacterType;
   onCallEnd: () => void;
   voiceSession: VoiceSession;
+  onDebugOpen: () => void;
 }) {
   console.log("Conversation: rendering");
 
@@ -32,7 +34,11 @@ function Conversation({
 
   return (
     <>
-      <Visualizer character={character} voiceSession={voiceSession} />
+      <Visualizer
+        character={character}
+        voiceSession={voiceSession}
+        onDebugOpen={onDebugOpen}
+      />
       <button onClick={handleStop} className="m-4">
         <EpicButton type="secondaryRed" className="w-full">
           End call
@@ -45,13 +51,16 @@ function Conversation({
 function Visualizer({
   character,
   voiceSession,
+  onDebugOpen,
 }: {
   character: CharacterType;
   voiceSession: VoiceSession;
+  onDebugOpen: () => void;
 }) {
   const inputCanvasRef = useRef<HTMLCanvasElement>(null);
   const outputCanvasRef = useRef<HTMLCanvasElement>(null);
   const voiceSessionRef = useRef(voiceSession);
+  const [taps, setTaps] = useState(0);
 
   const [initializedInputAnalyzer, setInitializedInputAnalyzer] =
     useState(false);
@@ -176,6 +185,14 @@ function Visualizer({
     }
   };
 
+  const handleTap = () => {
+    setTaps(taps + 1);
+    if (taps >= 4) {
+      onDebugOpen();
+      setTaps(0);
+    }
+  };
+
   return (
     <>
       {/* Output indicator */}
@@ -193,6 +210,7 @@ function Visualizer({
             alt="Santa Image"
             width={200}
             height={200}
+            onClick={handleTap}
           />
         </div>
       </div>
@@ -219,23 +237,29 @@ function Visualizer({
 export default function ActiveCall({
   character,
   onCallEnd,
+  onDebugOpen,
   voiceSession,
 }: {
   character: CharacterType;
   onCallEnd: () => void;
+  onDebugOpen: () => void;
   voiceSession: VoiceSession;
 }) {
-  console.log("ActiveCall: rendering");
+  const [debugSheetOpen, setDebugSheetOpen] = useState(false);
+
   return (
-    <div className="bg-slate-100 rounded-jumbo border border-black flex flex-col w-11/12 mx-auto md:mt-4 gap-4 w-[340px] h-[600px] justify-between">
-      <div className="mt-4 mx-auto text-3xl text-[#881425]">
-        {character.name}
+    <>
+      <div className="bg-slate-100 rounded-jumbo border border-black flex flex-col w-11/12 mx-auto md:mt-4 gap-4 w-[340px] h-[600px] justify-between">
+        <div className="mt-4 mx-auto text-3xl text-[#881425]">
+          {character.name}
+        </div>
+        <Conversation
+          voiceSession={voiceSession}
+          character={character}
+          onCallEnd={onCallEnd}
+          onDebugOpen={onDebugOpen}
+        />
       </div>
-      <Conversation
-        voiceSession={voiceSession}
-        character={character}
-        onCallEnd={onCallEnd}
-      />
-    </div>
+    </>
   );
 }
