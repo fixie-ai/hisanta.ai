@@ -4,11 +4,24 @@ import Image from "next/image";
 import config from "@/lib/config";
 import { CharacterType } from "@/lib/types";
 import PickerButtons from "../ButtonGroup-Picker";
+import { useSearchParams } from "next/navigation";
 
 const CharacterPicker = () => {
-  const characters = config.availableCharacters;
+  let characters = config.availableCharacters;
   // default to Santa
-  const santa = characters.find((c) => c.characterId === "santa");
+  const searchParams = useSearchParams();
+
+  const showBad = searchParams.get("nice") == "0" || false;
+
+  if (showBad) {
+    characters = characters.filter((c) => c.bad === true);
+  } else {
+    characters = characters.filter((c) => c.bad !== true);
+  }
+
+  const santa = characters.find(
+    (c) => c.characterId === "santa" || c.characterId === "badsanta"
+  );
 
   // handle state changes on the picker
   const [mainCharacter, setMainCharacter] = useState(santa); // Handle main character

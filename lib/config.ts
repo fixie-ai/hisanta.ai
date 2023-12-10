@@ -21,7 +21,7 @@ const config = {
     },
     {
       characterId: "mrs-claus",
-    name: "Mrs. Claus",
+      name: "Mrs. Claus",
       image: "mrs-claus-hdpi.png",
       bio: "Santa's wife",
       location: "Santa's House",
@@ -48,7 +48,29 @@ const config = {
       ringtone: "/sounds/twelvedays.mp3",
       agentId: "ab882fa5-286f-41fc-85d9-2b3f5ebbc023",
       voiceId: "3zdD5uMcIVtKzAQocDHU"
-    }
+    },
+    {
+      characterId: "badsanta",
+      name: "Bad Santa",
+      image: "bad-santa.png",
+      bio: "It's Santa.",
+      location: "Mall Parking Lot",
+      ringtone: "/sounds/jinglebells.mp3",
+      agentId: "e6ef8ebe-85ba-4b6e-b1a6-1a79849325f7",
+      voiceId: "Kp00queBTLslXxHCu1jq",
+      bad: true
+    },
+    {
+      characterId: "grouch",
+      name: "The Grouch",
+      image: "the-grouch-hdpi.png",
+      bio: "It's The Grouch.",
+      location: "Mountain Hideaway",
+      ringtone: "/sounds/jinglebells.mp3",
+      agentId: "1e6b4faa-ba1d-444f-b23e-cf64ef680e32",
+      voiceId: "Kp00queBTLslXxHCu1jq",
+      bad: true
+    },
   ],
 }
 export default config;
