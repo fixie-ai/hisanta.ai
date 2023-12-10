@@ -24,7 +24,7 @@ const config = {
     name: "Mrs. Claus",
       image: "mrs-claus-hdpi.png",
       bio: "Santa's wife",
-      location: "Santa's Workshop",
+      location: "Santa's House",
       ringtone: "/sounds/deckthehalls.mp3",
       agentId: "339f7e31-4d7e-461b-8d75-6afad87224de",
       voiceId: "ePzPl7sij9imLmib0Hvd"
