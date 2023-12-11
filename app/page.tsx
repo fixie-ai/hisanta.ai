@@ -1,9 +1,15 @@
+"use client";
+
+import React from 'react';
 import CallSantaButton from "./components/Button-CallSanta";
 import CharacterPicker from "./components/CharacterPicker";
 import Badges from "./components/Badges";
+import { CheckTooBusy } from "./components/CheckTooBusy";
+
 
 export default function Home() {
   return (
+    <CheckTooBusy>
     <div className="mx-auto max-w-5xl">
       <div className="flex flex-col lg:flex-row pt-10">
         <div className="lg:w-2/3 mb-5 lg:mr-10 lg:mt-16">
@@ -22,5 +28,6 @@ export default function Home() {
         </div>
       </div>
     </div>
+    </CheckTooBusy>
   );
 }

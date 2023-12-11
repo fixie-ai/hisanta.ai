@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { CharacterType } from "@/lib/types";
 import EpicButton from "../Buttons";
+import { useRouter } from "next/navigation";
 
 const StartNewCall = ({
   character,
@@ -13,17 +14,19 @@ const StartNewCall = ({
   onCallStart: () => void;
   startCallEnabled: boolean;
 }) => {
+  const router = useRouter();
+
   const onMakeCall = () => {
     console.log("Making call");
     onCallStart();
   };
 
   return (
-    <div className="bg-White-75 rounded-jumbo border-black border flex flex-col mx-auto md:mt-4 gap-4 w-[340px] h-[600px] justify-between">
+    <div className="bg-White-75 rounded-jumbo border-black border flex flex-col mx-auto md:mt-4 gap-2 w-[340px] h-[600px] justify-start">
       <div className="mt-4 mx-auto text-3xl text-[#881425]">
         {character.name}
       </div>
-      <div className="mx-auto">
+      <div className="mx-auto mt-16">
         <Image
           className="drop-shadow-md"
           src={`/images/${character.image}`}
@@ -32,14 +35,8 @@ const StartNewCall = ({
           height={2000}
         />
       </div>
-      {/* 
-      <div className="mx-auto font-['Inter-SemiBold']">
-        Tell {character.name} your name (optional)
-      </div>
-      <div className="m-2">
-        <input placeholder="Your name" className="w-full h-12 p-1 text-center px-4 mx-auto font-['Inter-Regular'] rounded-xl border-black border-2" />
-      </div> */}
-      <div className="m-4 h-1/5 flex flex-col justify-end">
+      <div className="my-auto h-full" />
+      <div className="mx-4 flex flex-col">
         {startCallEnabled ? (
           <div className="w-full">
             <EpicButton
@@ -58,6 +55,15 @@ const StartNewCall = ({
             </div>
           </div>
         )}
+      </div>
+      <div className="m-4">
+        <EpicButton
+          onClick={() => router.push("/")}
+          type="secondaryGreen"
+          className="w-full"
+        >
+          Go back
+        </EpicButton>
       </div>
     </div>
   );

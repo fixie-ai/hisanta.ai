@@ -4,6 +4,8 @@ import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { Analytics } from "@vercel/analytics/react";
+import { LaunchDarklyProvider } from "./components/LaunchDarkly";
+import { useFlags } from "launchdarkly-react-client-sdk";
 
 export const metadata: Metadata = {
   title: config.siteName,
@@ -19,9 +21,11 @@ export default function RootLayout({
     <html lang="en" className="">
       <head />
       <body>
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <LaunchDarklyProvider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+        </LaunchDarklyProvider>
         <Analytics />
       </body>
     </html>

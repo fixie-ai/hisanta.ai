@@ -6,7 +6,7 @@ import { CharacterType } from "@/lib/types";
 import PickerButtons from "../ButtonGroup-Picker";
 import { useSearchParams } from "next/navigation";
 
-const CharacterPicker = () => {
+export default function CharacterPicker() {
   let characters = config.availableCharacters;
   // default to Santa
   const searchParams = useSearchParams();
@@ -89,5 +89,3 @@ const CharacterPicker = () => {
     </div>
   );
 };
-
-export default CharacterPicker;

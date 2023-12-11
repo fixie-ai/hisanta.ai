@@ -25,7 +25,7 @@ function Dot() {
 function Experiment() {
   return (
     <div className="flex flex-row">
-      <div className="text-slate-700 font-['Inter-SemiBold'] text-sm md:text-sm mr-2">
+      <div className="text-slate-700 font-['Inter-SemiBold'] text-xs mr-2">
         {config.footerText}
       </div>
       <Link href={config.referralUrl}>
@@ -38,16 +38,16 @@ function Experiment() {
 function FooterLinks() {
   return (
     <>
-      <div className="text-slate-700 font-['Inter-SemiBold'] md:text-sm">
-        We&apos;re hiring!
+      <div className="text-slate-700 font-['Inter-SemiBold'] text-xs">
+        <Link href="https://careers.fixie.ai/">We&apos;re hiring!</Link>
       </div>
       <Dot />
-      <div className="text-slate-700 font-['Inter-SemiBold'] md:text-sm">
-        How we built this
+      <div className="text-slate-700 font-['Inter-SemiBold'] text-xs">
+        <Link href="https://fixie.ai/">How we built this</Link>
       </div>
       <Dot />
-      <div className="text-slate-700 font-['Inter-SemiBold'] md:text-sm">
-        Learn more
+      <div className="text-slate-700 font-['Inter-SemiBold'] text-xs">
+        <Link href="https://fixie.ai/">Learn more</Link>
       </div>
     </>
   );
