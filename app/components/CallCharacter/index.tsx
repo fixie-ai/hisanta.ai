@@ -16,6 +16,7 @@ import { useFlags } from "launchdarkly-react-client-sdk";
 import { track } from "@vercel/analytics";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import { useWakeLock } from "react-screen-wake-lock";
 
 const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
 const DEFAULT_ASR_PROVIDER = "deepgram";
@@ -123,6 +124,12 @@ export interface VoiceSessionStats {
   ttsLatency: number;
 }
 
+/**
+ * This is the main component allowing the user to call a given character.
+ * It shows the <ActiveCall> or <StartNewCall> components depending on whether
+ * the call is active. It creates and manages the Fixie VoiceSession object
+ * and passes that down to the ActiveCall component.
+ */
 export function CallCharacter({ character }: { character: CharacterType }) {
   const searchParams = useSearchParams();
 
@@ -142,6 +149,11 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   const [callStartTime, setCallStartTime] = useState<number | null>(null);
   const router = useRouter();
   const model = searchParams.get("model") || llmModel;
+  const { isSupported, released, request, release } = useWakeLock({
+    onRequest: () => console.log("Screen wake lock requested"),
+    onError: () => console.error("Error with wake lock"),
+    onRelease: () => console.log("Screen wake lock released"),
+  });
 
   useEffect(() => {
     setInCall(false);
@@ -154,6 +166,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     });
   }, [character.characterId, model]);
 
+  // Ringtone sound effect. This is specific to the character.
   const ringtone = useMemo(
     () =>
       new Howl({
@@ -167,6 +180,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     [character.ringtone]
   );
 
+  // Hangup sound effect.
   const hangup = new Howl({
     src: "/sounds/hangup.mp3",
     preload: true,
@@ -176,6 +190,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     },
   });
 
+  // Cleanup handler.
   useEffect(() => {
     return () => {
       ringtone.stop();
@@ -186,6 +201,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     };
   }, [ringtone, voiceSession]);
 
+  // Start voice session if requested by user.
   useEffect(() => {
     if (startRequested && voiceSession) {
       console.log(`CallCharacter: onRingtoneFinished - starting voice session`);
@@ -200,6 +216,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     }
   }, [character.characterId, model, startRequested, voiceSession]);
 
+  // Called by <StartNewCall> when the user clicks the "Call" button.
   const onCallStart = () => {
     console.log(`CallCharacter: onCallStart`);
     if (startingCall) {
@@ -211,6 +228,10 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       model: model,
     });
     setStartingCall(true);
+    // Request wake lock if not already held.
+    if (released) {
+      request();
+    }
     // This can be slow since it is doing a WebRTC connection. Instead it should return
     // immediately and we can initiate the warmup asynchronously.
     const session = makeVoiceSession({
@@ -300,17 +321,21 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     }, 200);
   };
 
+  // Invoked when ringtone is done ringing.
   const onRingtoneFinished = () => {
     console.log(`CallCharacter: onRingtoneFinished`);
     setStartRequested(true);
   };
 
+  // Called when user hangs up the call.
   const onCallEnd = () => {
     console.log(`CallCharacter: onCallEnd`);
     hangup.play();
     voiceSession?.stop();
     setVoiceSession(null);
     setStartRequested(false);
+    // Release wake lock.
+    release();
     track("call-ended", {
       character: character.characterId,
       model: model,
@@ -323,11 +348,13 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     });
   };
 
+  // Invoked when hangup sound effect is done playing.
   const onHangupFinished = () => {
     console.log(`CallCharacter: onHangupFinished`);
     setInCall(false);
   };
 
+  // Invoked when the debug window is opened.
   const onDebugOpen = () => {
     track("debug-menu-opened", {
       character: character.characterId,
@@ -336,6 +363,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     setDebugSheetOpen(true);
   };
 
+  // Invoked when the debug submit button is clicked.
   const onDebugSubmit = (newCharacter?: string, newModel?: string) => {
     track("debug-menu-submitted", {
       character: newCharacter || "unknown",
@@ -343,7 +371,9 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     });
     setDebugSheetOpen(false);
     if (newModel) {
-      router.push(`/${newCharacter || character.characterId}?model=${newModel}`);
+      router.push(
+        `/${newCharacter || character.characterId}?model=${newModel}`
+      );
     } else {
       router.push(`/${newCharacter || character.characterId}`);
     }

@@ -3302,6 +3302,7 @@ __metadata:
     postcss: ^8
     react: ^18
     react-dom: ^18
+    react-screen-wake-lock: ^3.0.2
     react-swipeable: ^7.0.1
     tailwind-merge: ^2.1.0
     tailwindcss: ^3.3.0
@@ -5064,6 +5065,15 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 2c7fe9cbd766f5e54beb4bec2e2efb2de3583037b23fef8fa511ab426ed7f1ae992382db5acd8ab5bfb030a4b93a06a2ebca41377d6eeaf0e6791bb0a59616a4
+  languageName: node
+  linkType: hard
+
+"react-screen-wake-lock@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "react-screen-wake-lock@npm:3.0.2"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: ab1de21ebc8da8fb0b90d00348f3ad50bdbd20c5d70a950fb2cff9ea5b937bf6c1693d9d864b7b8fb2ceb67d390c5e19fe389abde6d9cde07f7cdd4b13554906
   languageName: node
   linkType: hard
 

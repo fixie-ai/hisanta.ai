@@ -27,6 +27,7 @@
     "postcss": "^8",
     "react": "^18",
     "react-dom": "^18",
+    "react-screen-wake-lock": "^3.0.2",
     "react-swipeable": "^7.0.1",
     "tailwind-merge": "^2.1.0",
     "tailwindcss-animate": "^1.0.7"
