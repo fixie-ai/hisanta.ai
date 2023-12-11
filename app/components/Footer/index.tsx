@@ -43,11 +43,11 @@ function FooterLinks() {
       </div>
       <Dot />
       <div className="text-slate-700 font-['Inter-SemiBold'] text-xs">
-        <Link href="https://fixie.ai/blog/hisanta-ai-the-future-is-voice">How we built this</Link>
+        <Link href="https://fixie.ai/blog/hisanta-ai-the-future-is-voice">Learn more</Link>
       </div>
       <Dot />
       <div className="text-slate-700 font-['Inter-SemiBold'] text-xs">
-        <Link href="https://fixie.ai/voice">Learn more</Link>
+        <Link href="https://fixie.ai/voice">Fixie Voice</Link>
       </div>
     </>
   );
