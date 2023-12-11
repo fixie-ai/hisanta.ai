@@ -9,17 +9,29 @@ const StartNewCall = ({
   character,
   onCallStart,
   startCallEnabled,
+  onDebugOpen,
 }: {
   character: CharacterType;
   onCallStart: () => void;
   startCallEnabled: boolean;
+  onDebugOpen: () => void;
 }) => {
   const router = useRouter();
+  const [taps, setTaps] = useState(0);
 
   const onMakeCall = () => {
     console.log("Making call");
     onCallStart();
   };
+
+  const handleTap = () => {
+    setTaps(taps + 1);
+    if (taps >= 4) {
+      onDebugOpen();
+      setTaps(0);
+    }
+  };
+
 
   return (
     <div className="bg-White-75 rounded-jumbo border-black border flex flex-col mx-auto md:mt-4 gap-2 w-[340px] h-[600px] justify-start">
@@ -33,6 +45,7 @@ const StartNewCall = ({
           alt={`${character.name} image`}
           width={200}
           height={2000}
+          onClick={handleTap}
         />
       </div>
       <div className="my-auto h-full" />

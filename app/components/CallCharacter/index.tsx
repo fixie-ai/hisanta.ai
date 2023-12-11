@@ -14,6 +14,8 @@ import { DebugSheet } from "../DebugSheet";
 import { CheckTooBusy } from "../CheckTooBusy";
 import { useFlags } from "launchdarkly-react-client-sdk";
 import { track } from "@vercel/analytics";
+import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
 const DEFAULT_ASR_PROVIDER = "deepgram";
@@ -122,6 +124,8 @@ export interface VoiceSessionStats {
 }
 
 export function CallCharacter({ character }: { character: CharacterType }) {
+  const searchParams = useSearchParams();
+
   const [inCall, setInCall] = useState(false);
   const [voiceSession, setVoiceSession] = useState<VoiceSession | null>(null);
   const [startingCall, setStartingCall] = useState(false);
@@ -136,6 +140,8 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   });
   const { llmModel } = useFlags();
   const [callStartTime, setCallStartTime] = useState<number | null>(null);
+  const router = useRouter();
+  const model = searchParams.get("model") || llmModel;
 
   useEffect(() => {
     setInCall(false);
@@ -144,9 +150,9 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     setStartRequested(false);
     track("character-selected", {
       character: character.characterId,
-      model: llmModel,
+      model: model,
     });
-  }, [character.characterId, llmModel]);
+  }, [character.characterId, model]);
 
   const ringtone = useMemo(
     () =>
@@ -189,10 +195,10 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       setCallStartTime(Date.now());
       track("call-started", {
         character: character.characterId,
-        model: llmModel,
+        model: model,
       });
     }
-  }, [character.characterId, llmModel, startRequested, voiceSession]);
+  }, [character.characterId, model, startRequested, voiceSession]);
 
   const onCallStart = () => {
     console.log(`CallCharacter: onCallStart`);
@@ -202,7 +208,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     }
     track("call-start-requested", {
       character: character.characterId,
-      model: llmModel,
+      model: model,
     });
     setStartingCall(true);
     // This can be slow since it is doing a WebRTC connection. Instead it should return
@@ -210,7 +216,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     const session = makeVoiceSession({
       agentId: character.agentId,
       ttsVoice: character.voiceId,
-      model: llmModel,
+      model: model,
       onInputChange: (text, final) => {},
       onOutputChange: (text, final) => {},
       onLatencyChange: (kind, latency) => {
@@ -226,7 +232,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
             }));
             track("asr-latency-measured", {
               character: character.characterId,
-              model: llmModel,
+              model: model,
               asrLatency: latency,
             });
             break;
@@ -237,7 +243,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
             }));
             track("llm-latency-measured", {
               character: character.characterId,
-              model: llmModel,
+              model: model,
               llmLatency: latency,
             });
             break;
@@ -248,7 +254,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
             }));
             track("llm-token-latency-measured", {
               character: character.characterId,
-              model: llmModel,
+              model: model,
               llmTokenLatency: latency,
             });
             break;
@@ -259,7 +265,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
             }));
             track("tts-latency-measured", {
               character: character.characterId,
-              model: llmModel,
+              model: model,
               ttsLatency: latency,
             });
             break;
@@ -273,14 +279,14 @@ export function CallCharacter({ character }: { character: CharacterType }) {
         }));
         track("voice-session-state-changed", {
           character: character.characterId,
-          model: llmModel,
+          model: model,
           state: state,
         });
       },
       onError: () => {
         track("voice-session-error", {
           character: character.characterId,
-          model: llmModel,
+          model: model,
         });
       },
     });
@@ -307,12 +313,12 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     setStartRequested(false);
     track("call-ended", {
       character: character.characterId,
-      model: llmModel,
+      model: model,
     });
     const callDuration = callStartTime ? Date.now() - callStartTime : 0;
     track("call-duration", {
       character: character.characterId,
-      model: llmModel,
+      model: model,
       duration: callDuration,
     });
   };
@@ -323,7 +329,24 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   };
 
   const onDebugOpen = () => {
+    track("debug-menu-opened", {
+      character: character.characterId,
+      model: model,
+    });
     setDebugSheetOpen(true);
+  };
+
+  const onDebugSubmit = (newCharacter?: string, newModel?: string) => {
+    track("debug-menu-submitted", {
+      character: newCharacter || "unknown",
+      model: model || "unknown",
+    });
+    setDebugSheetOpen(false);
+    if (newModel) {
+      router.push(`/${newCharacter || character.characterId}?model=${newModel}`);
+    } else {
+      router.push(`/${newCharacter || character.characterId}`);
+    }
   };
 
   return (
@@ -340,12 +363,17 @@ export function CallCharacter({ character }: { character: CharacterType }) {
           startCallEnabled={!startingCall}
           onCallStart={onCallStart}
           character={character}
+          onDebugOpen={onDebugOpen}
         />
       )}
       <DebugSheet
         open={debugSheetOpen}
         onOpenChange={setDebugSheetOpen}
+        voiceSession={voiceSession}
         stats={stats}
+        inCall={inCall}
+        llmModels={LLM_MODELS}
+        onSubmit={onDebugSubmit}
       />
     </CheckTooBusy>
   );
