@@ -17,6 +17,7 @@ import { track } from "@vercel/analytics";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { useWakeLock } from "react-screen-wake-lock";
+import { CallFeedback } from "../CallFeedback";
 
 const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
 const DEFAULT_ASR_PROVIDER = "deepgram";
@@ -133,8 +134,8 @@ export interface VoiceSessionStats {
  */
 export function CallCharacter({ character }: { character: CharacterType }) {
   const searchParams = useSearchParams();
-
   const [inCall, setInCall] = useState(false);
+  const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
   const [voiceSession, setVoiceSession] = useState<VoiceSession | null>(null);
   const [startingCall, setStartingCall] = useState(false);
   const [startRequested, setStartRequested] = useState(false);
@@ -353,6 +354,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   const onHangupFinished = () => {
     console.log(`CallCharacter: onHangupFinished`);
     setInCall(false);
+    setFeedbackDialogOpen(true);
   };
 
   // Invoked when the debug window is opened.
@@ -380,6 +382,16 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     }
   };
 
+  // Invoked when user submits call feedback.
+  const onFeedback = (good: boolean) => {
+    track("call-feedback-received", {
+      character: character.characterId,
+      model: model,
+      callGood: good,
+    });
+  };
+
+
   return (
     <CheckTooBusy>
       {inCall && voiceSession ? (
@@ -397,6 +409,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
           onDebugOpen={onDebugOpen}
         />
       )}
+      <CallFeedback character={character} open={feedbackDialogOpen} onOpenChange={setFeedbackDialogOpen} onFeedback={onFeedback} />
       <DebugSheet
         open={debugSheetOpen}
         onOpenChange={setDebugSheetOpen}
