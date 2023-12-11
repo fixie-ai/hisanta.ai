@@ -14,7 +14,6 @@ import { DebugSheet } from "../DebugSheet";
 import { CheckTooBusy } from "../CheckTooBusy";
 import { useFlags } from "launchdarkly-react-client-sdk";
 import { track } from "@vercel/analytics";
-import { set } from "lodash";
 
 const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
 const DEFAULT_ASR_PROVIDER = "deepgram";
