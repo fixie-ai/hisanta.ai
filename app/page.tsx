@@ -16,10 +16,18 @@ export default function Home() {
               <Badges />
             </div>
             <div className="block md:hidden text-[24px] leading-none md:mt-4 text-center lg:text-[40px] md:mx-20 lg:mx-0 px-1 md:pl-0 lg:text-left sm:mx-0">
-              Talk to <span className="text-Holiday-Red">Santa</span> & <span className="text-Holiday-Green">Friends</span> like never before
+              Talk to <span className="text-Holiday-Red">Santa</span> &{" "}
+              <span className="text-Holiday-Green">Friends</span> like never
+              before
             </div>
             <div className="hidden md:block text-[32px] leading-none md:mt-4 text-center lg:text-[40px] md:mx-20 lg:mx-0 px-1 md:pl-0 lg:text-left sm:mx-0">
-              Talk to Santa & Friends, Live from the North Pole!
+              Talk to <span className="text-Holiday-Red">Santa</span> &{" "}
+              <span className="text-Holiday-Green">Friends</span> like never
+              before
+            </div>
+            <div className="hidden md:block text-black text-sm text-center font-['Inter-Regular'] px-4 md:pl-0 py-1 md:mx-20 lg:mx-0 lg:text-lg lg:text-left">
+              Ready for a holiday surprise? Connect with Santa and share your
+              Christmas wishes directly with the jolliest man at the North Pole!
             </div>
             <CallSantaButton />
           </div>
