@@ -12,6 +12,7 @@ import {
 } from "fixie/src/voice";
 import { DebugSheet } from "../DebugSheet";
 import { CheckTooBusy } from "../CheckTooBusy";
+import { useFlags } from "launchdarkly-react-client-sdk";
 
 const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
 const DEFAULT_ASR_PROVIDER = "deepgram";
@@ -84,6 +85,7 @@ function makeVoiceSession({
   onLatencyChange?: (kind: string, latency: number) => void;
   onStateChange?: (state: VoiceSessionState) => void;
 }): VoiceSession {
+  console.log(`[makeVoiceSession] creating voice session with LLM ${model}`);
   const fixieClient = new FixieClient({ apiKey: API_KEY });
   const voiceInit: VoiceSessionInit = {
     asrProvider: asrProvider || DEFAULT_ASR_PROVIDER,
@@ -101,7 +103,7 @@ function makeVoiceSession({
   session.onLatencyChange = onLatencyChange;
   session.onStateChange = onStateChange;
   session.onError = () => {
-    console.log("*********************** Voice session error");
+    console.error("Voice session error");
     session.stop();
   };
   return session;
@@ -128,6 +130,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     llmTokenLatency: -1,
     ttsLatency: -1,
   });
+  const { llmModel } = useFlags();
 
   useEffect(() => {
     setInCall(false);
@@ -189,6 +192,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     const session = makeVoiceSession({
       agentId: character.agentId,
       ttsVoice: character.voiceId,
+      model: llmModel,
       onInputChange: (text, final) => {},
       onOutputChange: (text, final) => {},
       onLatencyChange: (kind, latency) => {

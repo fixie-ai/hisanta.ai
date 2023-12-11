@@ -15,7 +15,6 @@ export function TooBusyPage() {
 
 export function CheckTooBusy({ children } : {children: React.ReactNode}) {
   const { tooBusy } = useFlags();
-  console.log("CheckTooBusy: tooBusy = ", tooBusy);
   if (tooBusy === true) {
     return <TooBusyPage />;
   }
