@@ -1,7 +1,6 @@
 "use client";
 
 import React from 'react';
-import CallSantaButton from "./components/Button-CallSanta";
 import CharacterPicker from "./components/CharacterPicker";
 import Badges from "./components/Badges";
 import { CheckTooBusy } from "./components/CheckTooBusy";
@@ -21,7 +20,6 @@ export default function Home() {
             Ready for a holiday surprise? Connect with Santa and share your
             Christmas wishes directly with the Jolliest man in the North Pole!
           </div>
-          <CallSantaButton />
         </div>
         <div className="lg:w-1/3 flex justify-center">
           <CharacterPicker />
