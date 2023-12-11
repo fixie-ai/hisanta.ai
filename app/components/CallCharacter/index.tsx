@@ -214,6 +214,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       track("call-started", {
         character: character.characterId,
         model: model,
+        conversationId: voiceSession.conversationId || '',
       });
     }
   }, [character.characterId, model, startRequested, voiceSession]);
@@ -255,6 +256,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
               character: character.characterId,
               model: model,
               asrLatency: latency,
+              conversationId: voiceSession?.conversationId || '',
             });
             break;
           case "llm":
@@ -266,6 +268,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
               character: character.characterId,
               model: model,
               llmLatency: latency,
+              conversationId: voiceSession?.conversationId || '',
             });
             break;
           case "llmt":
@@ -277,6 +280,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
               character: character.characterId,
               model: model,
               llmTokenLatency: latency,
+              conversationId: voiceSession?.conversationId || '',
             });
             break;
           case "tts":
@@ -288,6 +292,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
               character: character.characterId,
               model: model,
               ttsLatency: latency,
+              conversationId: voiceSession?.conversationId || '',
             });
             break;
         }
@@ -297,17 +302,20 @@ export function CallCharacter({ character }: { character: CharacterType }) {
         setStats((curStats) => ({
           ...curStats,
           state,
+          conversationId: voiceSession?.conversationId || '',
         }));
         track("voice-session-state-changed", {
           character: character.characterId,
           model: model,
           state: state,
+          conversationId: voiceSession?.conversationId || '',
         });
       },
       onError: () => {
         track("voice-session-error", {
           character: character.characterId,
           model: model,
+          conversationId: voiceSession?.conversationId || '',
         });
       },
     });
@@ -330,7 +338,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
 
   // Called when user hangs up the call.
   const onCallEnd = () => {
-    console.log(`CallCharacter: onCallEnd`);
+    console.log(`CallCharacter: onCallEnd - conversation ID: ${voiceSession?.conversationId}`);
     hangup.play();
     voiceSession?.stop();
     setVoiceSession(null);
@@ -347,6 +355,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       character: character.characterId,
       model: model,
       duration: callDuration,
+      conversationId: voiceSession?.conversationId || '',
     });
   };
 
@@ -388,6 +397,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       character: character.characterId,
       model: model,
       callGood: good,
+      conversationId: voiceSession?.conversationId || '',
     });
   };
 
