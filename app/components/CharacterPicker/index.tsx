@@ -5,10 +5,9 @@ import config from "@/lib/config";
 import { CharacterType } from "@/lib/types";
 import PickerButtons from "../ButtonGroup-Picker";
 import { useSearchParams } from "next/navigation";
-import { useFlags } from '@/lib/ldprovider';
+import { useFlags } from "launchdarkly-react-client-sdk";
 
-
-const CharacterPicker = () => {
+export default function CharacterPicker() {
   const flags = useFlags();
   console.log(`LaunchDarkly flags: ${JSON.stringify(flags)}`);
 
@@ -94,5 +93,3 @@ const CharacterPicker = () => {
     </div>
   );
 };
-
-export default CharacterPicker;

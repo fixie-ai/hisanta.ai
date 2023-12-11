@@ -17,6 +17,7 @@
     "clsx": "^2.0.0",
     "fixie": "6.3.0-rc1",
     "howler": "^2.2.4",
+    "launchdarkly-js-client-sdk": "^3.1.4",
     "launchdarkly-react-client-sdk": "^3.0.9",
     "livekit-client": "^1.15.2",
     "lodash": "^4.17.21",

@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { Analytics } from "@vercel/analytics/react";
+import { LaunchDarklyProvider } from "./components/LaunchDarkly";
 
 export const metadata: Metadata = {
   title: config.siteName,
@@ -19,10 +20,12 @@ export default function RootLayout({
     <html lang="en" className="">
       <head />
       <body>
-        <Header />
-        <main>{children}</main>
-        <Footer />
-        <Analytics />
+        <LaunchDarklyProvider>
+          <Header />
+          <main>{children}</main>
+          <Footer />
+          <Analytics />
+        </LaunchDarklyProvider>
       </body>
     </html>
   );
