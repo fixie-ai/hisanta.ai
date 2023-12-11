@@ -24,36 +24,34 @@ function Dot() {
 
 function Experiment() {
   return (
-      <div className="flex flex-row">
-        <div className="text-slate-700 font-['Inter-SemiBold'] text-xs sm:text-sm mr-2">
-          {config.footerText}
-        </div>
-        <Link href={config.referralUrl}>
-          <Image src={FixieLogo} alt="Fixie Logo" width={60} height={20} />
-        </Link>
+    <div className="flex flex-row">
+      <div className="text-slate-700 font-['Inter-SemiBold'] text-sm md:text-sm mr-2">
+        {config.footerText}
       </div>
+      <Link href={config.referralUrl}>
+        <Image src={FixieLogo} alt="Fixie Logo" width={60} height={20} />
+      </Link>
+    </div>
   );
 }
 
 function FooterLinks() {
   return (
     <>
-      <div className="text-slate-700 font-['Inter-SemiBold'] text-xs">
+      <div className="text-slate-700 font-['Inter-SemiBold'] md:text-sm">
         We&apos;re hiring!
       </div>
       <Dot />
-      <div className="text-slate-700 font-['Inter-SemiBold'] text-xs">
+      <div className="text-slate-700 font-['Inter-SemiBold'] md:text-sm">
         How we built this
       </div>
       <Dot />
-      <div className="text-slate-700 font-['Inter-SemiBold'] text-xs">
+      <div className="text-slate-700 font-['Inter-SemiBold'] md:text-sm">
         Learn more
       </div>
     </>
   );
 }
-
-
 
 function FooterWide() {
   return (
