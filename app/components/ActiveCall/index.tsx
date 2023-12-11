@@ -6,7 +6,6 @@ import { VoiceSession, VoiceSessionState } from "fixie/src/voice";
 import EpicButton from "../Buttons";
 import Image from "next/image";
 
-
 function Conversation({
   character,
   onCallEnd,
@@ -246,7 +245,6 @@ export default function ActiveCall({
   onDebugOpen: () => void;
   voiceSession: VoiceSession;
 }) {
-
   return (
     <>
       <div className="bg-slate-100 rounded-jumbo border border-black flex flex-col w-11/12 mx-auto md:mt-4 gap-4 w-[340px] h-[600px] justify-between">
