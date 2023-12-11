@@ -32,7 +32,6 @@ const StartNewCall = ({
     }
   };
 
-
   return (
     <div className="bg-White-75 rounded-jumbo border-black border flex flex-col mx-auto md:mt-4 gap-2 w-[340px] h-[600px] justify-start">
       <div className="mt-4 mx-auto text-3xl text-[#881425]">

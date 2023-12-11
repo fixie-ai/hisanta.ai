@@ -92,6 +92,7 @@ function makeVoiceSession({
   onError?: () => void;
 }): VoiceSession {
   console.log(`[makeVoiceSession] creating voice session with LLM ${model}`);
+  console.log(`USING API KEY: ${API_KEY}`);
   const fixieClient = new FixieClient({ apiKey: API_KEY });
   const voiceInit: VoiceSessionInit = {
     asrProvider: asrProvider || DEFAULT_ASR_PROVIDER,
