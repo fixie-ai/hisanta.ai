@@ -233,8 +233,6 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     if (released) {
       request();
     }
-    // This can be slow since it is doing a WebRTC connection. Instead it should return
-    // immediately and we can initiate the warmup asynchronously.
     const session = makeVoiceSession({
       agentId: character.agentId,
       ttsVoice: character.voiceId,
@@ -313,6 +311,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       },
     });
     console.log(`CallCharacter: created voice session`);
+    session.warmup();
     session.startAudio(); // This will prompt for mic permission.
 
     setVoiceSession(session);
@@ -340,6 +339,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     track("call-ended", {
       character: character.characterId,
       model: model,
+      conversationId: voiceSession?.conversationId || '',
     });
     const callDuration = callStartTime ? Date.now() - callStartTime : 0;
     track("call-duration", {
