@@ -25,7 +25,7 @@ function Dot() {
 function Experiment() {
   return (
     <div className="flex flex-row">
-      <div className="text-slate-700 font-['Inter-SemiBold'] text-xs sm:text-sm mr-2">
+      <div className="text-slate-700 font-['Inter-SemiBold'] text-xs mr-2">
         {config.footerText}
       </div>
       <Link href={config.referralUrl}>

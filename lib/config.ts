@@ -57,7 +57,7 @@ const config = {
       location: "Mall Parking Lot",
       ringtone: "/sounds/jinglebells.mp3",
       agentId: "e6ef8ebe-85ba-4b6e-b1a6-1a79849325f7",
-      voiceId: "Kp00queBTLslXxHCu1jq",
+      voiceId: "tb9Rgoz1ryYKpuUG7mlL",
       bad: true
     },
     {
@@ -68,7 +68,7 @@ const config = {
       location: "Mountain Hideaway",
       ringtone: "/sounds/jinglebells.mp3",
       agentId: "1e6b4faa-ba1d-444f-b23e-cf64ef680e32",
-      voiceId: "Kp00queBTLslXxHCu1jq",
+      voiceId: "9hxup5dlD3lL0Wrr9zXK",
       bad: true
     },
   ],
