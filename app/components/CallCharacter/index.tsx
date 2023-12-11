@@ -11,6 +11,7 @@ import {
   VoiceSessionState,
 } from "fixie/src/voice";
 import { DebugSheet } from "../DebugSheet";
+import { CheckTooBusy } from "../CheckTooBusy";
 
 const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
 const DEFAULT_ASR_PROVIDER = "deepgram";
@@ -263,7 +264,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   };
 
   return (
-    <>
+    <CheckTooBusy>
       {inCall && voiceSession ? (
         <ActiveCall
           voiceSession={voiceSession}
@@ -279,6 +280,6 @@ export function CallCharacter({ character }: { character: CharacterType }) {
         />
       )}
       <DebugSheet open={debugSheetOpen} onOpenChange={setDebugSheetOpen} stats={stats} />
-    </>
+    </CheckTooBusy>
   );
 }

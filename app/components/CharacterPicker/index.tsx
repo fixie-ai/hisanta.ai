@@ -5,12 +5,8 @@ import config from "@/lib/config";
 import { CharacterType } from "@/lib/types";
 import PickerButtons from "../ButtonGroup-Picker";
 import { useSearchParams } from "next/navigation";
-import { useFlags } from "launchdarkly-react-client-sdk";
 
 export default function CharacterPicker() {
-  const flags = useFlags();
-  console.log(`LaunchDarkly flags: ${JSON.stringify(flags)}`);
-
   let characters = config.availableCharacters;
   // default to Santa
   const searchParams = useSearchParams();

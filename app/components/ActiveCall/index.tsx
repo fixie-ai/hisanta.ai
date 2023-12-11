@@ -207,7 +207,7 @@ function Visualizer({
           <Image
             className="mx-auto my-auto drop-shadow-md"
             src={`/images/${character.image}`}
-            alt="Santa Image"
+            alt={`${character.name} image`}
             width={200}
             height={200}
             onClick={handleTap}
