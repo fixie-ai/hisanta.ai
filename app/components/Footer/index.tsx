@@ -24,14 +24,14 @@ function Dot() {
 
 function Experiment() {
   return (
-      <div className="flex flex-row">
-        <div className="text-slate-700 font-['Inter-SemiBold'] text-xs sm:text-sm mr-2">
-          {config.footerText}
-        </div>
-        <Link href={config.referralUrl}>
-          <Image src={FixieLogo} alt="Fixie Logo" width={60} height={20} />
-        </Link>
+    <div className="flex flex-row">
+      <div className="text-slate-700 font-['Inter-SemiBold'] text-xs sm:text-sm mr-2">
+        {config.footerText}
       </div>
+      <Link href={config.referralUrl}>
+        <Image src={FixieLogo} alt="Fixie Logo" width={60} height={20} />
+      </Link>
+    </div>
   );
 }
 
@@ -39,21 +39,19 @@ function FooterLinks() {
   return (
     <>
       <div className="text-slate-700 font-['Inter-SemiBold'] text-xs">
-        We&apos;re hiring!
+        <Link href="https://careers.fixie.ai/">We&apos;re hiring!</Link>
       </div>
       <Dot />
       <div className="text-slate-700 font-['Inter-SemiBold'] text-xs">
-        How we built this
+        <Link href="https://fixie.ai/">How we built this</Link>
       </div>
       <Dot />
       <div className="text-slate-700 font-['Inter-SemiBold'] text-xs">
-        Learn more
+        <Link href="https://fixie.ai/">Learn more</Link>
       </div>
     </>
   );
 }
-
-
 
 function FooterWide() {
   return (
