@@ -13,6 +13,8 @@ import {
 import { DebugSheet } from "../DebugSheet";
 import { CheckTooBusy } from "../CheckTooBusy";
 import { useFlags } from "launchdarkly-react-client-sdk";
+import { track } from "@vercel/analytics";
+import { set } from "lodash";
 
 const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
 const DEFAULT_ASR_PROVIDER = "deepgram";
@@ -74,6 +76,7 @@ function makeVoiceSession({
   onOutputChange,
   onLatencyChange,
   onStateChange,
+  onError,
 }: {
   agentId: string;
   asrProvider?: string;
@@ -84,6 +87,7 @@ function makeVoiceSession({
   onOutputChange?: (text: string, final: boolean) => void;
   onLatencyChange?: (kind: string, latency: number) => void;
   onStateChange?: (state: VoiceSessionState) => void;
+  onError?: () => void;
 }): VoiceSession {
   console.log(`[makeVoiceSession] creating voice session with LLM ${model}`);
   const fixieClient = new FixieClient({ apiKey: API_KEY });
@@ -105,6 +109,7 @@ function makeVoiceSession({
   session.onError = () => {
     console.error("Voice session error");
     session.stop();
+    onError?.();
   };
   return session;
 }
@@ -115,7 +120,7 @@ export interface VoiceSessionStats {
   llmResponseLatency: number;
   llmTokenLatency: number;
   ttsLatency: number;
-};
+}
 
 export function CallCharacter({ character }: { character: CharacterType }) {
   const [inCall, setInCall] = useState(false);
@@ -131,13 +136,18 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     ttsLatency: -1,
   });
   const { llmModel } = useFlags();
+  const [callStartTime, setCallStartTime] = useState<number | null>(null);
 
   useEffect(() => {
     setInCall(false);
     setVoiceSession(null);
     setStartingCall(false);
     setStartRequested(false);
-  }, [character.characterId]);
+    track("character-selected", {
+      character: character.characterId,
+      model: llmModel,
+    });
+  }, [character.characterId, llmModel]);
 
   const ringtone = useMemo(
     () =>
@@ -177,8 +187,13 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       voiceSession.start();
       setStartingCall(false);
       setInCall(true);
+      setCallStartTime(Date.now());
+      track("call-started", {
+        character: character.characterId,
+        model: llmModel,
+      });
     }
-  }, [startRequested, voiceSession]);
+  }, [character.characterId, llmModel, startRequested, voiceSession]);
 
   const onCallStart = () => {
     console.log(`CallCharacter: onCallStart`);
@@ -186,6 +201,10 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       console.log(`CallCharacter: onCallStart - already starting call`);
       return;
     }
+    track("call-start-requested", {
+      character: character.characterId,
+      model: llmModel,
+    });
     setStartingCall(true);
     // This can be slow since it is doing a WebRTC connection. Instead it should return
     // immediately and we can initiate the warmup asynchronously.
@@ -199,40 +218,71 @@ export function CallCharacter({ character }: { character: CharacterType }) {
         console.log(`CallCharacter: latency: ${kind} ${latency}`);
         switch (kind) {
           case "asr":
-            setStats(curStats => ({
+            setStats((curStats) => ({
               ...curStats,
               asrLatency: latency,
               llmResponseLatency: 0,
               llmTokenLatency: 0,
               ttsLatency: 0,
             }));
+            track("asr-latency-measured", {
+              character: character.characterId,
+              model: llmModel,
+              asrLatency: latency,
+            });
             break;
           case "llm":
-            setStats(curStats => ({
+            setStats((curStats) => ({
               ...curStats,
               llmResponseLatency: latency,
             }));
+            track("llm-latency-measured", {
+              character: character.characterId,
+              model: llmModel,
+              llmLatency: latency,
+            });
             break;
           case "llmt":
-            setStats(curStats => ({
+            setStats((curStats) => ({
               ...curStats,
               llmTokenLatency: latency,
             }));
+            track("llm-token-latency-measured", {
+              character: character.characterId,
+              model: llmModel,
+              llmTokenLatency: latency,
+            });
             break;
           case "tts":
-            setStats(curStats => ({
+            setStats((curStats) => ({
               ...curStats,
               ttsLatency: latency,
             }));
+            track("tts-latency-measured", {
+              character: character.characterId,
+              model: llmModel,
+              ttsLatency: latency,
+            });
             break;
         }
       },
       onStateChange: (state) => {
         console.log(`CallCharacter: session state: ${state}`);
-        setStats(curStats => ({
+        setStats((curStats) => ({
           ...curStats,
           state,
         }));
+        track("voice-session-state-changed", {
+          character: character.characterId,
+          model: llmModel,
+          state: state,
+        });
+      },
+      onError: () => {
+        track("voice-session-error", {
+          character: character.characterId,
+          model: llmModel,
+        });
       },
     });
     console.log(`CallCharacter: created voice session`);
@@ -256,6 +306,16 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     voiceSession?.stop();
     setVoiceSession(null);
     setStartRequested(false);
+    track("call-ended", {
+      character: character.characterId,
+      model: llmModel,
+    });
+    const callDuration = callStartTime ? Date.now() - callStartTime : 0;
+    track("call-duration", {
+      character: character.characterId,
+      model: llmModel,
+      duration: callDuration,
+    });
   };
 
   const onHangupFinished = () => {
@@ -283,7 +343,11 @@ export function CallCharacter({ character }: { character: CharacterType }) {
           character={character}
         />
       )}
-      <DebugSheet open={debugSheetOpen} onOpenChange={setDebugSheetOpen} stats={stats} />
+      <DebugSheet
+        open={debugSheetOpen}
+        onOpenChange={setDebugSheetOpen}
+        stats={stats}
+      />
     </CheckTooBusy>
   );
 }

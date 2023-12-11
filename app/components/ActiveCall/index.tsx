@@ -245,7 +245,6 @@ export default function ActiveCall({
   onDebugOpen: () => void;
   voiceSession: VoiceSession;
 }) {
-  const [debugSheetOpen, setDebugSheetOpen] = useState(false);
 
   return (
     <>
