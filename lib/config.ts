@@ -71,9 +71,6 @@ const config = {
       voiceId: "9hxup5dlD3lL0Wrr9zXK",
       bad: true
     },
-
-
-    
   ],
 }
 export default config;
