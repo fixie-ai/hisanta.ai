@@ -18,7 +18,7 @@
     "autoprefixer": "^10.0.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
-    "fixie": "6.3.3-rc2",
+    "fixie": "6.3.3",
     "howler": "^2.2.4",
     "launchdarkly-js-client-sdk": "^3.1.4",
     "launchdarkly-react-client-sdk": "^3.0.9",
