@@ -85,27 +85,14 @@ function makeVoiceSession({
   ttsProvider,
   ttsVoice,
   model,
-  onInputChange,
-  onOutputChange,
-  onLatencyChange,
-  onStateChange,
-  onError,
-  onConversationIdChange,
 }: {
   agentId: string;
   asrProvider?: string;
   ttsProvider?: string;
   ttsVoice?: string;
   model?: string;
-  onInputChange?: (text: string, final: boolean) => void;
-  onOutputChange?: (text: string, final: boolean) => void;
-  onLatencyChange?: (kind: string, latency: number) => void;
-  onStateChange?: (state: VoiceSessionState) => void;
-  onError?: () => void;
-  onConversationIdChange?: (conversationId: string) => void;
 }): VoiceSession {
   console.log(`[makeVoiceSession] creating voice session with LLM ${model}`);
-  console.log(`USING API KEY: ${API_KEY}`);
   const fixieClient = new FixieClient({ apiKey: API_KEY });
   const voiceInit: VoiceSessionInit = {
     asrProvider: asrProvider || DEFAULT_ASR_PROVIDER,
@@ -118,16 +105,6 @@ function makeVoiceSession({
     init: voiceInit,
   });
   console.log(`[makeVoiceSession] created voice session`);
-  session.onInputChange = onInputChange;
-  session.onOutputChange = onOutputChange;
-  session.onLatencyChange = onLatencyChange;
-  session.onStateChange = onStateChange;
-  session.onConversationIdChange = onConversationIdChange;
-  session.onError = () => {
-    console.error("Voice session error");
-    session.stop();
-    onError?.();
-  };
   return session;
 }
 
@@ -150,7 +127,6 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   const [inCall, setInCall] = useState(false);
   const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
   const [voiceSession, setVoiceSession] = useState<VoiceSession | null>(null);
-  const [conversationId, setConversationId] = useState<string | null>(null);
   const [startingCall, setStartingCall] = useState(false);
   const [startRequested, setStartRequested] = useState(false);
   const [debugSheetOpen, setDebugSheetOpen] = useState(false);
@@ -195,16 +171,6 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     [character.ringtone]
   );
 
-  // Hangup sound effect.
-  const hangup = new Howl({
-    src: "/sounds/hangup.mp3",
-    preload: true,
-    volume: 0.2,
-    onend: function () {
-      onHangupFinished();
-    },
-  });
-
   // Cleanup handler.
   useEffect(() => {
     return () => {
@@ -219,95 +185,19 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   // Start voice session if requested by user.
   useEffect(() => {
     if (startRequested && voiceSession) {
-      console.log(`CallCharacter: onRingtoneFinished - starting voice session`);
+      console.log(
+        `CallCharacter[${voiceSession.conversationId}]: onRingtoneFinished - starting voice session`
+      );
       voiceSession.start();
       setStartingCall(false);
       setInCall(true);
       setCallStartTime(Date.now());
       track("call-started", {
         character: character.characterId,
-        conversationId: conversationId || "",
+        conversationId: voiceSession.conversationId || "",
       });
     }
-  }, [character.characterId, startRequested, voiceSession, conversationId]);
-
-  const onLatencyChange = useCallback(
-    (kind: string, latency: number) => {
-      console.log(`CallCharacter: latency: ${kind} ${latency}`);
-      switch (kind) {
-        case "asr":
-          setStats((curStats) => ({
-            ...curStats,
-            asrLatency: latency,
-            llmResponseLatency: 0,
-            llmTokenLatency: 0,
-            ttsLatency: 0,
-          }));
-          track("asr-latency-measured", {
-            conversationId: conversationId || "",
-            asrLatency: latency,
-          });
-          break;
-        case "llm":
-          setStats((curStats) => ({
-            ...curStats,
-            llmResponseLatency: latency,
-          }));
-          track("llm-latency-measured", {
-            conversationId: conversationId || "",
-            llmLatency: latency,
-          });
-          break;
-        case "llmt":
-          setStats((curStats) => ({
-            ...curStats,
-            llmTokenLatency: latency,
-          }));
-          track("llm-token-latency-measured", {
-            conversationId: conversationId || "",
-            llmTokenLatency: latency,
-          });
-          break;
-        case "tts":
-          setStats((curStats) => ({
-            ...curStats,
-            ttsLatency: latency,
-          }));
-          track("tts-latency-measured", {
-            conversationId: conversationId || "",
-            ttsLatency: latency,
-          });
-          break;
-      }
-    },
-    [conversationId]
-  );
-
-  const onStateChange = useCallback(
-    (state: VoiceSessionState) => {
-      console.log(`CallCharacter: session state: ${state}`);
-      setStats((curStats) => ({
-        ...curStats,
-        state,
-        conversationId: conversationId || "",
-      }));
-      track("voice-session-state-changed", {
-        conversationId: conversationId || "",
-        state: state,
-      });
-    },
-    [conversationId]
-  );
-
-  const onConversationIdChange = (conversationId: string) => {
-    setConversationId(conversationId);
-  };
-
-  const onError = useCallback(() => {
-    track("voice-session-error", {
-      conversationId: conversationId || "",
-    });
-  }, [conversationId]);
+  }, [character.characterId, startRequested, voiceSession]);
 
   // Called by <StartNewCall> when the user clicks the "Call" button.
   const onCallStart = useCallback(() => {
@@ -328,13 +218,83 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       agentId: character.agentId,
       ttsVoice: character.voiceId,
       model: model,
-      onInputChange: (text, final) => {},
-      onOutputChange: (text, final) => {},
-      onLatencyChange: onLatencyChange,
-      onStateChange: onStateChange,
-      onConversationIdChange: onConversationIdChange,
-      onError: onError,
     });
+
+    session.onLatencyChange = (kind: string, latency: number) => {
+      console.log(
+        `CallCharacter[${session.conversationId}]: latency: ${kind} ${latency}`
+      );
+      switch (kind) {
+        case "asr":
+          setStats((curStats) => ({
+            ...curStats,
+            asrLatency: latency,
+            llmResponseLatency: 0,
+            llmTokenLatency: 0,
+            ttsLatency: 0,
+          }));
+          track("asr-latency-measured", {
+            conversationId: session.conversationId || "",
+            asrLatency: latency,
+          });
+          break;
+        case "llm":
+          setStats((curStats) => ({
+            ...curStats,
+            llmResponseLatency: latency,
+          }));
+          track("llm-latency-measured", {
+            conversationId: session.conversationId || "",
+            llmLatency: latency,
+          });
+          break;
+        case "llmt":
+          setStats((curStats) => ({
+            ...curStats,
+            llmTokenLatency: latency,
+          }));
+          track("llm-token-latency-measured", {
+            conversationId: session.conversationId || "",
+            llmTokenLatency: latency,
+          });
+          break;
+        case "tts":
+          setStats((curStats) => ({
+            ...curStats,
+            ttsLatency: latency,
+          }));
+          track("tts-latency-measured", {
+            conversationId: session.conversationId || "",
+            ttsLatency: latency,
+          });
+          break;
+      }
+    };
+
+    session.onStateChange = (state: VoiceSessionState) => {
+      console.log(
+        `CallCharacter[${session.conversationId}]: session state: ${state}`
+      );
+      setStats((curStats) => ({
+        ...curStats,
+        state,
+        conversationId: session.conversationId || "",
+      }));
+      track("voice-session-state-changed", {
+        conversationId: session.conversationId || "",
+        state: state,
+      });
+    };
+    session.onError = () => {
+      console.log(
+        `CallCharacter[${session.conversationId}]: voiceSession error`
+      );
+      track("voice-session-error", {
+        conversationId: session.conversationId || "",
+      });
+      session.stop();
+    };
+
     console.log(`CallCharacter: created voice session`);
     session.warmup();
     session.startAudio(); // This will prompt for mic permission.
@@ -344,17 +304,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     setTimeout(() => {
       ringtone.play();
     }, 1000);
-  }, [
-    character,
-    model,
-    onError,
-    onLatencyChange,
-    onStateChange,
-    released,
-    request,
-    ringtone,
-    startingCall,
-  ]);
+  }, [character, model, released, request, ringtone, startingCall]);
 
   // Invoked when ringtone is done ringing.
   const onRingtoneFinished = () => {
@@ -362,33 +312,40 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     setStartRequested(true);
   };
 
+  // Invoked when hangup sound effect is done playing.
+  const onHangupFinished = useCallback(() => {
+    console.log(
+      `CallCharacter[${voiceSession?.conversationId}]: onHangupFinished`
+    );
+    setInCall(false);
+    setFeedbackDialogOpen(true);
+  }, [voiceSession]);
+
   // Called when user hangs up the call.
   const onCallEnd = useCallback(() => {
-    console.log(
-      `CallCharacter: onCallEnd - conversation ID: ${conversationId}`
-    );
+    console.log(`CallCharacter[${voiceSession?.conversationId}]: onCallEnd`);
+    const hangup = new Howl({
+      src: "/sounds/hangup.mp3",
+      preload: true,
+      volume: 0.2,
+      onend: function () {
+        onHangupFinished();
+      },
+    });
     hangup.play();
     voiceSession?.stop();
-    setVoiceSession(null);
     setStartRequested(false);
     // Release wake lock.
     release();
     track("call-ended", {
-      conversationId: conversationId || "",
+      conversationId: voiceSession?.conversationId || "",
     });
     const callDuration = callStartTime ? Date.now() - callStartTime : 0;
     track("call-duration", {
       duration: callDuration,
-      conversationId: conversationId || "",
+      conversationId: voiceSession?.conversationId || "",
     });
-  }, [conversationId, voiceSession, release, callStartTime, hangup]);
-
-  // Invoked when hangup sound effect is done playing.
-  const onHangupFinished = () => {
-    console.log(`CallCharacter: onHangupFinished`);
-    setInCall(false);
-    setFeedbackDialogOpen(true);
-  };
+  }, [voiceSession, release, callStartTime, onHangupFinished]);
 
   // Invoked when the debug window is opened.
   const onDebugOpen = useCallback(() => {
@@ -415,13 +372,18 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   };
 
   // Invoked when user submits call feedback.
-  const onFeedback = useCallback((good: boolean) => {
-    console.log(`onFeedback - conversationId ${conversationId} good ${good}`);
-    track("call-feedback-received", {
-      conversationId: conversationId || "",
-      callGood: good,
-    });
-  }, [conversationId]);
+  const onFeedback = useCallback(
+    (good: boolean) => {
+      console.log(
+        `CallCharacter[${voiceSession?.conversationId}] - onFeedback: good ${good}`
+      );
+      track("call-feedback-received", {
+        conversationId: voiceSession?.conversationId || "",
+        callGood: good,
+      });
+    },
+    [voiceSession]
+  );
 
   return (
     <CheckTooBusy>

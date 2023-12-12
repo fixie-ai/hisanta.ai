@@ -17,8 +17,6 @@ function Conversation({
   voiceSession: VoiceSession;
   onDebugOpen: () => void;
 }) {
-  console.log("Conversation: rendering");
-
   // Handle end call event.
   const handleStop = async () => {
     await voiceSession.stop();

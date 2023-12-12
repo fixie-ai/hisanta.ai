@@ -2859,9 +2859,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fixie@npm:6.3.3-rc1":
-  version: 6.3.3-rc1
-  resolution: "fixie@npm:6.3.3-rc1"
+"fixie@npm:6.3.3-rc2":
+  version: 6.3.3-rc2
+  resolution: "fixie@npm:6.3.3-rc2"
   dependencies:
     "@apollo/client": ^3.8.1
     "@types/apollo-upload-client": ^17.0.2
@@ -2893,7 +2893,7 @@ __metadata:
       optional: true
   bin:
     fixie: src/main.js
-  checksum: 97692ff778aff75cde318ede085057bfd6b63804c8712eafb87a7bb0f3ab2f348c070eddbae9924193c9198d598b26be8a752e8600cb3abc5c4d756281f53a64
+  checksum: 879772d61c3382b494edd71ce5bd3ac3fc0d370101387decce5067bbbdc03ac1a21e391dc3436a18b73e829d7d0a783216a2201d00391be30c43d6074d0b572d
   languageName: node
   linkType: hard
 
@@ -3323,7 +3323,7 @@ __metadata:
     eslint: ^8
     eslint-config-next: ^14.0.3
     file-loader: ^6.2.0
-    fixie: 6.3.3-rc1
+    fixie: 6.3.3-rc2
     howler: ^2.2.4
     launchdarkly-js-client-sdk: ^3.1.4
     launchdarkly-react-client-sdk: ^3.0.9
