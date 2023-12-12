@@ -26,8 +26,8 @@ const DEFAULT_ASR_PROVIDER = "deepgram";
 const DEFAULT_TTS_PROVIDER = "eleven-ws";
 const DEFAULT_LLM = "gpt-4-1106-preview";
 
-// Santa.
-const FIXIE_AGENT_ID = "5d37e2c5-1e96-4c48-b3f1-98ac08d40b9a";
+// Number of times to play ringtone by default.
+const DEFAULT_RING_COUNT = 10;
 
 // Santa voice.
 const DEFAULT_TTS_VOICE = "Kp00queBTLslXxHCu1jq";
@@ -57,19 +57,8 @@ const LLM_MODELS = [
   "gpt-3.5-turbo",
   "gpt-3.5-turbo-16k",
 ];
-const AGENT_IDS = ["ai-friend", "dr-donut", "rubber-duck"];
-interface LatencyThreshold {
-  good: number;
-  fair: number;
-}
-const LATENCY_THRESHOLDS: { [key: string]: LatencyThreshold } = {
-  ASR: { good: 300, fair: 500 },
-  LLM: { good: 300, fair: 500 },
-  LLMT: { good: 300, fair: 400 },
-  TTS: { good: 400, fair: 600 },
-  Total: { good: 1300, fair: 2000 },
-};
 
+/** Send metrics to Datadog and Vercel. */
 function track(
   eventName: string,
   eventMetadata?: Record<string, string | number | boolean>
@@ -137,7 +126,9 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     llmTokenLatency: -1,
     ttsLatency: -1,
   });
-  const { llmModel } = useFlags();
+  const { llmModel, numRings } = useFlags();
+  const [ringCount, setRingCount] = useState(0);
+  const [targetRingCount, setTargetRingCount] = useState(0);
   const [callStartTime, setCallStartTime] = useState<number | null>(null);
   const router = useRouter();
   const model = searchParams.get("model") || llmModel;
@@ -147,32 +138,59 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     onRelease: () => console.log("Screen wake lock released"),
   });
 
-  useEffect(() => {
-    setInCall(false);
-    setVoiceSession(null);
-    setStartingCall(false);
-    setStartRequested(false);
-    track("character-selected", {
-      character: character.characterId,
-    });
-  }, [character.characterId]);
+  // Invoked when ringtone is done ringing.
+  const onRingtoneFinished = () => {
+    console.log(`CallCharacter: onRingtoneFinished`);
+    setRingCount((count) => count + 1);
+  };
 
-  // Ringtone sound effect. This is specific to the character.
+  // The character's ringtone.
   const ringtone = useMemo(
     () =>
       new Howl({
         src: [character.ringtone],
         preload: true,
         volume: 0.7,
-        onend: function () {
-          onRingtoneFinished();
-        },
+        onend: onRingtoneFinished,
       }),
     [character.ringtone]
   );
 
+  // If we're ringing, check ring count and either re-play ringtone or set startRequested.
+  useEffect(() => {
+    console.log(
+      `CallCharacter: checking rings - ${ringCount} / ${targetRingCount}`
+    );
+    if (targetRingCount > 0) {
+      if (ringCount < targetRingCount) {
+        console.log(
+          `CallCharacter: ringtone count ${ringCount} - playing again`
+        );
+        ringtone!.play();
+      } else {
+        console.log(
+          `CallCharacter: ringtone count ${ringCount} - done playing`
+        );
+        setTargetRingCount(0);
+        setStartRequested(true);
+      }
+    }
+  }, [ringtone, ringCount, targetRingCount]);
+
+  // Reset state when character changes.
+  useEffect(() => {
+    track("character-selected", {
+      character: character.characterId,
+    });
+    setInCall(false);
+    setVoiceSession(null);
+    setStartingCall(false);
+    setStartRequested(false);
+  }, [character.characterId]);
+
   // Cleanup handler.
   useEffect(() => {
+    console.log(`CallCharacter: cleanup - stopping voice session`);
     return () => {
       ringtone.stop();
       if (voiceSession) {
@@ -180,13 +198,13 @@ export function CallCharacter({ character }: { character: CharacterType }) {
         voiceSession.stop();
       }
     };
-  }, [ringtone, voiceSession]);
+  }, [voiceSession, ringtone]);
 
-  // Start voice session if requested by user.
+  // Start voice session.
   useEffect(() => {
     if (startRequested && voiceSession) {
       console.log(
-        `CallCharacter[${voiceSession.conversationId}]: onRingtoneFinished - starting voice session`
+        `CallCharacter[${voiceSession.conversationId}]: starting voice session`
       );
       voiceSession.start();
       setStartingCall(false);
@@ -199,8 +217,9 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     }
   }, [character.characterId, startRequested, voiceSession]);
 
-  // Called by <StartNewCall> when the user clicks the "Call" button.
-  const onCallStart = useCallback(() => {
+  // Called by <StartNewCall> when the user clicks the "Call" button. Creates a voice session
+  // and kicks off ringtones, if needed.
+  const onCallStart = () => {
     console.log(`CallCharacter: onCallStart`);
     if (startingCall) {
       console.log(`CallCharacter: onCallStart - already starting call`);
@@ -210,6 +229,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       character: character.characterId,
     });
     setStartingCall(true);
+    // This gets the wake lock.
     request();
     const session = makeVoiceSession({
       agentId: character.agentId,
@@ -295,40 +315,46 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     console.log(`CallCharacter: created voice session`);
     session.warmup();
     session.startAudio(); // This will prompt for mic permission.
-
     setVoiceSession(session);
-    // Wait a beat before starting the ringtone.
-    setTimeout(() => {
-      ringtone.play();
-    }, 1000);
-  }, [character, model, request, ringtone, startingCall]);
 
-  // Invoked when ringtone is done ringing.
-  const onRingtoneFinished = () => {
-    console.log(`CallCharacter: onRingtoneFinished`);
-    setStartRequested(true);
+    console.log(
+      `CallCharacter: playing ringtone ${numRings ?? DEFAULT_RING_COUNT} times`
+    );
+    if ((numRings ?? DEFAULT_RING_COUNT) > 0) {
+      // Wait a beat before starting the ringtone.
+      setRingCount(0);
+      setTimeout(() => {
+        console.log(`CallCharacter: setting target ring count to ${numRings ?? DEFAULT_RING_COUNT}`);
+        setTargetRingCount(numRings ?? DEFAULT_RING_COUNT);
+      }, 1000);
+    } else {
+      // No need to ring - just start.
+      setStartRequested(true);
+    }
   };
 
   // Invoked when hangup sound effect is done playing.
-  const onHangupFinished = useCallback(() => {
+  const onHangupFinished = () => {
     console.log(
       `CallCharacter[${voiceSession?.conversationId}]: onHangupFinished`
     );
     setInCall(false);
     setFeedbackDialogOpen(true);
-  }, [voiceSession]);
+  };
+
+  // This is the hangup sound effect.
+  const hangup = new Howl({
+    src: "/sounds/hangup.mp3",
+    preload: true,
+    volume: 0.2,
+    onend: function () {
+      onHangupFinished();
+    },
+  });
 
   // Called when user hangs up the call.
-  const onCallEnd = useCallback(() => {
+  const onCallEnd = () => {
     console.log(`CallCharacter[${voiceSession?.conversationId}]: onCallEnd`);
-    const hangup = new Howl({
-      src: "/sounds/hangup.mp3",
-      preload: true,
-      volume: 0.2,
-      onend: function () {
-        onHangupFinished();
-      },
-    });
     hangup.play();
     voiceSession?.stop();
     setStartRequested(false);
@@ -342,15 +368,15 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       duration: callDuration,
       conversationId: voiceSession?.conversationId || "",
     });
-  }, [voiceSession, release, callStartTime, onHangupFinished]);
+  };
 
   // Invoked when the debug window is opened.
-  const onDebugOpen = useCallback(() => {
+  const onDebugOpen = () => {
     track("debug-menu-opened", {
       character: character.characterId,
     });
     setDebugSheetOpen(true);
-  }, [character.characterId]);
+  };
 
   // Invoked when the debug submit button is clicked.
   const onDebugSubmit = (newCharacter?: string, newModel?: string) => {
@@ -369,18 +395,15 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   };
 
   // Invoked when user submits call feedback.
-  const onFeedback = useCallback(
-    (good: boolean) => {
-      console.log(
-        `CallCharacter[${voiceSession?.conversationId}] - onFeedback: good ${good}`
-      );
-      track("call-feedback-received", {
-        conversationId: voiceSession?.conversationId || "",
-        callGood: good,
-      });
-    },
-    [voiceSession]
-  );
+  const onFeedback = (good: boolean) => {
+    console.log(
+      `CallCharacter[${voiceSession?.conversationId}] - onFeedback: good ${good}`
+    );
+    track("call-feedback-received", {
+      conversationId: voiceSession?.conversationId || "",
+      callGood: good,
+    });
+  };
 
   return (
     <CheckTooBusy>
