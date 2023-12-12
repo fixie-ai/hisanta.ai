@@ -31,7 +31,7 @@ const config = {
     },
     {
       characterId: "rudolf",
-      name: "Rudolf",
+      name: "Rudolph",
       image: "rudolf-hdpi.png",
       bio: "Rudolph, the red-nosed reindeer.",
       location: "Santa's Stables",
