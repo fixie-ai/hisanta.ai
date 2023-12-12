@@ -71,6 +71,28 @@ const config = {
       voiceId: "9hxup5dlD3lL0Wrr9zXK",
       bad: true
     },
+    {
+      characterId: "karen",
+      name: "Karen Claus",
+      image: "bad-mrs-claus.png",
+      bio: "Married to Bad Santa and ready to give the world a piece of her mind.",
+      location: "Complaining to the Manager",
+      ringtone: "/sounds/jinglebells.mp3",
+      agentId: "7e11f5fa-6779-416c-b688-3478ccb5e142",
+      voiceId: "joL5nBmTAhATqjDe5Upd",
+      bad: true
+    },
+    {
+      characterId: "badelfie",
+      name: "Bad Elfie",
+      image: "bad-elfie.png",
+      bio: "A maligned elf who is so over you and Christmas.",
+      location: "Santa's Complaint Department",
+      ringtone: "/sounds/jinglebells.mp3",
+      agentId: "0829fcb7-07ac-42a5-9b84-05294402ff63",
+      voiceId: "3zdD5uMcIVtKzAQocDHU",
+      bad: true
+    },
   ],
 }
 export default config;
