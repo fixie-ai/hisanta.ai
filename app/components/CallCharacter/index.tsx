@@ -379,6 +379,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
 
   // Invoked when user submits call feedback.
   const onFeedback = (good: boolean) => {
+    console.log(`onFeedback - conversationId ${voiceSession?.conversationId} good ${good}`);
     track("call-feedback-received", {
       conversationId: voiceSession?.conversationId || '',
       callGood: good,

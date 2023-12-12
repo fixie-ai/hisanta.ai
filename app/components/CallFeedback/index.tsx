@@ -20,6 +20,7 @@ export function CallFeedback({
   onFeedback: (good: boolean) => void;
 }) {
   const handleFeedback = (good: boolean) => () => {
+    onFeedback(good);
     onOpenChange(false);
   };
 
