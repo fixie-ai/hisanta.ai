@@ -210,10 +210,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       character: character.characterId,
     });
     setStartingCall(true);
-    // Request wake lock if not already held.
-    if (released) {
-      request();
-    }
+    request();
     const session = makeVoiceSession({
       agentId: character.agentId,
       ttsVoice: character.voiceId,
@@ -304,7 +301,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     setTimeout(() => {
       ringtone.play();
     }, 1000);
-  }, [character, model, released, request, ringtone, startingCall]);
+  }, [character, model, request, ringtone, startingCall]);
 
   // Invoked when ringtone is done ringing.
   const onRingtoneFinished = () => {
