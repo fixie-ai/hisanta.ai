@@ -10,6 +10,7 @@ import { Datadog } from "./components/Datadog";
 export const metadata: Metadata = {
   title: config.siteName,
   description: config.siteDescription,
+  metadataBase: new URL("https://hisanta.ai"),
 };
 
 

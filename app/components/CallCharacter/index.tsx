@@ -333,7 +333,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     // Wait a beat before starting the ringtone.
     setTimeout(() => {
       ringtone.play();
-    }, 200);
+    }, 1000);
   };
 
   // Invoked when ringtone is done ringing.
