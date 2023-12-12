@@ -55,7 +55,7 @@ const config = {
       image: "bad-santa.png",
       bio: "It's Santa.",
       location: "Mall Parking Lot",
-      ringtone: "/sounds/jinglebells.mp3",
+      ringtone: "/sounds/badjinglebells.mp3",
       agentId: "e6ef8ebe-85ba-4b6e-b1a6-1a79849325f7",
       voiceId: "tb9Rgoz1ryYKpuUG7mlL",
       bad: true
@@ -66,7 +66,7 @@ const config = {
       image: "the-grouch-hdpi.png",
       bio: "It's The Grouch.",
       location: "Mountain Hideaway",
-      ringtone: "/sounds/jinglebells.mp3",
+      ringtone: "/sounds/grinch.mp3",
       agentId: "1e6b4faa-ba1d-444f-b23e-cf64ef680e32",
       voiceId: "9hxup5dlD3lL0Wrr9zXK",
       bad: true

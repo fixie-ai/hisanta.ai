@@ -7,10 +7,9 @@ import PickerButtons from "../ButtonGroup-Picker";
 import { useSearchParams } from "next/navigation";
 
 export default function CharacterPicker() {
-  let characters = config.availableCharacters;
-  // default to Santa
   const searchParams = useSearchParams();
 
+  let characters = config.availableCharacters;
   const showBad = searchParams.get("nice") == "0" || false;
 
   if (showBad) {
@@ -18,7 +17,6 @@ export default function CharacterPicker() {
   } else {
     characters = characters.filter((c) => c.bad !== true);
   }
-
   const santa = characters.find(
     (c) => c.characterId === "santa" || c.characterId === "badsanta"
   );
@@ -35,15 +33,16 @@ export default function CharacterPicker() {
   // set selectedCharacter once santa is loaded
   useEffect(() => {
     if (santa) {
+      setMainCharacter(santa);
       setSelectedCharacter(santa);
     }
-  }, [santa]);
+  }, [santa, showBad]);
 
   return (
     <div>
       {/* Card */}
 
-      <div className="flex flex-col items-center bg-White-75 align-middle rounded-jumbo py-2.5 px-3 h-[492px] w-[340px] text-center text-black text-sm border border-black items-center overflow-x-hidden relative shadow-lg">
+      <div className="flex flex-col bg-White-75 align-middle rounded-jumbo py-2.5 px-3 h-[492px] w-[340px] text-center text-black text-sm border border-black items-center overflow-x-hidden relative shadow-lg">
         <div className="text-Holiday-Red text-xl">{mainCharacter?.name}</div>
         {/* Selected Character */}
         <div className="flex justify-center mt-8">
