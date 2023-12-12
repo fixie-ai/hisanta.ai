@@ -92,7 +92,7 @@ const config = {
       agentId: "0829fcb7-07ac-42a5-9b84-05294402ff63",
       voiceId: "3zdD5uMcIVtKzAQocDHU",
       bad: true
-    },Stashed changes
+    },
   ],
 }
 export default config;
