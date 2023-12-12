@@ -23,13 +23,13 @@ export function NaughtyNiceSwitch() {
 
   return (
     <div className="flex flex-row gap-2 items-center">
-      <span className="text-sm text-Holiday-Red">Naughty</span>
+      <span className="text-sm md:text-lg text-Holiday-Red">Naughty</span>
       <Switch
         checked={!naughty}
         onCheckedChange={onChange}
         className="data-[state=checked]:bg-Holiday-Green data-[state=unchecked]:bg-Holiday-Red"
       />
-      <span className="text-sm text-Holiday-Green">Nice</span>
+      <span className="text-sm md:text-lg text-Holiday-Green">Nice</span>
     </div>
   );
 }
