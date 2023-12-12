@@ -32,6 +32,8 @@ const StartNewCall = ({
     }
   };
 
+  const homeLink = (character.bad ? "/?nice=0" : "/");
+
   return (
     <div className="bg-White-75 rounded-jumbo border-black border flex flex-col mx-auto md:mt-4 gap-2 w-[340px] h-[600px] justify-start">
       <div className="mt-4 mx-auto text-3xl text-[#881425]">
@@ -70,7 +72,7 @@ const StartNewCall = ({
       </div>
       <div className="m-4">
         <EpicButton
-          onClick={() => router.push("/")}
+          onClick={() => router.push(homeLink)}
           type="secondaryGreen"
           className="w-full"
         >

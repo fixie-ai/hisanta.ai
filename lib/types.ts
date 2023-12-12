@@ -7,6 +7,7 @@ export type CharacterType = {
   ringtone: string
   agentId: string
   voiceId: string
+  bad?: boolean
 }
 export interface ActiveCallProps {
   currentCharacter: CharacterType;
