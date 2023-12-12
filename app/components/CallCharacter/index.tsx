@@ -19,35 +19,14 @@ import { useSearchParams } from "next/navigation";
 import { useWakeLock } from "react-screen-wake-lock";
 import { CallFeedback } from "../CallFeedback";
 import { datadogRum } from "@datadog/browser-rum";
-import { on } from "events";
 
-const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
 const DEFAULT_ASR_PROVIDER = "deepgram";
 const DEFAULT_TTS_PROVIDER = "eleven-ws";
 const DEFAULT_LLM = "gpt-4-1106-preview";
 
-// Santa.
-const FIXIE_AGENT_ID = "5d37e2c5-1e96-4c48-b3f1-98ac08d40b9a";
-
 // Santa voice.
 const DEFAULT_TTS_VOICE = "Kp00queBTLslXxHCu1jq";
 
-// The following are not currently used but will be useful when we bring back debug UI.
-const ASR_PROVIDERS = ["aai", "deepgram", "gladia", "revai", "soniox"];
-const TTS_PROVIDERS = [
-  "aws",
-  "azure",
-  "eleven",
-  "eleven-ws",
-  "gcp",
-  "lmnt",
-  "lmnt-ws",
-  "murf",
-  "openai",
-  "playht",
-  "resemble",
-  "wellsaid",
-];
 const LLM_MODELS = [
   "claude-2",
   "claude-instant-1",
@@ -57,18 +36,6 @@ const LLM_MODELS = [
   "gpt-3.5-turbo",
   "gpt-3.5-turbo-16k",
 ];
-const AGENT_IDS = ["ai-friend", "dr-donut", "rubber-duck"];
-interface LatencyThreshold {
-  good: number;
-  fair: number;
-}
-const LATENCY_THRESHOLDS: { [key: string]: LatencyThreshold } = {
-  ASR: { good: 300, fair: 500 },
-  LLM: { good: 300, fair: 500 },
-  LLMT: { good: 300, fair: 400 },
-  TTS: { good: 400, fair: 600 },
-  Total: { good: 1300, fair: 2000 },
-};
 
 function track(
   eventName: string,
@@ -93,7 +60,7 @@ function makeVoiceSession({
   model?: string;
 }): VoiceSession {
   console.log(`[makeVoiceSession] creating voice session with LLM ${model}`);
-  const fixieClient = new FixieClient({ apiKey: API_KEY });
+  const fixieClient = new FixieClient({});
   const voiceInit: VoiceSessionInit = {
     asrProvider: asrProvider || DEFAULT_ASR_PROVIDER,
     ttsProvider: ttsProvider || DEFAULT_TTS_PROVIDER,
@@ -210,7 +177,10 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       character: character.characterId,
     });
     setStartingCall(true);
-    request();
+    // Request wake lock. `released` will be undefined here.
+    if (isSupported) {
+      request();
+    }
     const session = makeVoiceSession({
       agentId: character.agentId,
       ttsVoice: character.voiceId,
@@ -301,7 +271,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     setTimeout(() => {
       ringtone.play();
     }, 1000);
-  }, [character, model, request, ringtone, startingCall]);
+  }, [character, model, isSupported, request, ringtone, startingCall]);
 
   // Invoked when ringtone is done ringing.
   const onRingtoneFinished = () => {
@@ -333,7 +303,9 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     voiceSession?.stop();
     setStartRequested(false);
     // Release wake lock.
-    release();
+    if (isSupported) {
+      release();
+    }
     track("call-ended", {
       conversationId: voiceSession?.conversationId || "",
     });
@@ -342,7 +314,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       duration: callDuration,
       conversationId: voiceSession?.conversationId || "",
     });
-  }, [voiceSession, release, callStartTime, onHangupFinished]);
+  }, [voiceSession, isSupported, release, callStartTime, onHangupFinished]);
 
   // Invoked when the debug window is opened.
   const onDebugOpen = useCallback(() => {
