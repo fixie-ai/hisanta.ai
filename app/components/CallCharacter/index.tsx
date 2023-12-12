@@ -170,9 +170,8 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     setStartRequested(false);
     track("character-selected", {
       character: character.characterId,
-      model: model,
     });
-  }, [character.characterId, model]);
+  }, [character.characterId]);
 
   // Ringtone sound effect. This is specific to the character.
   const ringtone = useMemo(
@@ -219,11 +218,10 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       setCallStartTime(Date.now());
       track("call-started", {
         character: character.characterId,
-        model: model,
         conversationId: voiceSession.conversationId || '',
       });
     }
-  }, [character.characterId, model, startRequested, voiceSession]);
+  }, [character.characterId, startRequested, voiceSession]);
 
   // Called by <StartNewCall> when the user clicks the "Call" button.
   const onCallStart = () => {
@@ -234,7 +232,6 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     }
     track("call-start-requested", {
       character: character.characterId,
-      model: model,
     });
     setStartingCall(true);
     // Request wake lock if not already held.
@@ -259,10 +256,8 @@ export function CallCharacter({ character }: { character: CharacterType }) {
               ttsLatency: 0,
             }));
             track("asr-latency-measured", {
-              character: character.characterId,
-              model: model,
-              asrLatency: latency,
               conversationId: voiceSession?.conversationId || '',
+              asrLatency: latency,
             });
             break;
           case "llm":
@@ -271,10 +266,8 @@ export function CallCharacter({ character }: { character: CharacterType }) {
               llmResponseLatency: latency,
             }));
             track("llm-latency-measured", {
-              character: character.characterId,
-              model: model,
-              llmLatency: latency,
               conversationId: voiceSession?.conversationId || '',
+              llmLatency: latency,
             });
             break;
           case "llmt":
@@ -283,10 +276,8 @@ export function CallCharacter({ character }: { character: CharacterType }) {
               llmTokenLatency: latency,
             }));
             track("llm-token-latency-measured", {
-              character: character.characterId,
-              model: model,
-              llmTokenLatency: latency,
               conversationId: voiceSession?.conversationId || '',
+              llmTokenLatency: latency,
             });
             break;
           case "tts":
@@ -295,10 +286,8 @@ export function CallCharacter({ character }: { character: CharacterType }) {
               ttsLatency: latency,
             }));
             track("tts-latency-measured", {
-              character: character.characterId,
-              model: model,
-              ttsLatency: latency,
               conversationId: voiceSession?.conversationId || '',
+              ttsLatency: latency,
             });
             break;
         }
@@ -311,16 +300,12 @@ export function CallCharacter({ character }: { character: CharacterType }) {
           conversationId: voiceSession?.conversationId || '',
         }));
         track("voice-session-state-changed", {
-          character: character.characterId,
-          model: model,
-          state: state,
           conversationId: voiceSession?.conversationId || '',
+          state: state,
         });
       },
       onError: () => {
         track("voice-session-error", {
-          character: character.characterId,
-          model: model,
           conversationId: voiceSession?.conversationId || '',
         });
       },
@@ -352,14 +337,10 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     // Release wake lock.
     release();
     track("call-ended", {
-      character: character.characterId,
-      model: model,
       conversationId: voiceSession?.conversationId || '',
     });
     const callDuration = callStartTime ? Date.now() - callStartTime : 0;
     track("call-duration", {
-      character: character.characterId,
-      model: model,
       duration: callDuration,
       conversationId: voiceSession?.conversationId || '',
     });
@@ -376,7 +357,6 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   const onDebugOpen = () => {
     track("debug-menu-opened", {
       character: character.characterId,
-      model: model,
     });
     setDebugSheetOpen(true);
   };
@@ -400,10 +380,8 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   // Invoked when user submits call feedback.
   const onFeedback = (good: boolean) => {
     track("call-feedback-received", {
-      character: character.characterId,
-      model: model,
-      callGood: good,
       conversationId: voiceSession?.conversationId || '',
+      callGood: good,
     });
   };
 
