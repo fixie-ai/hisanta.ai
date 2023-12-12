@@ -5,12 +5,14 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { Analytics } from "@vercel/analytics/react";
 import { LaunchDarklyProvider } from "./components/LaunchDarkly";
-import { useFlags } from "launchdarkly-react-client-sdk";
+import { Datadog } from "./components/Datadog";
 
 export const metadata: Metadata = {
   title: config.siteName,
   description: config.siteDescription,
 };
+
+
 
 export default function RootLayout({
   children,
@@ -26,6 +28,7 @@ export default function RootLayout({
           <main>{children}</main>
           <Footer />
         </LaunchDarklyProvider>
+        <Datadog />
         <Analytics />
       </body>
     </html>

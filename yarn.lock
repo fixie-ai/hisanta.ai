@@ -93,6 +93,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@datadog/browser-core@npm:5.5.0":
+  version: 5.5.0
+  resolution: "@datadog/browser-core@npm:5.5.0"
+  checksum: beff1d0aeb75027f2382d8ef5abaf0320ebd6e6a92ae2c293483b4c00a47619f132d5c45009fadc2648a13c161aec6d269796ccf6b416e9066ce88746f7dab9a
+  languageName: node
+  linkType: hard
+
+"@datadog/browser-rum-core@npm:5.5.0":
+  version: 5.5.0
+  resolution: "@datadog/browser-rum-core@npm:5.5.0"
+  dependencies:
+    "@datadog/browser-core": 5.5.0
+  checksum: 9eae269435bed9dfb2ad4b556bb2ebad0ee079c2c25866819655e67ba38f1984efb4855a83bcc79955611812ee445bccdf374bfd7e2cc4481a20a03f9b21867f
+  languageName: node
+  linkType: hard
+
+"@datadog/browser-rum@npm:^5.5.0":
+  version: 5.5.0
+  resolution: "@datadog/browser-rum@npm:5.5.0"
+  dependencies:
+    "@datadog/browser-core": 5.5.0
+    "@datadog/browser-rum-core": 5.5.0
+  peerDependencies:
+    "@datadog/browser-logs": 5.5.0
+  peerDependenciesMeta:
+    "@datadog/browser-logs":
+      optional: true
+  checksum: 5616fda121c9ccf13b2908a9ada9e3dc8913bb36afbacae73fe11ab9fb613cfffd4184302f3342a407c064c5a17623be6f3c62be054874ac35f96201a1a26c8c
+  languageName: node
+  linkType: hard
+
 "@eslint-community/eslint-utils@npm:^4.2.0":
   version: 4.4.0
   resolution: "@eslint-community/eslint-utils@npm:4.4.0"
@@ -3274,6 +3305,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "hisanta.ai@workspace:."
   dependencies:
+    "@datadog/browser-rum": ^5.5.0
     "@heroicons/react": ^2.0.18
     "@radix-ui/react-dialog": ^1.0.5
     "@radix-ui/react-select": ^2.0.0

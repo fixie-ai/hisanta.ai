@@ -13,11 +13,12 @@ import {
 import { DebugSheet } from "../DebugSheet";
 import { CheckTooBusy } from "../CheckTooBusy";
 import { useFlags } from "launchdarkly-react-client-sdk";
-import { track } from "@vercel/analytics";
+import { track as vercelTrack } from "@vercel/analytics";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { useWakeLock } from "react-screen-wake-lock";
 import { CallFeedback } from "../CallFeedback";
+import { datadogRum } from "@datadog/browser-rum";
 
 const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
 const DEFAULT_ASR_PROVIDER = "deepgram";
@@ -67,6 +68,11 @@ const LATENCY_THRESHOLDS: { [key: string]: LatencyThreshold } = {
   TTS: { good: 400, fair: 600 },
   Total: { good: 1300, fair: 2000 },
 };
+
+function track(eventName: string, eventMetadata?: Record<string, string | number>) {
+  datadogRum.addAction(eventName, eventMetadata);
+  vercelTrack(eventName, eventMetadata);
+}
 
 /** Create a VoiceSession with the given parameters. */
 function makeVoiceSession({
