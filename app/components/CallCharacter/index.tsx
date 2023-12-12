@@ -69,7 +69,7 @@ const LATENCY_THRESHOLDS: { [key: string]: LatencyThreshold } = {
   Total: { good: 1300, fair: 2000 },
 };
 
-function track(eventName: string, eventMetadata?: Record<string, string | number>) {
+function track(eventName: string, eventMetadata?: Record<string, string | number | boolean>) {
   datadogRum.addAction(eventName, eventMetadata);
   vercelTrack(eventName, eventMetadata);
 }
