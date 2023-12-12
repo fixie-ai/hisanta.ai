@@ -157,36 +157,38 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     });
   }, [character.characterId]);
 
+  // TODO(mdw): Re-enable ringtones if they are not interfering with TTS.
   // Ringtone sound effect. This is specific to the character.
-  const ringtone = useMemo(
-    () =>
-      new Howl({
-        src: [character.ringtone],
-        preload: true,
-        volume: 0.7,
-        onend: function () {
-          onRingtoneFinished();
-        },
-      }),
-    [character.ringtone]
-  );
+  // const ringtone = useMemo(
+  //   () =>
+  //     new Howl({
+  //       src: [character.ringtone],
+  //       preload: true,
+  //       volume: 0.7,
+  //       onend: function () {
+  //         onRingtoneFinished();
+  //       },
+  //     }),
+  //   [character.ringtone]
+  // );
 
   // Cleanup handler.
   useEffect(() => {
     return () => {
-      ringtone.stop();
+      // TODO(mdw): Re-enable ringtones if they are not interfering with TTS.
+      //ringtone.stop();
       if (voiceSession) {
         console.log(`CallCharacter: cleanup - stopping voice session`);
         voiceSession.stop();
       }
     };
-  }, [ringtone, voiceSession]);
+  }, [voiceSession]);
 
   // Start voice session if requested by user.
   useEffect(() => {
     if (startRequested && voiceSession) {
       console.log(
-        `CallCharacter[${voiceSession.conversationId}]: onRingtoneFinished - starting voice session`
+        `CallCharacter[${voiceSession.conversationId}]: starting voice session`
       );
       voiceSession.start();
       setStartingCall(false);
@@ -297,17 +299,25 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     session.startAudio(); // This will prompt for mic permission.
 
     setVoiceSession(session);
-    // Wait a beat before starting the ringtone.
-    setTimeout(() => {
-      ringtone.play();
-    }, 1000);
-  }, [character, model, request, ringtone, startingCall]);
 
-  // Invoked when ringtone is done ringing.
-  const onRingtoneFinished = () => {
-    console.log(`CallCharacter: onRingtoneFinished`);
+    // TODO(mdw): Remove this line if we re-enable ringtones, since it is supposed
+    // to be triggered by onRingtoneFinished.
     setStartRequested(true);
-  };
+
+    // TODO(mdw): Re-enable ringtones if they are not interfering with TTS.
+    // Wait a beat before starting the ringtone.
+    //setTimeout(() => {
+    //  ringtone.play();
+    //}, 1000);
+
+  }, [character, model, request, startingCall]);
+
+  // TODO(mdw): Re-enable ringtones if they are not interfering with TTS.
+  // Invoked when ringtone is done ringing.
+  //const onRingtoneFinished = () => {
+  //  console.log(`CallCharacter: onRingtoneFinished`);
+  //  setStartRequested(true);
+  //};
 
   // Invoked when hangup sound effect is done playing.
   const onHangupFinished = useCallback(() => {

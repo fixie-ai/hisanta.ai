@@ -178,12 +178,15 @@ function Visualizer({
   }, [inputFreqData]);
 
   const showState = () => {
-    if (voiceSessionRef.current.state === VoiceSessionState.IDLE) {
-      return "Calling...";
-    } else if (voiceSessionRef.current.state === VoiceSessionState.LISTENING) {
+    if (voiceSessionRef.current.state === VoiceSessionState.LISTENING) {
       return "Listening...";
-    } else {
+    } else if (
+      voiceSessionRef.current.state === VoiceSessionState.SPEAKING ||
+      voiceSessionRef.current.state === VoiceSessionState.THINKING
+    ) {
       return "Speaking...";
+    } else {
+      return "Calling...";
     }
   };
 
