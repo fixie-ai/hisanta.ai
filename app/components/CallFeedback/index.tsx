@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { CharacterType } from "@/lib/types";
 import {
   Dialog,
@@ -7,6 +8,53 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import EpicButton from "../Buttons";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+
+function FeedbackForm({
+  onFeedbackInput,
+  onEmailInput,
+}: {
+  onFeedbackInput: (feedback: string) => void;
+  onEmailInput: (email: string) => void;
+}) {
+  return (
+    <Accordion type="single" collapsible>
+      <AccordionItem value="item-1">
+        <AccordionTrigger>Tell us more!</AccordionTrigger>
+        <AccordionContent>
+          <div className="flex flex-col gap-2">
+            <div className="font-[Inter-Regular]">
+              Thanks for your feedback. Feel free to share more about your
+              experience below.
+            </div>
+            <div>
+              <Textarea
+                className="font-[Inter-Regular]"
+                placeholder="Your feedback here"
+                onInput={(e) => onFeedbackInput((e.target as HTMLTextAreaElement).value)}
+              />
+            </div>
+            <div>
+              <Input
+                className="font-[Inter-Regular]"
+                type="text"
+                placeholder="Your email (optional)"
+                onInput={(e) => onEmailInput((e.target as HTMLInputElement).value)}
+              />
+            </div>
+          </div>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+}
 
 export function CallFeedback({
   character,
@@ -17,10 +65,13 @@ export function CallFeedback({
   character: CharacterType;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onFeedback: (good: boolean) => void;
+  onFeedback: (good: boolean, feedback: string, email: string) => void;
 }) {
+  const [feedback, setFeedback] = useState("");
+  const [email, setEmail] = useState("");
+
   const handleFeedback = (good: boolean) => () => {
-    onFeedback(good);
+    onFeedback(good, feedback, email);
     onOpenChange(false);
   };
 
@@ -52,6 +103,7 @@ export function CallFeedback({
             </div>
           </DialogDescription>
         </DialogHeader>
+        <FeedbackForm onEmailInput={setEmail} onFeedbackInput={setFeedback} />
       </DialogContent>
     </Dialog>
   );
