@@ -19,35 +19,17 @@ import { useSearchParams } from "next/navigation";
 import { useWakeLock } from "react-screen-wake-lock";
 import { CallFeedback } from "../CallFeedback";
 import { datadogRum } from "@datadog/browser-rum";
-import { on } from "events";
 
-const API_KEY = process.env.NEXT_PUBLIC_FIXIE_API_KEY;
 const DEFAULT_ASR_PROVIDER = "deepgram";
 const DEFAULT_TTS_PROVIDER = "eleven-ws";
 const DEFAULT_LLM = "gpt-4-1106-preview";
 
 // Number of times to play ringtone by default.
-const DEFAULT_RING_COUNT = 10;
+const DEFAULT_RING_COUNT = 1;
 
 // Santa voice.
 const DEFAULT_TTS_VOICE = "Kp00queBTLslXxHCu1jq";
 
-// The following are not currently used but will be useful when we bring back debug UI.
-const ASR_PROVIDERS = ["aai", "deepgram", "gladia", "revai", "soniox"];
-const TTS_PROVIDERS = [
-  "aws",
-  "azure",
-  "eleven",
-  "eleven-ws",
-  "gcp",
-  "lmnt",
-  "lmnt-ws",
-  "murf",
-  "openai",
-  "playht",
-  "resemble",
-  "wellsaid",
-];
 const LLM_MODELS = [
   "claude-2",
   "claude-instant-1",
@@ -82,7 +64,7 @@ function makeVoiceSession({
   model?: string;
 }): VoiceSession {
   console.log(`[makeVoiceSession] creating voice session with LLM ${model}`);
-  const fixieClient = new FixieClient({ apiKey: API_KEY });
+  const fixieClient = new FixieClient({});
   const voiceInit: VoiceSessionInit = {
     asrProvider: asrProvider || DEFAULT_ASR_PROVIDER,
     ttsProvider: ttsProvider || DEFAULT_TTS_PROVIDER,
@@ -229,8 +211,10 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       character: character.characterId,
     });
     setStartingCall(true);
-    // This gets the wake lock.
-    request();
+    // Request wake lock. `released` will be undefined here.
+    if (isSupported) {
+      request();
+    }
     const session = makeVoiceSession({
       agentId: character.agentId,
       ttsVoice: character.voiceId,
@@ -359,7 +343,9 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     voiceSession?.stop();
     setStartRequested(false);
     // Release wake lock.
-    release();
+    if (isSupported) {
+      release();
+    }
     track("call-ended", {
       conversationId: voiceSession?.conversationId || "",
     });
