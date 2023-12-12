@@ -3,8 +3,8 @@
 import { datadogRum } from '@datadog/browser-rum';
 
 datadogRum.init({
-    applicationId: '2112f744-f970-4c9c-83b2-2874b28b12e4',
-    clientToken: 'pubd70e012dd5e4acb963a65b45cb0d921a',
+    applicationId: process.env.NEXT_PUBLIC_DATADOG_APP_ID || '',
+    clientToken: process.env.NEXT_PUBLIC_DATADOG_CLIENT_TOKEN || '',
     site: 'datadoghq.com',
     service: 'hisanta.ai',
     env: 'prod',
