@@ -55,7 +55,7 @@ const config = {
       image: "bad-santa.png",
       bio: "It's Santa.",
       location: "Mall Parking Lot",
-      ringtone: "/sounds/jinglebells.mp3",
+      ringtone: "/sounds/badjinglebells.mp3",
       agentId: "e6ef8ebe-85ba-4b6e-b1a6-1a79849325f7",
       voiceId: "tb9Rgoz1ryYKpuUG7mlL",
       bad: true
