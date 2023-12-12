@@ -13,8 +13,6 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://hisanta.ai"),
 };
 
-
-
 export default function RootLayout({
   children,
 }: {
