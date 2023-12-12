@@ -156,6 +156,10 @@ function Visualizer({
     const canvas = inputCanvasRef.current;
     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (voiceSessionRef.current.state !== VoiceSessionState.LISTENING) {
+      // Don't show anything when not listening.
+      return;
+    }
     if (freqData) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const vu =
