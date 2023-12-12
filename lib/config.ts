@@ -71,19 +71,6 @@ const config = {
       voiceId: "9hxup5dlD3lL0Wrr9zXK",
       bad: true
     },
-    {
-      characterId: "karen",
-      name: "Karen Claus",
-      image: "the-grouch-hdpi.png",
-      bio: "Karen Claus married to Bad Santa and ready to give the world a piece of her mind.",
-      location: "Complaining to the Manager",
-      ringtone: "/sounds/jinglebells.mp3",
-      agentId: "7e11f5fa-6779-416c-b688-3478ccb5e142",
-      voiceId: "2hdT5Ee6zESqFUUnrOfK",
-      bad: true
-    },
-
-    
   ],
 }
 export default config;
