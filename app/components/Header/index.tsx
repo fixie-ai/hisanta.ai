@@ -14,11 +14,6 @@ export default function Header() {
       <div className="mr-4">
         <NaughtyNiceSwitch />
       </div>
-      <div className="w-8 mr-4 md:mr-8">
-        <Link href={config.referralUrl}>
-          <Image className="w-8 h-8" src={FoxieIcon} alt="Foxie" />
-        </Link>
-      </div>
     </header>
   );
 }
