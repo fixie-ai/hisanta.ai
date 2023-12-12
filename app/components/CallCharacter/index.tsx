@@ -210,8 +210,8 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       character: character.characterId,
     });
     setStartingCall(true);
-    // Request wake lock if not already held.
-    if (released) {
+    // Request wake lock. `released` will be undefined here.
+    if (isSupported) {
       request();
     }
     const session = makeVoiceSession({
@@ -304,7 +304,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     setTimeout(() => {
       ringtone.play();
     }, 1000);
-  }, [character, model, released, request, ringtone, startingCall]);
+  }, [character, model, isSupported, request, ringtone, startingCall]);
 
   // Invoked when ringtone is done ringing.
   const onRingtoneFinished = () => {
@@ -336,7 +336,9 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     voiceSession?.stop();
     setStartRequested(false);
     // Release wake lock.
-    release();
+    if (isSupported) {
+      release();
+    }
     track("call-ended", {
       conversationId: voiceSession?.conversationId || "",
     });
@@ -345,7 +347,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       duration: callDuration,
       conversationId: voiceSession?.conversationId || "",
     });
-  }, [voiceSession, release, callStartTime, onHangupFinished]);
+  }, [voiceSession, isSupported, release, callStartTime, onHangupFinished]);
 
   // Invoked when the debug window is opened.
   const onDebugOpen = useCallback(() => {
