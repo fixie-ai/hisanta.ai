@@ -18,7 +18,7 @@ import { Switch } from "../ui/switch";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Checkbox } from "../ui/checkbox";
-import { Check } from "lucide-react";
+import { useFlags } from "launchdarkly-react-client-sdk";
 
 function GoodBadSwitch({
   notGood,
@@ -29,7 +29,7 @@ function GoodBadSwitch({
 }) {
   return (
     <div className="flex flex-row gap-2 items-center">
-      <span className="text-lg md:text-lg text-Holiday-Green">
+      <span className="text-xl md:text-xl text-Holiday-Green">
         Pretty good!
       </span>
       <Switch
@@ -37,7 +37,7 @@ function GoodBadSwitch({
         onCheckedChange={onNotGoodChange}
         className="data-[state=unchecked]:bg-Holiday-Green data-[state=checked]:bg-Holiday-Red"
       />
-      <span className="text-lg md:text-lg text-Holiday-Red">Not so good!</span>
+      <span className="text-xl md:text-xl text-Holiday-Red">Not so good!</span>
     </div>
   );
 }
@@ -45,8 +45,8 @@ function GoodBadSwitch({
 function ShareCheckbox() {
   return (
     <div className="flex flex-row gap-4 border rounded-2xl p-4 items-center">
-      <Checkbox className="w-6 h-6" />
-      <div className="text-Holiday-Green text-xl">
+      <Checkbox className="w-8 h-8" />
+      <div className="text-Holiday-Green text-xl text-left">
         Generate a shareable video of your call
       </div>
     </div>
@@ -112,6 +112,7 @@ export function CallFeedback({
   const [feedback, setFeedback] = useState("");
   const [email, setEmail] = useState("");
   const [notGood, setNotGood] = useState(false);
+  const { sharingEnabled } = useFlags();
 
   const handleFeedback = (good: boolean) => () => {
     onFeedback(good, feedback, email);
@@ -138,12 +139,14 @@ export function CallFeedback({
                 onEmailInput={setEmail}
                 onFeedbackInput={setFeedback}
               />
-              <div className="w-full">
-                <ShareCheckbox />
-              </div>
-                <EpicButton className="w-full" onClick={handleFeedback(true)}>
-                  Send feedback
-                </EpicButton>
+              {sharingEnabled === true && (
+                <div className="w-full">
+                  <ShareCheckbox />
+                </div>
+              )}
+              <EpicButton className="w-full" onClick={handleFeedback(true)}>
+                Send feedback
+              </EpicButton>
             </div>
           </DialogDescription>
         </DialogHeader>
