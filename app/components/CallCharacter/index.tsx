@@ -264,13 +264,15 @@ export function CallCharacter({ character }: { character: CharacterType }) {
 
     console.log(`CallCharacter: created voice session`);
     session.warmup();
-    session.startAudio(); // This will prompt for mic permission.
-
-    setVoiceSession(session);
-    // Wait a beat before starting the ringtone.
-    setTimeout(() => {
-      ringtone.play();
-    }, 1000);
+    // This will prompt for mic permission.
+    session.startAudio().then(() => {
+      // Starting audio session.
+      setVoiceSession(session);
+      // Wait a beat before starting the ringtone.
+      setTimeout(() => {
+        ringtone.play();
+      }, 1000);
+    });
   }, [character, model, isSupported, request, ringtone, startingCall]);
 
   // Invoked when ringtone is done ringing.
