@@ -865,6 +865,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@radix-ui/react-switch@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "@radix-ui/react-switch@npm:1.0.3"
+  dependencies:
+    "@babel/runtime": ^7.13.10
+    "@radix-ui/primitive": 1.0.1
+    "@radix-ui/react-compose-refs": 1.0.1
+    "@radix-ui/react-context": 1.0.1
+    "@radix-ui/react-primitive": 1.0.3
+    "@radix-ui/react-use-controllable-state": 1.0.1
+    "@radix-ui/react-use-previous": 1.0.1
+    "@radix-ui/react-use-size": 1.0.1
+  peerDependencies:
+    "@types/react": "*"
+    "@types/react-dom": "*"
+    react: ^16.8 || ^17.0 || ^18.0
+    react-dom: ^16.8 || ^17.0 || ^18.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    "@types/react-dom":
+      optional: true
+  checksum: de18a802f317804d94315b1035d03a9cabef53317c148027f0f382bc2653723532691b65090596140737bb055e3affff977f5d73fe6caf8c526c6158baa811cc
+  languageName: node
+  linkType: hard
+
 "@radix-ui/react-use-callback-ref@npm:1.0.1":
   version: 1.0.1
   resolution: "@radix-ui/react-use-callback-ref@npm:1.0.1"
@@ -2914,9 +2940,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fixie@npm:6.3.3-rc2":
-  version: 6.3.3-rc2
-  resolution: "fixie@npm:6.3.3-rc2"
+"fixie@npm:6.3.3":
+  version: 6.3.3
+  resolution: "fixie@npm:6.3.3"
   dependencies:
     "@apollo/client": ^3.8.1
     "@types/apollo-upload-client": ^17.0.2
@@ -2948,7 +2974,7 @@ __metadata:
       optional: true
   bin:
     fixie: src/main.js
-  checksum: 879772d61c3382b494edd71ce5bd3ac3fc0d370101387decce5067bbbdc03ac1a21e391dc3436a18b73e829d7d0a783216a2201d00391be30c43d6074d0b572d
+  checksum: a076873474416866a3ceecb329066ced9d1d8faf1623ba81d40397b3d1c6787fe2547a0a72b2de57836f6bc850e1ff3aef95c8b053e2a0e15065d246c60c9679
   languageName: node
   linkType: hard
 
@@ -3365,6 +3391,7 @@ __metadata:
     "@radix-ui/react-accordion": ^1.1.2
     "@radix-ui/react-dialog": ^1.0.5
     "@radix-ui/react-select": ^2.0.0
+    "@radix-ui/react-switch": ^1.0.3
     "@types/howler": ^2.2.11
     "@types/lodash": ^4.14.195
     "@types/node": ^18
@@ -3379,7 +3406,7 @@ __metadata:
     eslint: ^8
     eslint-config-next: ^14.0.3
     file-loader: ^6.2.0
-    fixie: 6.3.3-rc2
+    fixie: 6.3.3
     howler: ^2.2.4
     launchdarkly-js-client-sdk: ^3.1.4
     launchdarkly-react-client-sdk: ^3.0.9
