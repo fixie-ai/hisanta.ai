@@ -14,8 +14,44 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
+import { Switch } from "../ui/switch";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { Checkbox } from "../ui/checkbox";
+import { Check } from "lucide-react";
+
+function GoodBadSwitch({
+  notGood,
+  onNotGoodChange,
+}: {
+  notGood: boolean;
+  onNotGoodChange: (val: boolean) => void;
+}) {
+  return (
+    <div className="flex flex-row gap-2 items-center">
+      <span className="text-lg md:text-lg text-Holiday-Green">
+        Pretty good!
+      </span>
+      <Switch
+        checked={notGood}
+        onCheckedChange={onNotGoodChange}
+        className="data-[state=unchecked]:bg-Holiday-Green data-[state=checked]:bg-Holiday-Red"
+      />
+      <span className="text-lg md:text-lg text-Holiday-Red">Not so good!</span>
+    </div>
+  );
+}
+
+function ShareCheckbox() {
+  return (
+    <div className="flex flex-row gap-4 border rounded-2xl p-4 items-center">
+      <Checkbox className="w-6 h-6" />
+      <div className="text-Holiday-Green text-xl">
+        Generate a shareable video of your call
+      </div>
+    </div>
+  );
+}
 
 function FeedbackForm({
   onFeedbackInput,
@@ -27,7 +63,9 @@ function FeedbackForm({
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="item-1">
-        <AccordionTrigger>Tell us more!</AccordionTrigger>
+        <AccordionTrigger className="font-[Inter-Regular]">
+          Tell us more! (optional)
+        </AccordionTrigger>
         <AccordionContent>
           <div className="w-11/12 mx-auto flex flex-col gap-2">
             <div className="font-[Inter-Regular]">
@@ -38,7 +76,9 @@ function FeedbackForm({
               <Textarea
                 className="font-[Inter-Regular]"
                 placeholder="Your feedback here"
-                onInput={(e) => onFeedbackInput((e.target as HTMLTextAreaElement).value)}
+                onInput={(e) =>
+                  onFeedbackInput((e.target as HTMLTextAreaElement).value)
+                }
               />
             </div>
             <div>
@@ -46,7 +86,9 @@ function FeedbackForm({
                 className="font-[Inter-Regular]"
                 type="text"
                 placeholder="Your email (optional)"
-                onInput={(e) => onEmailInput((e.target as HTMLInputElement).value)}
+                onInput={(e) =>
+                  onEmailInput((e.target as HTMLInputElement).value)
+                }
               />
             </div>
           </div>
@@ -69,6 +111,7 @@ export function CallFeedback({
 }) {
   const [feedback, setFeedback] = useState("");
   const [email, setEmail] = useState("");
+  const [notGood, setNotGood] = useState(false);
 
   const handleFeedback = (good: boolean) => () => {
     onFeedback(good, feedback, email);
@@ -84,23 +127,23 @@ export function CallFeedback({
             <span className="text-Holiday-Red">{character.name}?</span>
           </DialogTitle>
           <DialogDescription>
-            <FeedbackForm onEmailInput={setEmail} onFeedbackInput={setFeedback} />
-            <div className="mx-auto w-60% mt-8 flex flex-col gap-4">
-              <div className="mx-auto flex flex-col md:flex-row gap-4 w-fit">
-                <EpicButton
-                  onClick={handleFeedback(true)}
-                  type="secondaryGreen"
-                >
-                  Good!
-                </EpicButton>
-                <EpicButton onClick={handleFeedback(false)} type="secondaryRed">
-                  Not so good!
-                </EpicButton>
+            <div className="mx-auto w-full flex flex-col gap-4">
+              <div className="mx-auto font-[Inter-Regular] text-sm">
+                Your feedback will help make HiSanta better
               </div>
-              <div className="mx-auto mt-4 font-[Inter-Regular]">
-                Your feedback will help make{" "}
-                <span className="font-sans">HiSanta</span> better!
+              <div className="mx-auto">
+                <GoodBadSwitch notGood={notGood} onNotGoodChange={setNotGood} />
               </div>
+              <FeedbackForm
+                onEmailInput={setEmail}
+                onFeedbackInput={setFeedback}
+              />
+              <div className="w-full">
+                <ShareCheckbox />
+              </div>
+                <EpicButton className="w-full" onClick={handleFeedback(true)}>
+                  Send feedback
+                </EpicButton>
             </div>
           </DialogDescription>
         </DialogHeader>
