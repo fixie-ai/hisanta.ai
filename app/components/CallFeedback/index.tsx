@@ -29,7 +29,7 @@ function FeedbackForm({
       <AccordionItem value="item-1">
         <AccordionTrigger>Tell us more!</AccordionTrigger>
         <AccordionContent>
-          <div className="flex flex-col gap-2">
+          <div className="w-11/12 mx-auto flex flex-col gap-2">
             <div className="font-[Inter-Regular]">
               Thanks for your feedback. Feel free to share more about your
               experience below.
@@ -84,6 +84,7 @@ export function CallFeedback({
             <span className="text-Holiday-Red">{character.name}?</span>
           </DialogTitle>
           <DialogDescription>
+            <FeedbackForm onEmailInput={setEmail} onFeedbackInput={setFeedback} />
             <div className="mx-auto w-60% mt-8 flex flex-col gap-4">
               <div className="mx-auto flex flex-col md:flex-row gap-4 w-fit">
                 <EpicButton
@@ -103,7 +104,6 @@ export function CallFeedback({
             </div>
           </DialogDescription>
         </DialogHeader>
-        <FeedbackForm onEmailInput={setEmail} onFeedbackInput={setFeedback} />
       </DialogContent>
     </Dialog>
   );
