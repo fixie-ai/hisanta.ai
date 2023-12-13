@@ -52,16 +52,19 @@ function makeVoiceSession({
   ttsProvider,
   ttsVoice,
   model,
+  webrtcUrl,
 }: {
   agentId: string;
   asrProvider?: string;
   ttsProvider?: string;
   ttsVoice?: string;
   model?: string;
+  webrtcUrl?: string;
 }): VoiceSession {
   console.log(`[makeVoiceSession] creating voice session with LLM ${model}`);
   const fixieClient = new FixieClient({});
   const voiceInit: VoiceSessionInit = {
+    webrtcUrl: webrtcUrl || "wss://wsapi.fixie.ai",
     asrProvider: asrProvider || DEFAULT_ASR_PROVIDER,
     ttsProvider: ttsProvider || DEFAULT_TTS_PROVIDER,
     ttsVoice: ttsVoice || DEFAULT_TTS_VOICE,
@@ -109,6 +112,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   const router = useRouter();
   const model = searchParams.get("model") || llmModel;
   const noRing = searchParams.get("ring") == "0" || false;
+  const webrtcUrl = searchParams.get("webrtcUrl");
   const { isSupported, released, request, release } = useWakeLock({
     onRequest: () => console.log("Screen wake lock requested"),
     onError: () => console.error("Error with wake lock"),
@@ -183,6 +187,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       request();
     }
     const session = makeVoiceSession({
+      webrtcUrl: webrtcUrl || undefined,
       agentId: character.agentId,
       ttsVoice: character.voiceId,
       model: model,
