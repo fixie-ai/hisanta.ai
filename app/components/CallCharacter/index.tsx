@@ -108,6 +108,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   const [callStartTime, setCallStartTime] = useState<number | null>(null);
   const router = useRouter();
   const model = searchParams.get("model") || llmModel;
+  const noRing = searchParams.get("ring") == "0" || false;
   const { isSupported, released, request, release } = useWakeLock({
     onRequest: () => console.log("Screen wake lock requested"),
     onError: () => console.error("Error with wake lock"),
@@ -268,17 +269,25 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     session.startAudio().then(() => {
       // Starting audio session.
       setVoiceSession(session);
-      // Wait a beat before starting the ringtone.
-      setTimeout(() => {
-        ringtone.play();
-      }, 1000);
+      if (noRing) {
+        // Skip ringtone and get down to business.
+        setStartRequested(true);
+      } else {
+        // Wait a beat before starting the ringtone, which feels more natural.
+        setTimeout(() => {
+          ringtone.play();
+        }, 1000);
+      }
     });
-  }, [character, model, isSupported, request, ringtone, startingCall]);
+  }, [character, model, isSupported, request, ringtone, noRing, startingCall]);
 
   // Invoked when ringtone is done ringing.
   const onRingtoneFinished = () => {
     console.log(`CallCharacter: onRingtoneFinished`);
-    setStartRequested(true);
+    // Wait a bit before starting the voice session, so the ringtone doesn't get cut off.
+    setTimeout(() => {
+      setStartRequested(true);
+    }, 1000);
   };
 
   // Invoked when hangup sound effect is done playing.
