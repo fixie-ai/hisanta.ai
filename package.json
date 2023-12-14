@@ -34,6 +34,7 @@
     "postcss": "^8",
     "react": "^18",
     "react-dom": "^18",
+    "react-player": "^2.14.0",
     "react-screen-wake-lock": "^3.0.2",
     "react-swipeable": "^7.0.1",
     "react-use": "^17.4.2",
