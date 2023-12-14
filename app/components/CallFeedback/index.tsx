@@ -14,34 +14,47 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../ui/accordion";
-import { Switch } from "../ui/switch";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { useFlags } from "launchdarkly-react-client-sdk";
 import { ShareCheckbox, SharingDialogContent } from "../Sharing";
+import { Toggle } from "../ui/toggle";
+import { datadogRum } from "@datadog/browser-rum";
 
-function GoodBadSwitch({
-  notGood,
-  onNotGoodChange,
+function GoodBadSelector({
+  good,
+  bad,
+  onGoodChange,
+  onBadChange,
 }: {
-  notGood: boolean;
-  onNotGoodChange: (val: boolean) => void;
+  good: boolean;
+  bad: boolean;
+  onGoodChange: (val: boolean) => void;
+  onBadChange: (val: boolean) => void;
 }) {
   return (
     <div className="flex flex-row gap-2 items-center">
-      <span className="text-xl md:text-xl text-Holiday-Green">
+      <Toggle
+        variant="outline"
+        aria-label="Good"
+        className="text-2xl text-Holiday-Green hover:text-Holiday-Green hover:bg-white data-[state=on]:bg-white data-[state=on]:text-Holiday-Green data-[state=on]:border-2 data-[state=on]:border-Holiday-Green"
+        pressed={good}
+        onPressedChange={onGoodChange}
+      >
         Pretty good!
-      </span>
-      <Switch
-        checked={notGood}
-        onCheckedChange={onNotGoodChange}
-        className="data-[state=unchecked]:bg-Holiday-Green data-[state=checked]:bg-Holiday-Red"
-      />
-      <span className="text-xl md:text-xl text-Holiday-Red">Not so good!</span>
+      </Toggle>
+      <Toggle
+        variant="outline"
+        aria-label="Not Good"
+        className="text-2xl text-Holiday-Red hover:text-Holiday-Red hover:bg-white data-[state=on]:bg-white data-[state=on]:text-Holiday-Red data-[state=on]:border-2 data-[state=on]:border-Holiday-Red border"
+        pressed={bad}
+        onPressedChange={onBadChange}
+      >
+        Not so good!
+      </Toggle>
     </div>
   );
 }
-
 
 function FeedbackForm({
   onFeedbackInput,
@@ -99,13 +112,22 @@ export function CallFeedback({
   character: CharacterType;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onFeedback: (good: boolean, feedback: string, email: string) => void;
+  onFeedback: ({
+    good,
+    feedback,
+    email,
+  }: {
+    good?: boolean;
+    feedback: string;
+    email: string;
+  }) => void;
   duration?: number;
   conversationId?: string;
 }) {
   const [feedback, setFeedback] = useState("");
   const [email, setEmail] = useState("");
-  const [notGood, setNotGood] = useState(false);
+  const [good, setGood] = useState(false);
+  const [bad, setBad] = useState(false);
   const { sharingEnabled } = useFlags();
   const [shareClicked, setShareClicked] = useState(false);
   const [sharing, setSharing] = useState(false);
@@ -113,14 +135,19 @@ export function CallFeedback({
   useEffect(() => {
     setFeedback("");
     setEmail("");
-    setNotGood(false);
+    setGood(false);
+    setBad(false);
     setShareClicked(false);
     setSharing(false);
   }, [open]);
 
   const handleFeedback = () => {
-    onFeedback(!notGood, feedback, email);
+    const callGood = !good && !bad ? undefined : good;
+    onFeedback({ good: callGood, feedback, email });
     if (sharingEnabled === true && shareClicked && conversationId) {
+      datadogRum.addAction("share-selected", {
+        conversationId: conversationId || "",
+      });
       setSharing(true);
     } else {
       onOpenChange(false);
@@ -131,12 +158,26 @@ export function CallFeedback({
     onOpenChange(false);
   };
 
+  const onGoodChange = (val: boolean) => {
+    setGood(val);
+    if (val) {
+      setBad(false);
+    }
+  };
+
+  const onBadChange = (val: boolean) => {
+    setBad(val);
+    if (val) {
+      setGood(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {sharing && conversationId ? (
         <SharingDialogContent
           duration={duration}
-          roomId={conversationId}   // XXX XXX MDW TODO: Replace with room ID.
+          roomId={conversationId} // XXX XXX MDW TODO: Replace with room ID.
           onClose={onClose}
         />
       ) : (
@@ -152,9 +193,11 @@ export function CallFeedback({
                   Your feedback will help make HiSanta better
                 </div>
                 <div className="mx-auto">
-                  <GoodBadSwitch
-                    notGood={notGood}
-                    onNotGoodChange={setNotGood}
+                  <GoodBadSelector
+                    good={good}
+                    bad={bad}
+                    onGoodChange={onGoodChange}
+                    onBadChange={onBadChange}
                   />
                 </div>
                 <FeedbackForm
@@ -183,4 +226,3 @@ export function CallFeedback({
     </Dialog>
   );
 }
-

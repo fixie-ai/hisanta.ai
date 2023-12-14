@@ -10,6 +10,7 @@ import Image from "next/image";
 import { Uuid } from "uuid-tool";
 import base from "base-x";
 import { CopyToClipboard } from "../CopyToClipboard";
+import { datadogRum } from "@datadog/browser-rum";
 
 const BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const b58 = base(BASE58);
@@ -17,7 +18,7 @@ const b58 = base(BASE58);
 /** Given a UUID string, returns the short key to access it via the sharing page. */
 export function shareKey(uuid: string) {
   const uuidObj = new Uuid(uuid);
-  return b58.encode(uuidObj.toBytes().slice(0, 4));
+  return b58.encode(uuidObj.toBytes().slice(0, 6));
 }
 
 /** Checkbox allowing user to select whether they want to share their call. */

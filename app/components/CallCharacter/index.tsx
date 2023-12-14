@@ -355,20 +355,28 @@ export function CallCharacter({ character }: { character: CharacterType }) {
 
   // Invoked when user submits call feedback.
   const onFeedback = useCallback(
-    (good: boolean, feedback: string, email: string) => {
+    ({
+      good,
+      feedback,
+      email,
+    }: {
+      good?: boolean;
+      feedback: string;
+      email: string;
+    }) => {
       console.log(
         `CallCharacter[${voiceSession?.conversationId}] - onFeedback: good ${good} feedback ${feedback} email ${email}`
       );
       // We can send more parameters to DD than to Vercel.
       datadogRum.addAction("call-feedback-received", {
         conversationId: voiceSession?.conversationId || "",
-        callGood: good,
+        callGood: good ?? null,
         feedback: feedback,
         email: email,
       });
       vercelTrack("call-feedback-received", {
         conversationId: voiceSession?.conversationId || "",
-        callGood: good,
+        callGood: good ?? null,
       });
     },
     [voiceSession]
