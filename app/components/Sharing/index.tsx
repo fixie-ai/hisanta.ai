@@ -23,7 +23,8 @@ export function uuidToShareKey(uuid: string) {
 
 export function shareKeyToUuid(key: string) {
   const bytes = b58.decode(key);
-  const uuidObj = new Uuid(bytes.map((b) => b as number))
+  const arr = Array.from(bytes);
+  const uuidObj = new Uuid().fromBytes(arr);
   return uuidObj.toString();
 }
 
