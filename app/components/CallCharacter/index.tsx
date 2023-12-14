@@ -101,7 +101,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   const [startingCall, setStartingCall] = useState(false);
   const [startRequested, setStartRequested] = useState(false);
   const [debugSheetOpen, setDebugSheetOpen] = useState(false);
-  const [callDidError, setCallDidError] = useState(false);
+  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
   const [callError, setCallError] = useState("");
 
   const [stats, setStats] = useState<VoiceSessionStats>({
@@ -292,7 +292,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       })
       .catch((err) => {
         console.log(`CallCharacter: error starting audio session: ${err}`);
-        setCallDidError(true);
+        setErrorDialogOpen(true);
         setCallError(err.message);
         setStartingCall(false);
       });
@@ -395,7 +395,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
         err={callError}
         open={callDidError}
         onOpenChange={() => {
-          setCallDidError(false);
+          setErrorDialogOpen(false);
         }}
       />
       {inCall && voiceSession ? (

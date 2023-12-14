@@ -33,7 +33,7 @@ export function CallError({
             />
             {err === "Permission denied"
               ? "In order to talk to Santa & Friends, you need to allow access to your microphone. Please refresh the page and try again."
-              : "Uh oh, seems like there are connections issues with the North Pole. Please refresh the page and try again."}
+              : "Uh oh, seems like there are connection issues with the North Pole. Please refresh the page and try again."}
           </DialogDescription>
         </DialogHeader>
       </DialogContent>
