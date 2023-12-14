@@ -1,6 +1,6 @@
 import config, { getCharacter } from "@/lib/config";
 import { notFound } from "next/navigation";
-import { CallCharacter } from "../components/CallCharacter";
+import { CallCharacter } from "../../components/CallCharacter";
 
 // Set the runtime to Edge.
 // @see https://nextjs.org/docs/app/building-your-application/rendering/edge-and-nodejs-runtimes#segment-runtime-option

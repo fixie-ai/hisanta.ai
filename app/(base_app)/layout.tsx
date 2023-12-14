@@ -1,12 +1,12 @@
 import { Metadata } from "next";
 import config from "@/lib/config";
-import "./globals.css";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import "../globals.css";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import { Analytics } from "@vercel/analytics/react";
-import { LaunchDarklyProvider } from "./components/LaunchDarkly";
-import { Datadog } from "./components/Datadog";
-import { Toaster } from "./components/ui/toaster";
+import { LaunchDarklyProvider } from "../components/LaunchDarkly";
+import { Datadog } from "../components/Datadog";
+import { Toaster } from "../components/ui/toaster";
 
 export const metadata: Metadata = {
   title: config.siteName,

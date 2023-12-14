@@ -1,5 +1,5 @@
 import Link from "next/link";
-import EpicButton from "./components/Buttons";
+import EpicButton from "../components/Buttons";
 import Image from "next/image";
 
 export default function NotFound() {
