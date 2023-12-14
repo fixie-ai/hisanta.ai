@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import { Analytics } from "@vercel/analytics/react";
 import { LaunchDarklyProvider } from "./components/LaunchDarkly";
 import { Datadog } from "./components/Datadog";
+import { Toaster } from "./components/ui/toaster";
 
 export const metadata: Metadata = {
   title: config.siteName,
@@ -26,6 +27,7 @@ export default function RootLayout({
           <Header />
           <main>{children}</main>
           <Footer />
+          <Toaster />
         </LaunchDarklyProvider>
         <Datadog />
         <Analytics />
