@@ -54,12 +54,12 @@ export function ShareCheckbox({
 
 /** Returns dialog content for the sharing action. */
 export function SharingDialogContent({
-  roomId,
+  roomName,
   onClose,
   duration,
   character,
 }: {
-  roomId: string;
+  roomName: string;
   onClose: () => void;
   duration?: number;
   character: CharacterType;
@@ -67,7 +67,7 @@ export function SharingDialogContent({
   // Duration is in milliseconds. We need minutes and seconds.
   const minutes = duration ? Math.floor(duration! / 60000) : "0";
   const seconds = duration ? ((duration! % 60000) / 1000).toFixed(0) : 0;
-  const shareUrl = `hisanta.ai/s/${uuidToShareKey(roomId)}`;
+  const shareUrl = `hisanta.ai/s/${uuidToShareKey(roomName)}`;
 
   return (
     <DialogContent>
@@ -82,7 +82,7 @@ export function SharingDialogContent({
                 Your {minutes}:{seconds.toString().padStart(2, "0")} call can be
                 replayed here:
               </div>
-              <div className="mt-4 text-xl">
+              <div className="mt-4 text-base">
                 <CopyToClipboard value={`https://${shareUrl}`}>
                   {shareUrl}
                 </CopyToClipboard>

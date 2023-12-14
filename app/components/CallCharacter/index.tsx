@@ -98,6 +98,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   const [inCall, setInCall] = useState(false);
   const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
   const [voiceSession, setVoiceSession] = useState<VoiceSession | null>(null);
+  const [roomName, setRoomName] = useState<string | null>(null);
   const [startingCall, setStartingCall] = useState(false);
   const [startRequested, setStartRequested] = useState(false);
   const [debugSheetOpen, setDebugSheetOpen] = useState(false);
@@ -253,6 +254,9 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       console.log(
         `CallCharacter[${session.conversationId}]: session state: ${state}`
       );
+      if (state === VoiceSessionState.IDLE) {
+        setRoomName(session.roomName || null);
+      }
       setStats((curStats) => ({
         ...curStats,
         state,
@@ -430,6 +434,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
         onFeedback={onFeedback}
         duration={callDuration || undefined}
         conversationId={voiceSession?.conversationId}
+        roomName={roomName || undefined}
       />
       <DebugSheet
         open={debugSheetOpen}
