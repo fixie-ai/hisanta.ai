@@ -109,7 +109,7 @@ export function SharingDialogContent({
                 Share on Twitter
               </div>
             </EpicButton>
-            <EpicButton className="w-full" onClick={onClose}>
+            <EpicButton className="w-full h-12" onClick={onClose}>
               Close
             </EpicButton>
           </div>

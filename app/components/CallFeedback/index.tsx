@@ -50,7 +50,7 @@ function GoodBadSelector({
         onPressedChange={onGoodChange}
       >
         <div className="flex flex-col gap-2 text-center">
-          <div>Pretty good!</div>
+          <div className="text-base md:text-xl">Pretty good!</div>
           <div className="mx-auto">
             {good ? (
               <HandThumbUpIconSolid className="w-8 h-8" />
@@ -68,7 +68,7 @@ function GoodBadSelector({
         onPressedChange={onBadChange}
       >
         <div className="flex flex-col gap-2 text-center">
-          <div>Not so good!</div>
+          <div className="text-base md:text-xl">Not so good!</div>
           <div className="mx-auto">
             {bad ? (
               <HandThumbDownIconSolid className="w-8 h-8" />
@@ -200,7 +200,7 @@ export function CallFeedback({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      {sharing && conversationId ? (
+      {sharingEnabled && sharing && conversationId ? (
         <SharingDialogContent
           duration={duration}
           roomId={conversationId} // XXX XXX MDW TODO: Replace with room ID.
