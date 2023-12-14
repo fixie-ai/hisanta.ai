@@ -7,6 +7,7 @@ import { Howl } from "howler";
 import { FixieClient } from "fixie";
 import {
   VoiceSession,
+  VoiceSessionError,
   VoiceSessionInit,
   VoiceSessionState,
 } from "fixie/src/voice";
@@ -263,12 +264,13 @@ export function CallCharacter({ character }: { character: CharacterType }) {
         state: state,
       });
     };
-    session.onError = () => {
+    session.onError = (err: VoiceSessionError) => {
       console.log(
         `CallCharacter[${session.conversationId}]: voiceSession error`
       );
       track("voice-session-error", {
         conversationId: session.conversationId || "",
+        error: err.message,
       });
       session.stop();
     };
