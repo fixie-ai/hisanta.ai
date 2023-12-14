@@ -20,6 +20,14 @@ import { useFlags } from "launchdarkly-react-client-sdk";
 import { ShareCheckbox, SharingDialogContent } from "../Sharing";
 import { Toggle } from "../ui/toggle";
 import { datadogRum } from "@datadog/browser-rum";
+import {
+  HandThumbUpIcon,
+  HandThumbDownIcon,
+} from "@heroicons/react/24/outline";
+import {
+  HandThumbUpIcon as HandThumbUpIconSolid,
+  HandThumbDownIcon as HandThumbDownIconSolid,
+} from "@heroicons/react/24/solid";
 
 function GoodBadSelector({
   good,
@@ -37,20 +45,38 @@ function GoodBadSelector({
       <Toggle
         variant="outline"
         aria-label="Good"
-        className="text-2xl text-Holiday-Green hover:text-Holiday-Green hover:bg-white data-[state=on]:bg-white data-[state=on]:text-Holiday-Green data-[state=on]:border-2 data-[state=on]:border-Holiday-Green"
+        className="h-24 rounded-2xl text-2xl text-Holiday-Green hover:text-Holiday-Green hover:bg-white data-[state=on]:bg-white data-[state=on]:text-Holiday-Green data-[state=on]:border-2 data-[state=on]:border-Holiday-Green"
         pressed={good}
         onPressedChange={onGoodChange}
       >
-        Pretty good!
+        <div className="flex flex-col gap-2 text-center">
+          <div>Pretty good!</div>
+          <div className="mx-auto">
+            {good ? (
+              <HandThumbUpIconSolid className="w-8 h-8" />
+            ) : (
+              <HandThumbUpIcon className="w-8 h-8" />
+            )}
+          </div>
+        </div>
       </Toggle>
       <Toggle
         variant="outline"
         aria-label="Not Good"
-        className="text-2xl text-Holiday-Red hover:text-Holiday-Red hover:bg-white data-[state=on]:bg-white data-[state=on]:text-Holiday-Red data-[state=on]:border-2 data-[state=on]:border-Holiday-Red border"
+        className="h-24 rounded-2xl text-2xl text-Holiday-Red hover:text-Holiday-Red hover:bg-white data-[state=on]:bg-white data-[state=on]:text-Holiday-Red data-[state=on]:border-2 data-[state=on]:border-Holiday-Red border"
         pressed={bad}
         onPressedChange={onBadChange}
       >
-        Not so good!
+        <div className="flex flex-col gap-2 text-center">
+          <div>Not so good!</div>
+          <div className="mx-auto">
+            {bad ? (
+              <HandThumbDownIconSolid className="w-8 h-8" />
+            ) : (
+              <HandThumbDownIcon className="w-8 h-8" />
+            )}
+          </div>
+        </div>
       </Toggle>
     </div>
   );
