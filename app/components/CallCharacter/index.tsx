@@ -106,6 +106,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   });
   const { llmModel } = useFlags();
   const [callStartTime, setCallStartTime] = useState<number | null>(null);
+  const [callDuration, setCallDuration] = useState<number | null>(null);
   const router = useRouter();
   const model = searchParams.get("model") || llmModel;
   const noRing = searchParams.get("ring") == "0" || false;
@@ -320,9 +321,10 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     track("call-ended", {
       conversationId: voiceSession?.conversationId || "",
     });
-    const callDuration = callStartTime ? Date.now() - callStartTime : 0;
+    const duration = callStartTime ? Date.now() - callStartTime : 0;
+    setCallDuration(duration);
     track("call-duration", {
-      duration: callDuration,
+      duration,
       conversationId: voiceSession?.conversationId || "",
     });
   }, [voiceSession, isSupported, release, callStartTime, onHangupFinished]);
@@ -394,6 +396,8 @@ export function CallCharacter({ character }: { character: CharacterType }) {
         open={feedbackDialogOpen}
         onOpenChange={setFeedbackDialogOpen}
         onFeedback={onFeedback}
+        duration={callDuration}
+        conversationId={voiceSession?.conversationId}
       />
       <DebugSheet
         open={debugSheetOpen}
