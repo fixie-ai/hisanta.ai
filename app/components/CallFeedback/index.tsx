@@ -19,7 +19,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Checkbox } from "../ui/checkbox";
 import { useFlags } from "launchdarkly-react-client-sdk";
-
+import Image from "next/image";
 
 function GoodBadSwitch({
   notGood,
@@ -121,7 +121,7 @@ export function CallFeedback({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onFeedback: (good: boolean, feedback: string, email: string) => void;
-  duration?: number,
+  duration?: number;
   conversationId?: string;
 }) {
   const [feedback, setFeedback] = useState("");
@@ -132,11 +132,11 @@ export function CallFeedback({
   const [sharing, setSharing] = useState(false);
 
   useEffect(() => {
-      setFeedback("");
-      setEmail("");
-      setNotGood(false);
-      setShareClicked(false);
-      setSharing(false);
+    setFeedback("");
+    setEmail("");
+    setNotGood(false);
+    setShareClicked(false);
+    setSharing(false);
   }, [open]);
 
   const handleFeedback = () => {
@@ -155,7 +155,11 @@ export function CallFeedback({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {sharing && conversationId ? (
-        <SharingDialogContent duration={duration} shareUrl={`hisanta.ai/${conversationId}`} onClose={onClose} />
+        <SharingDialogContent
+          duration={duration}
+          shareUrl={`hisanta.ai/${conversationId}`}
+          onClose={onClose}
+        />
       ) : (
         <DialogContent>
           <DialogHeader>
@@ -178,16 +182,19 @@ export function CallFeedback({
                   onEmailInput={setEmail}
                   onFeedbackInput={setFeedback}
                 />
-                {sharingEnabled === true && conversationId && duration && duration > 0 && (
-                  <div className="w-full">
-                    <ShareCheckbox
-                      checked={shareClicked}
-                      onCheckedChange={setShareClicked}
-                    />
-                  </div>
-                )}
+                {sharingEnabled === true &&
+                  conversationId &&
+                  duration &&
+                  duration > 0 && (
+                    <div className="w-full">
+                      <ShareCheckbox
+                        checked={shareClicked}
+                        onCheckedChange={setShareClicked}
+                      />
+                    </div>
+                  )}
                 <EpicButton className="w-full" onClick={handleFeedback}>
-                  { shareClicked ? "Next" : "Send feedback" }
+                  {shareClicked ? "Next" : "Send feedback"}
                 </EpicButton>
               </div>
             </DialogDescription>
@@ -220,14 +227,43 @@ function SharingDialogContent({
         <DialogDescription>
           <div className="mx-auto w-full flex flex-col gap-4 mb-4">
             <div className="flex flex-col w-full bg-slate-100 rounded-3xl font-[Inter-Regular] p-4 mb-4">
-              <div className="text-sm">Your {minutes}:{seconds.toString().padStart(2, '0')} call can be replayed here:</div>
+              <div className="text-sm">
+                Your {minutes}:{seconds.toString().padStart(2, "0")} call can be
+                replayed here:
+              </div>
               <div className="mt-4 text-xl">{shareUrl}</div>
             </div>
-            <EpicButton type="secondaryGreen" className="w-full" onClick={onClose}>
+            <EpicButton
+              type="secondaryGreen"
+              className="w-full"
+              onClick={onClose}
+            >
+              <div className="w-fit mx-auto flex flex-row gap-2 items-center">
+              <Image
+                src="/images/logo-facebook.svg"
+                alt="Facebook logo"
+                width={48}
+                height={48}
+                className="w-8 h-8"
+              />
               Share on Facebook
+              </div>
             </EpicButton>
-            <EpicButton type="secondaryGreen" className="w-full" onClick={onClose}>
+            <EpicButton
+              type="secondaryGreen"
+              className="w-full"
+              onClick={onClose}
+            >
+              <div className="w-fit mx-auto flex flex-row gap-2 items-center">
+              <Image
+                src="/images/logo-twitter.svg"
+                alt="Twitter logo"
+                width={48}
+                height={48}
+                className="w-8 h-8"
+              />
               Share on Twitter
+              </div>
             </EpicButton>
             <EpicButton className="w-full" onClick={onClose}>
               Close
