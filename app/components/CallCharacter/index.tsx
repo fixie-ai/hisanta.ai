@@ -273,13 +273,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
         conversationId: session.conversationId || "",
         error: msg,
       });
-      // We have a funky situation here where 1006 errors sometimes are due to React Strict Mode
-      // causing the VoiceSession to get re-created, which we don't want to barf on, but sometimes
-      // are due to a server-side error that occurs during the websocket connection startup. For
-      // now, we ignore them but still log them.
-      if (!msg.indexOf("1006")) {
-        session.stop();
-      }
+      session.stop();
     };
 
     console.log(`CallCharacter: created voice session`);
