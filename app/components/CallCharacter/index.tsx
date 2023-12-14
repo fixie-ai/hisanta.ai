@@ -19,6 +19,7 @@ import { useSearchParams } from "next/navigation";
 import { useWakeLock } from "react-screen-wake-lock";
 import { CallFeedback } from "../CallFeedback";
 import { datadogRum } from "@datadog/browser-rum";
+import { CallError } from "../CallError";
 
 const DEFAULT_ASR_PROVIDER = "deepgram";
 const DEFAULT_TTS_PROVIDER = "eleven-ws";
@@ -100,6 +101,9 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   const [startingCall, setStartingCall] = useState(false);
   const [startRequested, setStartRequested] = useState(false);
   const [debugSheetOpen, setDebugSheetOpen] = useState(false);
+  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+  const [callError, setCallError] = useState("");
+
   const [stats, setStats] = useState<VoiceSessionStats>({
     state: null,
     asrLatency: -1,
@@ -272,19 +276,27 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     console.log(`CallCharacter: created voice session`);
     session.warmup();
     // This will prompt for mic permission.
-    session.startAudio().then(() => {
-      // Starting audio session.
-      setVoiceSession(session);
-      if (noRing) {
-        // Skip ringtone and get down to business.
-        setStartRequested(true);
-      } else {
-        // Wait a beat before starting the ringtone, which feels more natural.
-        setTimeout(() => {
-          ringtone.play();
-        }, 1000);
-      }
-    });
+    session
+      .startAudio()
+      .then(() => {
+        // Starting audio session.
+        setVoiceSession(session);
+        if (noRing) {
+          // Skip ringtone and get down to business.
+          setStartRequested(true);
+        } else {
+          // Wait a beat before starting the ringtone, which feels more natural.
+          setTimeout(() => {
+            ringtone.play();
+          }, 1000);
+        }
+      })
+      .catch((err) => {
+        console.log(`CallCharacter: error starting audio session: ${err}`);
+        setErrorDialogOpen(true);
+        setCallError(err.message);
+        setStartingCall(false);
+      });
   }, [character, model, isSupported, request, ringtone, noRing, startingCall]);
 
   // Invoked when ringtone is done ringing.
@@ -389,6 +401,13 @@ export function CallCharacter({ character }: { character: CharacterType }) {
 
   return (
     <CheckTooBusy>
+      <CallError
+        err={callError}
+        open={errorDialogOpen}
+        onOpenChange={() => {
+          setErrorDialogOpen(false);
+        }}
+      />
       {inCall && voiceSession ? (
         <ActiveCall
           voiceSession={voiceSession}
