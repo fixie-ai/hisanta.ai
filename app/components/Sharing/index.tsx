@@ -10,7 +10,6 @@ import Image from "next/image";
 import { Uuid } from "uuid-tool";
 import base from "base-x";
 import { CopyToClipboard } from "../CopyToClipboard";
-import { datadogRum } from "@datadog/browser-rum";
 
 const BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const b58 = base(BASE58);
@@ -21,6 +20,7 @@ export function uuidToShareKey(uuid: string) {
   return b58.encode(uuidObj.toBytes());
 }
 
+/** Given a share key, return the UUID. */
 export function shareKeyToUuid(key: string) {
   const bytes = b58.decode(key);
   const arr = Array.from(bytes);
@@ -63,7 +63,7 @@ export function SharingDialogContent({
   // Duration is in milliseconds. We need minutes and seconds.
   const minutes = duration ? Math.floor(duration! / 60000) : "0";
   const seconds = duration ? ((duration! % 60000) / 1000).toFixed(0) : 0;
-  const shareUrl = `hisanta.ai/${shareKey(roomId)}`;
+  const shareUrl = `hisanta.ai/s/${uuidToShareKey(roomId)}`;
 
   return (
     <DialogContent>
