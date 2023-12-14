@@ -1,4 +1,4 @@
-import './egress.css'
+import './local.css'
 
 export const metadata = {
   title: 'Next.js',
