@@ -404,7 +404,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
         open={feedbackDialogOpen}
         onOpenChange={setFeedbackDialogOpen}
         onFeedback={onFeedback}
-        duration={callDuration}
+        duration={callDuration || undefined}
         conversationId={voiceSession?.conversationId}
       />
       <DebugSheet
