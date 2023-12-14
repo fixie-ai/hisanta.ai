@@ -74,7 +74,7 @@ const EgressTemplate = () => {
     //   </div>
     // </div>
     <div className="bg-gray-300 rounded-jumbo flex justify-center items-center w-screen h-screen">
-  <div className="flex justify-center items-center w-3/4 h-3/4 mt-[-10%]"> {/* Adjust the negative margin as needed */}
+  <div className="flex justify-center items-center w-2/3 h-2/3 mt-[-10%]"> {/* Adjust the negative margin as needed */}
     <Image
       className="object-contain max-w-full max-h-full"
       src={`/images/${character.image}`}
