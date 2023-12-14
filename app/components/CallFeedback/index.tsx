@@ -17,9 +17,8 @@ import {
 import { Switch } from "../ui/switch";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { Checkbox } from "../ui/checkbox";
 import { useFlags } from "launchdarkly-react-client-sdk";
-import Image from "next/image";
+import { ShareCheckbox, SharingDialogContent } from "../Sharing";
 
 function GoodBadSwitch({
   notGood,
@@ -43,26 +42,6 @@ function GoodBadSwitch({
   );
 }
 
-function ShareCheckbox({
-  checked,
-  onCheckedChange,
-}: {
-  checked: boolean;
-  onCheckedChange: (val: boolean) => void;
-}) {
-  return (
-    <div className="flex flex-row gap-4 border rounded-2xl p-4 items-center">
-      <Checkbox
-        className="w-8 h-8"
-        checked={checked}
-        onCheckedChange={onCheckedChange}
-      />
-      <div className="text-Holiday-Green text-xl text-left">
-        Generate a shareable recording of your call
-      </div>
-    </div>
-  );
-}
 
 function FeedbackForm({
   onFeedbackInput,
@@ -157,7 +136,7 @@ export function CallFeedback({
       {sharing && conversationId ? (
         <SharingDialogContent
           duration={duration}
-          shareUrl={`hisanta.ai/${conversationId}`}
+          roomId={conversationId}   // XXX XXX MDW TODO: Replace with room ID.
           onClose={onClose}
         />
       ) : (
@@ -205,72 +184,3 @@ export function CallFeedback({
   );
 }
 
-function SharingDialogContent({
-  shareUrl,
-  onClose,
-  duration,
-}: {
-  shareUrl: string;
-  onClose: () => void;
-  duration?: number;
-}) {
-  // Duration is in milliseconds. We need minutes and seconds.
-  const minutes = duration ? Math.floor(duration! / 60000) : "0";
-  const seconds = duration ? ((duration! % 60000) / 1000).toFixed(0) : 0;
-
-  return (
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle className="text-Holiday-Blue text-4xl text-center">
-          Share your call!
-        </DialogTitle>
-        <DialogDescription>
-          <div className="mx-auto w-full flex flex-col gap-4 mb-4">
-            <div className="flex flex-col w-full bg-slate-100 rounded-3xl font-[Inter-Regular] p-4 mb-4">
-              <div className="text-sm">
-                Your {minutes}:{seconds.toString().padStart(2, "0")} call can be
-                replayed here:
-              </div>
-              <div className="mt-4 text-xl">{shareUrl}</div>
-            </div>
-            <EpicButton
-              type="secondaryGreen"
-              className="w-full"
-              onClick={onClose}
-            >
-              <div className="w-fit mx-auto flex flex-row gap-2 items-center">
-              <Image
-                src="/images/logo-facebook.svg"
-                alt="Facebook logo"
-                width={48}
-                height={48}
-                className="w-8 h-8"
-              />
-              Share on Facebook
-              </div>
-            </EpicButton>
-            <EpicButton
-              type="secondaryGreen"
-              className="w-full"
-              onClick={onClose}
-            >
-              <div className="w-fit mx-auto flex flex-row gap-2 items-center">
-              <Image
-                src="/images/logo-twitter.svg"
-                alt="Twitter logo"
-                width={48}
-                height={48}
-                className="w-8 h-8"
-              />
-              Share on Twitter
-              </div>
-            </EpicButton>
-            <EpicButton className="w-full" onClick={onClose}>
-              Close
-            </EpicButton>
-          </div>
-        </DialogDescription>
-      </DialogHeader>
-    </DialogContent>
-  );
-}

@@ -16,8 +16,10 @@
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-switch": "^1.0.3",
+    "@radix-ui/react-toast": "^1.1.5",
     "@vercel/analytics": "^1.1.1",
     "autoprefixer": "^10.0.1",
+    "base-x": "^4.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "fixie": "6.3.3",
@@ -33,10 +35,13 @@
     "react-dom": "^18",
     "react-screen-wake-lock": "^3.0.2",
     "react-swipeable": "^7.0.1",
+    "react-use": "^17.4.2",
     "tailwind-merge": "^2.1.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "uuid-tool": "^2.0.3"
   },
   "devDependencies": {
+    "@types/base-x": "^3.0.6",
     "@types/howler": "^2.2.11",
     "@types/lodash": "^4.14.195",
     "@types/node": "^18",
