@@ -70,7 +70,7 @@ export function SharingDialogContent({
                 Your {minutes}:{seconds.toString().padStart(2, "0")} call can be
                 replayed here:
               </div>
-              <div className="mt-4 text-xl">
+              <div className="mt-4 text-base">
                 <CopyToClipboard value={`https://${shareUrl}`}>
                     {shareUrl}
                 </CopyToClipboard>
