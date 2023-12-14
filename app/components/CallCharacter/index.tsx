@@ -393,7 +393,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     <CheckTooBusy>
       <CallError
         err={callError}
-        open={callDidError}
+        open={errorDialogOpen}
         onOpenChange={() => {
           setErrorDialogOpen(false);
         }}
