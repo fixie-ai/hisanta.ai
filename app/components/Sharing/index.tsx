@@ -10,14 +10,24 @@ import Image from "next/image";
 import { Uuid } from "uuid-tool";
 import base from "base-x";
 import { CopyToClipboard } from "../CopyToClipboard";
+import Link from "next/link";
+import { CharacterType } from "@/lib/types";
 
-const BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+const BASE58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 const b58 = base(BASE58);
 
 /** Given a UUID string, returns the short key to access it via the sharing page. */
-export function shareKey(uuid: string) {
+export function uuidToShareKey(uuid: string) {
   const uuidObj = new Uuid(uuid);
   return b58.encode(uuidObj.toBytes());
+}
+
+/** Given a share key, return the UUID. */
+export function shareKeyToUuid(key: string) {
+  const bytes = b58.decode(key);
+  const arr = Array.from(bytes);
+  const uuidObj = new Uuid().fromBytes(arr);
+  return uuidObj.toString();
 }
 
 /** Checkbox allowing user to select whether they want to share their call. */
@@ -47,15 +57,17 @@ export function SharingDialogContent({
   roomId,
   onClose,
   duration,
+  character,
 }: {
   roomId: string;
   onClose: () => void;
   duration?: number;
+  character: CharacterType;
 }) {
   // Duration is in milliseconds. We need minutes and seconds.
   const minutes = duration ? Math.floor(duration! / 60000) : "0";
   const seconds = duration ? ((duration! % 60000) / 1000).toFixed(0) : 0;
-  const shareUrl = `hisanta.ai/s/${shareKey(roomId)}`;
+  const shareUrl = `hisanta.ai/s/${uuidToShareKey(roomId)}`;
 
   return (
     <DialogContent>
@@ -72,42 +84,52 @@ export function SharingDialogContent({
               </div>
               <div className="mt-4 text-base">
                 <CopyToClipboard value={`https://${shareUrl}`}>
-                    {shareUrl}
+                  {shareUrl}
                 </CopyToClipboard>
-                </div>
+              </div>
             </div>
-            <EpicButton
-              type="secondaryGreen"
-              className="w-full"
-              onClick={onClose}
+            <Link
+              href={`https://www.facebook.com/sharer/sharer.php?u=https://${shareUrl}`}
+              target="_blank"
             >
-              <div className="w-fit mx-auto flex flex-row gap-2 items-center">
-                <Image
-                  src="/images/logo-facebook.svg"
-                  alt="Facebook logo"
-                  width={48}
-                  height={48}
-                  className="w-8 h-8"
-                />
-                Share on Facebook
-              </div>
-            </EpicButton>
-            <EpicButton
-              type="secondaryGreen"
-              className="w-full"
-              onClick={onClose}
+              <EpicButton
+                type="secondaryGreen"
+                className="w-full"
+                onClick={onClose}
+              >
+                <div className="w-fit mx-auto flex flex-row gap-2 items-center">
+                  <Image
+                    src="/images/logo-facebook.svg"
+                    alt="Facebook logo"
+                    width={48}
+                    height={48}
+                    className="w-8 h-8"
+                  />
+                  Share on Facebook
+                </div>
+              </EpicButton>
+            </Link>
+            <Link
+              href={`https://twitter.com/intent/tweet?text=I just had a call with ${character.name} on HiSanta.ai! Check it out: https://${shareUrl}`}
+              target="_blank"
             >
-              <div className="w-fit mx-auto flex flex-row gap-2 items-center">
-                <Image
-                  src="/images/logo-twitter.svg"
-                  alt="Twitter logo"
-                  width={48}
-                  height={48}
-                  className="w-8 h-8"
-                />
-                Share on Twitter
-              </div>
-            </EpicButton>
+              <EpicButton
+                type="secondaryGreen"
+                className="w-full"
+                onClick={onClose}
+              >
+                <div className="w-fit mx-auto flex flex-row gap-2 items-center">
+                  <Image
+                    src="/images/logo-twitter.svg"
+                    alt="Twitter logo"
+                    width={48}
+                    height={48}
+                    className="w-8 h-8"
+                  />
+                  Share on Twitter
+                </div>
+              </EpicButton>
+            </Link>
             <EpicButton className="w-full h-12" onClick={onClose}>
               Close
             </EpicButton>

@@ -209,6 +209,7 @@ export function CallFeedback({
         <SharingDialogContent
           duration={duration}
           roomId={roomId}
+          character={character}
           onClose={onClose}
         />
       ) : (
