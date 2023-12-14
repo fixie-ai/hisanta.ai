@@ -134,7 +134,7 @@ export function CallFeedback({
   onFeedback,
   duration,
   conversationId,
-  roomId,
+  roomName,
 }: {
   character: CharacterType;
   open: boolean;
@@ -150,7 +150,7 @@ export function CallFeedback({
   }) => void;
   duration?: number;
   conversationId?: string;
-  roomId?: string;
+  roomName?: string;
 }) {
   const [feedback, setFeedback] = useState("");
   const [email, setEmail] = useState("");
@@ -175,7 +175,7 @@ export function CallFeedback({
     if (sharingEnabled === true && shareClicked && conversationId) {
       datadogRum.addAction("share-selected", {
         conversationId: conversationId || "",
-        roomId: roomId || "",
+        roomName: roomName || "",
       });
       setSharing(true);
     } else {
@@ -201,14 +201,12 @@ export function CallFeedback({
     }
   };
 
-  console.log(`MDW: roomId ${roomId} duration ${duration}`);
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      {sharingEnabled && sharing && roomId ? (
+      {sharingEnabled && sharing && roomName ? (
         <SharingDialogContent
           duration={duration}
-          roomId={roomId}
+          roomName={roomName}
           character={character}
           onClose={onClose}
         />
@@ -237,7 +235,7 @@ export function CallFeedback({
                   onFeedbackInput={setFeedback}
                 />
                 {sharingEnabled === true &&
-                  roomId &&
+                  roomName &&
                   duration &&
                   duration > 0 && (
                     <div className="w-full">
