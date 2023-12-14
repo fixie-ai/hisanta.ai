@@ -204,6 +204,7 @@ export function CallFeedback({
         <SharingDialogContent
           duration={duration}
           roomId={conversationId} // XXX XXX MDW TODO: Replace with room ID.
+          character={character}
           onClose={onClose}
         />
       ) : (
