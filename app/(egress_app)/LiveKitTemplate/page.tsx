@@ -2,10 +2,11 @@
 import React, { useEffect, ReactElement } from "react";
 import Image from "next/image";
 import { CharacterType } from "@/lib/types";
+import config from "@/lib/config";
 import EgressHelper from '@livekit/egress-sdk'
 import { Room } from 'livekit-client'
   
-const default_character = {
+const default_character: CharacterType = {
   characterId: "santa",
   name: "Santa",
   image: "santa-hdpi.png",
@@ -23,6 +24,16 @@ const default_character = {
 const EgressTemplate = () => {
 
   const character = default_character;
+
+  function getCharacterByAgentId(agentId: string): CharacterType {
+    const character_raw = config.availableCharacters.find((character) => character.agentId === agentId);
+    if (character_raw) {
+      return character_raw;
+    } else {
+      return default_character;
+    }
+  }
+
 
   useEffect(() => {
     const newRoom = new Room({ adaptiveStream: true });
