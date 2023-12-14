@@ -23,7 +23,7 @@
     "base-x": "^4.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
-    "fixie": "6.3.3",
+    "fixie": "6.3.4-rc3",
     "howler": "^2.2.4",
     "launchdarkly-js-client-sdk": "^3.1.4",
     "launchdarkly-react-client-sdk": "^3.0.9",
