@@ -50,6 +50,7 @@
   },
   "devDependencies": {
     "@types/base-x": "^3.0.6",
+    "@types/extract-files": "^13.0.0",
     "@types/howler": "^2.2.11",
     "@types/lodash": "^4.14.195",
     "@types/node": "^18",

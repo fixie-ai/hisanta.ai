@@ -1182,7 +1182,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/extract-files@npm:*":
+"@types/extract-files@npm:*, @types/extract-files@npm:^13.0.0":
   version: 13.0.0
   resolution: "@types/extract-files@npm:13.0.0"
   checksum: 1b610c45b1b15f2f676d71e15f3d6c9366687754a9580dc7122cb7b17141679187796ad29bbf0ca079313fb475ba9f01c6cf56b28e854e460c34d2f3c064cdaf
@@ -3614,6 +3614,7 @@ __metadata:
     "@radix-ui/react-toast": ^1.1.5
     "@radix-ui/react-toggle": ^1.0.3
     "@types/base-x": ^3.0.6
+    "@types/extract-files": ^13.0.0
     "@types/howler": ^2.2.11
     "@types/lodash": ^4.14.195
     "@types/node": ^18
