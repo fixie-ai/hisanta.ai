@@ -16,7 +16,8 @@ export function roomNameToShareKey(roomName: string) {
   if (roomName.indexOf('Fixie_') === 0) {
     roomName = roomName.substring(6);
   }
-  const uuidObj = new Uuid(roomName.substring(6));
+  console.log(`Converting room name to key: ${roomName}`);
+  const uuidObj = new Uuid(roomName);
   return b58.encode(uuidObj.toBytes());
 }
 
