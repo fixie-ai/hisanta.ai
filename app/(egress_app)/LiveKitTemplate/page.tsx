@@ -18,7 +18,6 @@ const default_character: CharacterType = {
   voiceId: 'Kp00queBTLslXxHCu1jq',
 };
 
-  
 const EgressTemplate = () => {
   function getCharacterByAgentId(agentId: string): CharacterType {
     const character_raw = config.availableCharacters.find((character) => character.agentId === agentId);
@@ -51,9 +50,7 @@ const EgressTemplate = () => {
       }
     }
   
-    const newRoom = new Room({ 
-      adaptiveStream: true,
-    });
+    const newRoom = new Room({ adaptiveStream: true });
     newRoom.on(RoomEvent.TrackSubscribed, handleTrackSubscribed);
    
     EgressHelper.setRoom(newRoom, { autoEnd: true });
