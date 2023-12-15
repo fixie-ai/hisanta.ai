@@ -19,7 +19,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/client@npm:^3.7.0, @apollo/client@npm:^3.8.1":
+"@apollo/client@npm:^3.7.0, @apollo/client@npm:^3.8.1, @apollo/client@npm:^3.8.8":
   version: 3.8.8
   resolution: "@apollo/client@npm:3.8.8"
   dependencies:
@@ -1463,12 +1463,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@upstash/redis@npm:1.25.1":
+  version: 1.25.1
+  resolution: "@upstash/redis@npm:1.25.1"
+  dependencies:
+    crypto-js: ^4.2.0
+  checksum: 694d9ff33b0a4bce95fa72effaface1b9c41cab7093d726fc1a9ef29eb5ac6eda3d4d0cc59c130bc6e62bf20eaa60a8ef423c257bac1484d3d76e73c56a3ea7e
+  languageName: node
+  linkType: hard
+
 "@vercel/analytics@npm:^1.1.1":
   version: 1.1.1
   resolution: "@vercel/analytics@npm:1.1.1"
   dependencies:
     server-only: ^0.0.1
   checksum: 25f0259a5730a05b9df3bb40309ff75db53d4136e2db24d8287eccb346de08e55484c885679746d4cfbc8418241c4a357ad07b34751380ffa108aaf844f4203e
+  languageName: node
+  linkType: hard
+
+"@vercel/kv@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@vercel/kv@npm:1.0.1"
+  dependencies:
+    "@upstash/redis": 1.25.1
+  checksum: 399ab8a846406cd61ea03909f04a5261ab0e06bac14e6a834f5292005305d9ee463179579fa74fe554db1cfecb706372bb4e9faa473433a146e2311095f6c29e
   languageName: node
   linkType: hard
 
@@ -2232,6 +2250,13 @@ __metadata:
     shebang-command: ^2.0.0
     which: ^2.0.1
   checksum: 671cc7c7288c3a8406f3c69a3ae2fc85555c04169e9d611def9a675635472614f1c0ed0ef80955d5b6d4e724f6ced67f0ad1bb006c2ea643488fcfef994d7f52
+  languageName: node
+  linkType: hard
+
+"crypto-js@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "crypto-js@npm:4.2.0"
+  checksum: f051666dbc077c8324777f44fbd3aaea2986f198fe85092535130d17026c7c2ccf2d23ee5b29b36f7a4a07312db2fae23c9094b644cc35f7858b1b4fcaf27774
   languageName: node
   linkType: hard
 
@@ -3561,6 +3586,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "hisanta.ai@workspace:."
   dependencies:
+    "@apollo/client": ^3.8.8
     "@datadog/browser-rum": ^5.5.0
     "@heroicons/react": ^2.0.18
     "@radix-ui/react-accordion": ^1.1.2
@@ -3579,6 +3605,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.59.9
     "@typescript-eslint/parser": ^5.59.9
     "@vercel/analytics": ^1.1.1
+    "@vercel/kv": ^1.0.1
     autoprefixer: ^10.0.1
     base-x: ^4.0.0
     class-variance-authority: ^0.7.0
@@ -3601,6 +3628,7 @@ __metadata:
     react-screen-wake-lock: ^3.0.2
     react-swipeable: ^7.0.1
     react-use: ^17.4.2
+    short-unique-id: ^5.0.3
     tailwind-merge: ^2.1.0
     tailwindcss: ^3.3.0
     tailwindcss-animate: ^1.0.7
@@ -5923,6 +5951,16 @@ __metadata:
   version: 3.0.0
   resolution: "shebang-regex@npm:3.0.0"
   checksum: 1a2bcae50de99034fcd92ad4212d8e01eedf52c7ec7830eedcf886622804fe36884278f2be8be0ea5fde3fd1c23911643a4e0f726c8685b61871c8908af01222
+  languageName: node
+  linkType: hard
+
+"short-unique-id@npm:^5.0.3":
+  version: 5.0.3
+  resolution: "short-unique-id@npm:5.0.3"
+  bin:
+    short-unique-id: bin/short-unique-id
+    suid: bin/short-unique-id
+  checksum: 9e5e02276972b103d3f2808280b82ab9f90006dd0aea6a253158e71e3ed618c3ac8dfe509a267080b19826a5d4e20d7a3d1adb2f13e166109f56946da3fdff9b
   languageName: node
   linkType: hard
 

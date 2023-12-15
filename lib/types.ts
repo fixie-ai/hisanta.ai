@@ -30,3 +30,10 @@ export interface EpicButtonProps {
   onClick?: () => void;
   disabled?: boolean;
 }
+
+export type CreateCharacterRequest = {
+  name: string
+  description: string
+  avatar: string
+  voiceId: string
+}
