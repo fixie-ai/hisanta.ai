@@ -3,8 +3,11 @@ export const runtime = "edge";
 import { CharacterType, CreateCharacterRequest } from "@/lib/types";
 import { FixieClient } from "fixie";
 import ShortUniqueId from "short-unique-id";
-import { gql } from "@apollo/client";
+import { gql } from "@apollo/client/core/index.js";
 import { loadCharacter, saveCharacter } from "@/lib/storage";
+
+// The default model used by new agents.
+const DEFAULT_MODEL = "gpt-4-1106-preview"
 
 const BASE_PROMPT = `
 You are Santa. Your job is to make kids across the world happy and experience the joy of Christmas.
@@ -86,10 +89,8 @@ async function createAgent({
       mutation CreateDefaultRuntimeAgent(
         $handle: String!
         $displayName: String!
-        $defaultRuntimeParameters: JSONString!
         $description: String!
-        $systemPrompt: String!
-        $greetingMessage: String!
+        $defaultRuntimeParmeters: JSONString!
         $teamId: String
       ) {
         createAgent(
@@ -98,12 +99,7 @@ async function createAgent({
             teamId: $teamId
             name: $displayName
             description: $description
-            revision: {
-              defaultRuntimeParameters: {
-                systemPrompt: $systemPrompt
-                greetingMessage: $greetingMessage
-              }
-            }
+            revision: { defaultRuntimeParameters: $defaultRuntimeParmeters }
             published: true
           }
         ) {
@@ -117,8 +113,11 @@ async function createAgent({
       handle,
       displayName: name,
       description,
-      systemPrompt,
-      greetingMessage,
+      defaultRuntimeParmeters: JSON.stringify({
+        model: DEFAULT_MODEL,
+        systemPrompt,
+        greetingMessage,
+      }),
       teamId,
     },
   });
@@ -158,10 +157,11 @@ export async function POST(req: Request): Promise<Response> {
       handle: characterId,
       name: body.name,
       description: body.description,
-      systemPrompt: BASE_PROMPT,
+      systemPrompt: `You are ${body.name}, who is ${body.description}.`,
       greetingMessage: body.description,
       teamId: fixieTeam,
     });
+    console.log(`Created agent ${agentId}`);
 
     const image: string = AVATARS[body.avatar];
     if (!image) {
@@ -181,7 +181,9 @@ export async function POST(req: Request): Promise<Response> {
     };
 
     await saveCharacter(character);
-    console.log(`Creating character ${characterId}: ${JSON.stringify(character)}`);
+    console.log(
+      `Creating character ${characterId}: ${JSON.stringify(character)}`
+    );
     return new Response(JSON.stringify(character), {
       headers: { "content-type": "application/json" },
     });

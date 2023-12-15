@@ -31,9 +31,19 @@ export interface EpicButtonProps {
   disabled?: boolean;
 }
 
+/**
+ * This is the body of the POST request to /api/character for creating
+ * a new character.
+ */
 export type CreateCharacterRequest = {
+  // The name of the character, e.g., "Mr. Bubbles".
   name: string
+  // A description of the character. This will be used to build the
+  // character prompt.
   description: string
+  // The character's avatar. This is specified as a
+  // one of the keys of the AVATARS object in api/character/router.ts.
   avatar: string
+  // The voice ID to use for this character.
   voiceId: string
 }
