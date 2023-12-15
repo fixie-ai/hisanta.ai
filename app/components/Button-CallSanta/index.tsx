@@ -1,6 +1,6 @@
-"use client";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import Image from "next/image";
+'use client';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 
 // This is not really a button.
 const CallSantaButton = () => {
@@ -16,9 +16,7 @@ const CallSantaButton = () => {
         />
       </div>
       <div className="text-white justify-center p-2 flex flex-row m-1 items-center w-fit">
-        <div className="text-xl md:text-3xl text-Holiday-Green mt-1 flex items-center">
-          Powered by AI!
-        </div>
+        <div className="text-xl md:text-3xl text-Holiday-Green mt-1 flex items-center">Powered by AI!</div>
       </div>
       <div className="mr-2">
         <Image

@@ -1,10 +1,10 @@
-"use client";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { CharacterType } from "@/lib/types";
-import { MicrophoneIcon } from "@heroicons/react/24/outline";
-import { VoiceSession, VoiceSessionState } from "fixie/src/voice";
-import EpicButton from "../Buttons";
-import Image from "next/image";
+'use client';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { CharacterType } from '@/lib/types';
+import { MicrophoneIcon } from '@heroicons/react/24/outline';
+import { VoiceSession, VoiceSessionState } from 'fixie/src/voice';
+import EpicButton from '../Buttons';
+import Image from 'next/image';
 
 function Conversation({
   character,
@@ -32,11 +32,7 @@ function Conversation({
 
   return (
     <>
-      <Visualizer
-        character={character}
-        voiceSession={voiceSession}
-        onDebugOpen={onDebugOpen}
-      />
+      <Visualizer character={character} voiceSession={voiceSession} onDebugOpen={onDebugOpen} />
       <button onClick={handleStop} className="m-4">
         <EpicButton type="secondaryRed" className="w-full">
           End call
@@ -60,10 +56,8 @@ function Visualizer({
   const voiceSessionRef = useRef(voiceSession);
   const [taps, setTaps] = useState(0);
 
-  const [initializedInputAnalyzer, setInitializedInputAnalyzer] =
-    useState(false);
-  const [initializedOutputAnalyzer, setInitializedOutputAnalyzer] =
-    useState(false);
+  const [initializedInputAnalyzer, setInitializedInputAnalyzer] = useState(false);
+  const [initializedOutputAnalyzer, setInitializedOutputAnalyzer] = useState(false);
 
   const [inputFreqData, setInputFreqData] = useState<number[]>([]);
   const [outputFreqData, setOutputFreqData] = useState<number[]>([]);
@@ -81,9 +75,7 @@ function Visualizer({
         voiceSession.inputAnalyzer.minDecibels = -70;
         setInitializedInputAnalyzer(true);
       }
-      let inputData = new Uint8Array(
-        voiceSession.inputAnalyzer.frequencyBinCount
-      );
+      let inputData = new Uint8Array(voiceSession.inputAnalyzer.frequencyBinCount);
       voiceSession.inputAnalyzer.getByteFrequencyData(inputData);
       inputData = inputData.slice(0, 16);
       setInputFreqData([...inputData]);
@@ -103,9 +95,7 @@ function Visualizer({
         voiceSession.outputAnalyzer.minDecibels = -70;
         setInitializedOutputAnalyzer(true);
       }
-      let outputData = new Uint8Array(
-        voiceSession.outputAnalyzer.frequencyBinCount
-      );
+      let outputData = new Uint8Array(voiceSession.outputAnalyzer.frequencyBinCount);
       voiceSession.outputAnalyzer.getByteFrequencyData(outputData);
       outputData = outputData.slice(0, 16);
       setOutputFreqData([...outputData]);
@@ -119,7 +109,7 @@ function Visualizer({
   const visualizeOutput = (freqData?: number[]) => {
     if (!outputCanvasRef.current) return;
     const canvas = outputCanvasRef.current;
-    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const grd = ctx.createRadialGradient(
       canvas.width / 2,
@@ -129,23 +119,15 @@ function Visualizer({
       canvas.height / 2,
       canvas.width / 2
     );
-    grd.addColorStop(0, "rgb(13,87,83,1)");
-    grd.addColorStop(1, "rgb(13,87,83,0.3)");
+    grd.addColorStop(0, 'rgb(13,87,83,1)');
+    grd.addColorStop(1, 'rgb(13,87,83,0.3)');
     ctx.fillStyle = grd;
     if (freqData) {
       const vu = Math.max(...freqData);
       if (vu < 1) return;
       const radius = Math.floor(canvas.width / 5 + (vu / 256) * canvas.width);
       ctx.beginPath();
-      ctx.ellipse(
-        canvas.width / 2,
-        canvas.height / 2,
-        radius,
-        radius,
-        0,
-        0,
-        2 * Math.PI
-      );
+      ctx.ellipse(canvas.width / 2, canvas.height / 2, radius, radius, 0, 0, 2 * Math.PI);
       ctx.fill();
     }
   };
@@ -154,7 +136,7 @@ function Visualizer({
   const visualizeInput = (freqData?: number[]) => {
     if (!inputCanvasRef.current) return;
     const canvas = inputCanvasRef.current;
-    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (voiceSessionRef.current.state !== VoiceSessionState.LISTENING) {
       // Don't show anything when not listening.
@@ -162,9 +144,8 @@ function Visualizer({
     }
     if (freqData) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const vu =
-        Math.floor(freqData.reduce((a, b) => a + b, 0) / freqData.length) * 2;
-      ctx.fillStyle = "rgb(13,87,83,0.5)";
+      const vu = Math.floor(freqData.reduce((a, b) => a + b, 0) / freqData.length) * 2;
+      ctx.fillStyle = 'rgb(13,87,83,0.5)';
       ctx.fillRect(0, canvas.height - vu, canvas.width, vu);
     }
   };
@@ -179,11 +160,11 @@ function Visualizer({
 
   const showState = () => {
     if (voiceSessionRef.current.state === VoiceSessionState.IDLE) {
-      return "Calling...";
+      return 'Calling...';
     } else if (voiceSessionRef.current.state === VoiceSessionState.LISTENING) {
-      return "Listening...";
+      return 'Listening...';
     } else {
-      return "Speaking...";
+      return 'Speaking...';
     }
   };
 
@@ -250,9 +231,7 @@ export default function ActiveCall({
   return (
     <>
       <div className="bg-slate-100 rounded-jumbo border border-black flex flex-col w-11/12 mx-auto md:mt-4 gap-4 w-[340px] h-[600px] justify-between">
-        <div className="mt-4 mx-auto text-3xl text-[#881425]">
-          {character.name}
-        </div>
+        <div className="mt-4 mx-auto text-3xl text-[#881425]">{character.name}</div>
         <Conversation
           voiceSession={voiceSession}
           character={character}
