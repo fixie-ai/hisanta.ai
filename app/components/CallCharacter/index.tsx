@@ -1,48 +1,40 @@
-"use client";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { CharacterType } from "@/lib/types";
-import ActiveCall from "../ActiveCall";
-import StartNewCall from "../StartNewCall";
-import { Howl } from "howler";
-import { FixieClient } from "fixie";
-import {
-  VoiceSession,
-  VoiceSessionError,
-  VoiceSessionInit,
-  VoiceSessionState,
-} from "fixie/src/voice";
-import { DebugSheet } from "../DebugSheet";
-import { CheckTooBusy } from "../CheckTooBusy";
-import { useFlags } from "launchdarkly-react-client-sdk";
-import { track as vercelTrack } from "@vercel/analytics";
-import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
-import { useWakeLock } from "react-screen-wake-lock";
-import { CallFeedback } from "../CallFeedback";
-import { datadogRum } from "@datadog/browser-rum";
-import { CallError } from "../CallError";
+'use client';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { CharacterType } from '@/lib/types';
+import ActiveCall from '../ActiveCall';
+import StartNewCall from '../StartNewCall';
+import { Howl } from 'howler';
+import { FixieClient } from 'fixie';
+import { VoiceSession, VoiceSessionError, VoiceSessionInit, VoiceSessionState } from 'fixie/src/voice';
+import { DebugSheet } from '../DebugSheet';
+import { CheckTooBusy } from '../CheckTooBusy';
+import { useFlags } from 'launchdarkly-react-client-sdk';
+import { track as vercelTrack } from '@vercel/analytics';
+import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { useWakeLock } from 'react-screen-wake-lock';
+import { CallFeedback } from '../CallFeedback';
+import { datadogRum } from '@datadog/browser-rum';
+import { CallError } from '../CallError';
 
-const DEFAULT_ASR_PROVIDER = "deepgram";
-const DEFAULT_TTS_PROVIDER = "eleven-ws";
-const DEFAULT_LLM = "gpt-4-1106-preview";
+const DEFAULT_ASR_PROVIDER = 'deepgram';
+const DEFAULT_TTS_PROVIDER = 'eleven-ws';
+const DEFAULT_LLM = 'gpt-4-1106-preview';
 
 // Santa voice.
-const DEFAULT_TTS_VOICE = "Kp00queBTLslXxHCu1jq";
+const DEFAULT_TTS_VOICE = 'Kp00queBTLslXxHCu1jq';
 
 const LLM_MODELS = [
-  "claude-2",
-  "claude-instant-1",
-  "gpt-4",
-  "gpt-4-32k",
-  "gpt-4-1106-preview",
-  "gpt-3.5-turbo",
-  "gpt-3.5-turbo-16k",
+  'claude-2',
+  'claude-instant-1',
+  'gpt-4',
+  'gpt-4-32k',
+  'gpt-4-1106-preview',
+  'gpt-3.5-turbo',
+  'gpt-3.5-turbo-16k',
 ];
 
-function track(
-  eventName: string,
-  eventMetadata?: Record<string, string | number | boolean>
-) {
+function track(eventName: string, eventMetadata?: Record<string, string | number | boolean>) {
   datadogRum.addAction(eventName, eventMetadata);
   vercelTrack(eventName, eventMetadata);
 }
@@ -66,7 +58,7 @@ function makeVoiceSession({
   console.log(`[makeVoiceSession] creating voice session with LLM ${model}`);
   const fixieClient = new FixieClient({});
   const voiceInit: VoiceSessionInit = {
-    webrtcUrl: webrtcUrl || "wss://wsapi.fixie.ai",
+    webrtcUrl: webrtcUrl || 'wss://wsapi.fixie.ai',
     asrProvider: asrProvider || DEFAULT_ASR_PROVIDER,
     ttsProvider: ttsProvider || DEFAULT_TTS_PROVIDER,
     ttsVoice: ttsVoice || DEFAULT_TTS_VOICE,
@@ -104,7 +96,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   const [startRequested, setStartRequested] = useState(false);
   const [debugSheetOpen, setDebugSheetOpen] = useState(false);
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
-  const [callError, setCallError] = useState("");
+  const [callError, setCallError] = useState('');
 
   const [stats, setStats] = useState<VoiceSessionStats>({
     state: null,
@@ -117,13 +109,13 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   const [callStartTime, setCallStartTime] = useState<number | null>(null);
   const [callDuration, setCallDuration] = useState<number | null>(null);
   const router = useRouter();
-  const model = searchParams.get("model") || llmModel;
-  const noRing = searchParams.get("ring") == "0" || false;
-  const webrtcUrl = searchParams.get("webrtcUrl");
+  const model = searchParams.get('model') || llmModel;
+  const noRing = searchParams.get('ring') == '0' || false;
+  const webrtcUrl = searchParams.get('webrtcUrl');
   const { isSupported, released, request, release } = useWakeLock({
-    onRequest: () => console.log("Screen wake lock requested"),
-    onError: () => console.error("Error with wake lock"),
-    onRelease: () => console.log("Screen wake lock released"),
+    onRequest: () => console.log('Screen wake lock requested'),
+    onError: () => console.error('Error with wake lock'),
+    onRelease: () => console.log('Screen wake lock released'),
   });
 
   useEffect(() => {
@@ -131,7 +123,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     setVoiceSession(null);
     setStartingCall(false);
     setStartRequested(false);
-    track("character-selected", {
+    track('character-selected', {
       character: character.characterId,
     });
   }, [character.characterId]);
@@ -164,16 +156,14 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   // Start voice session if requested by user.
   useEffect(() => {
     if (startRequested && voiceSession) {
-      console.log(
-        `CallCharacter[${voiceSession.conversationId}]: onRingtoneFinished - starting voice session`
-      );
+      console.log(`CallCharacter[${voiceSession.conversationId}]: onRingtoneFinished - starting voice session`);
       voiceSession.start();
       setStartingCall(false);
       setInCall(true);
       setCallStartTime(Date.now());
-      track("call-started", {
+      track('call-started', {
         character: character.characterId,
-        conversationId: voiceSession.conversationId || "",
+        conversationId: voiceSession.conversationId || '',
       });
     }
   }, [character.characterId, startRequested, voiceSession]);
@@ -185,7 +175,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
       console.log(`CallCharacter: onCallStart - already starting call`);
       return;
     }
-    track("call-start-requested", {
+    track('call-start-requested', {
       character: character.characterId,
     });
     setStartingCall(true);
@@ -201,11 +191,9 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     });
 
     session.onLatencyChange = (kind: string, latency: number) => {
-      console.log(
-        `CallCharacter[${session.conversationId}]: latency: ${kind} ${latency}`
-      );
+      console.log(`CallCharacter[${session.conversationId}]: latency: ${kind} ${latency}`);
       switch (kind) {
-        case "asr":
+        case 'asr':
           setStats((curStats) => ({
             ...curStats,
             asrLatency: latency,
@@ -213,38 +201,38 @@ export function CallCharacter({ character }: { character: CharacterType }) {
             llmTokenLatency: 0,
             ttsLatency: 0,
           }));
-          track("asr-latency-measured", {
-            conversationId: session.conversationId || "",
+          track('asr-latency-measured', {
+            conversationId: session.conversationId || '',
             asrLatency: latency,
           });
           break;
-        case "llm":
+        case 'llm':
           setStats((curStats) => ({
             ...curStats,
             llmResponseLatency: latency,
           }));
-          track("llm-latency-measured", {
-            conversationId: session.conversationId || "",
+          track('llm-latency-measured', {
+            conversationId: session.conversationId || '',
             llmLatency: latency,
           });
           break;
-        case "llmt":
+        case 'llmt':
           setStats((curStats) => ({
             ...curStats,
             llmTokenLatency: latency,
           }));
-          track("llm-token-latency-measured", {
-            conversationId: session.conversationId || "",
+          track('llm-token-latency-measured', {
+            conversationId: session.conversationId || '',
             llmTokenLatency: latency,
           });
           break;
-        case "tts":
+        case 'tts':
           setStats((curStats) => ({
             ...curStats,
             ttsLatency: latency,
           }));
-          track("tts-latency-measured", {
-            conversationId: session.conversationId || "",
+          track('tts-latency-measured', {
+            conversationId: session.conversationId || '',
             ttsLatency: latency,
           });
           break;
@@ -252,29 +240,25 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     };
 
     session.onStateChange = (state: VoiceSessionState) => {
-      console.log(
-        `CallCharacter[${session.conversationId}]: session state: ${state}`
-      );
+      console.log(`CallCharacter[${session.conversationId}]: session state: ${state}`);
       if (state === VoiceSessionState.IDLE) {
         setRoomName(session.roomName || null);
       }
       setStats((curStats) => ({
         ...curStats,
         state,
-        conversationId: session.conversationId || "",
+        conversationId: session.conversationId || '',
       }));
-      track("voice-session-state-changed", {
-        conversationId: session.conversationId || "",
+      track('voice-session-state-changed', {
+        conversationId: session.conversationId || '',
         state: state,
       });
     };
     session.onError = (err: VoiceSessionError) => {
       const msg = err.message;
-      console.log(
-        `CallCharacter[${session.conversationId}]: voiceSession error: ${msg}`
-      );
-      track("voice-session-error", {
-        conversationId: session.conversationId || "",
+      console.log(`CallCharacter[${session.conversationId}]: voiceSession error: ${msg}`);
+      track('voice-session-error', {
+        conversationId: session.conversationId || '',
         error: msg,
       });
       session.stop();
@@ -317,9 +301,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
 
   // Invoked when hangup sound effect is done playing.
   const onHangupFinished = useCallback(() => {
-    console.log(
-      `CallCharacter[${voiceSession?.conversationId}]: onHangupFinished`
-    );
+    console.log(`CallCharacter[${voiceSession?.conversationId}]: onHangupFinished`);
     setInCall(false);
     setFeedbackDialogOpen(true);
   }, [voiceSession]);
@@ -328,7 +310,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
   const onCallEnd = useCallback(() => {
     console.log(`CallCharacter[${voiceSession?.conversationId}]: onCallEnd`);
     const hangup = new Howl({
-      src: "/sounds/hangup.mp3",
+      src: '/sounds/hangup.mp3',
       preload: true,
       volume: 0.2,
       onend: function () {
@@ -342,20 +324,20 @@ export function CallCharacter({ character }: { character: CharacterType }) {
     if (isSupported) {
       release();
     }
-    track("call-ended", {
-      conversationId: voiceSession?.conversationId || "",
+    track('call-ended', {
+      conversationId: voiceSession?.conversationId || '',
     });
     const duration = callStartTime ? Date.now() - callStartTime : 0;
     setCallDuration(duration);
-    track("call-duration", {
+    track('call-duration', {
       duration,
-      conversationId: voiceSession?.conversationId || "",
+      conversationId: voiceSession?.conversationId || '',
     });
   }, [voiceSession, isSupported, release, callStartTime, onHangupFinished]);
 
   // Invoked when the debug window is opened.
   const onDebugOpen = useCallback(() => {
-    track("debug-menu-opened", {
+    track('debug-menu-opened', {
       character: character.characterId,
     });
     setDebugSheetOpen(true);
@@ -363,15 +345,13 @@ export function CallCharacter({ character }: { character: CharacterType }) {
 
   // Invoked when the debug submit button is clicked.
   const onDebugSubmit = (newCharacter?: string, newModel?: string) => {
-    track("debug-menu-submitted", {
-      character: newCharacter || "unknown",
-      model: model || "unknown",
+    track('debug-menu-submitted', {
+      character: newCharacter || 'unknown',
+      model: model || 'unknown',
     });
     setDebugSheetOpen(false);
     if (newModel) {
-      router.push(
-        `/${newCharacter || character.characterId}?model=${newModel}`
-      );
+      router.push(`/${newCharacter || character.characterId}?model=${newModel}`);
     } else {
       router.push(`/${newCharacter || character.characterId}`);
     }
@@ -379,27 +359,19 @@ export function CallCharacter({ character }: { character: CharacterType }) {
 
   // Invoked when user submits call feedback.
   const onFeedback = useCallback(
-    ({
-      good,
-      feedback,
-      email,
-    }: {
-      good?: boolean;
-      feedback: string;
-      email: string;
-    }) => {
+    ({ good, feedback, email }: { good?: boolean; feedback: string; email: string }) => {
       console.log(
         `CallCharacter[${voiceSession?.conversationId}] - onFeedback: good ${good} feedback ${feedback} email ${email}`
       );
       // We can send more parameters to DD than to Vercel.
-      datadogRum.addAction("call-feedback-received", {
-        conversationId: voiceSession?.conversationId || "",
+      datadogRum.addAction('call-feedback-received', {
+        conversationId: voiceSession?.conversationId || '',
         callGood: good ?? null,
         feedback: feedback,
         email: email,
       });
-      vercelTrack("call-feedback-received", {
-        conversationId: voiceSession?.conversationId || "",
+      vercelTrack('call-feedback-received', {
+        conversationId: voiceSession?.conversationId || '',
         callGood: good ?? null,
       });
     },
@@ -416,12 +388,7 @@ export function CallCharacter({ character }: { character: CharacterType }) {
         }}
       />
       {inCall && voiceSession ? (
-        <ActiveCall
-          voiceSession={voiceSession}
-          onCallEnd={onCallEnd}
-          character={character}
-          onDebugOpen={onDebugOpen}
-        />
+        <ActiveCall voiceSession={voiceSession} onCallEnd={onCallEnd} character={character} onDebugOpen={onDebugOpen} />
       ) : (
         <StartNewCall
           startCallEnabled={!startingCall}

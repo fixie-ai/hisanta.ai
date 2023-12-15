@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import React from 'react';
 import { ActiveCallProps } from '@/lib/types';
 
@@ -19,7 +19,7 @@ const InterruptButton = ({ currentCharacter }: ActiveCallProps) => {
           Tap to interrupt
         </div>
       </div>
-  </div>
+    </div>
   );
 };
 
