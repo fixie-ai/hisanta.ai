@@ -4,7 +4,7 @@ import EpicButton from '../Buttons';
 import { getCharacter } from '@/lib/config';
 import { PlayIcon, PauseIcon } from '@heroicons/react/20/solid';
 import ReactPlayer from 'react-player';
-import { uuidToShareKey, shareKeyToUuid } from '../Sharing';
+import { shareKeyToUuid } from '../Sharing';
 import Link from 'next/link';
 import { set } from 'lodash';
 import { error } from 'console';
@@ -31,11 +31,15 @@ export function SharedCall({ shareKey }: { shareKey: string }) {
   const [errorOccurred, setErrorOccurred] = useState(false);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
 
+  console.log(`Share key: ${shareKey}`);
+
   if (!errorOccurred && !videoUrl) {
     try {
       const uuid = shareKeyToUuid(shareKey);
+      console.log(`Share UUID: ${uuid}`);
       setVideoUrl(`https://wsapi.fixie.ai/recording/Fixie_${uuid}`);
     } catch (e) {
+      console.error('Error occurred while trying to get video URL', e);
       setErrorOccurred(true);
     }
     console.log(`Video URL: ${videoUrl}`);
@@ -58,6 +62,10 @@ export function SharedCall({ shareKey }: { shareKey: string }) {
                 <ReactPlayer
                   onReady={onReady}
                   onError={() => setErrorOccurred(true)}
+                  onEnded={() => {
+                    console.log('Video ended');
+                    setPlaying(false);
+                  }}
                   playing={playing}
                   width={340}
                   controls={false}

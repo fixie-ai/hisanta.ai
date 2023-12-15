@@ -1,11 +1,19 @@
-"use client";
-import React, { useEffect, ReactElement } from "react";
-import Image from "next/image";
-import { CharacterType } from "@/lib/types";
-import config from "@/lib/config";
-import EgressHelper from '@livekit/egress-sdk'
-import { Room, RoomEvent, RemoteTrack, RemoteTrackPublication, RemoteParticipant, Track, Participant } from 'livekit-client'
-import { useSearchParams } from 'next/navigation'
+'use client';
+import React, { useEffect, ReactElement } from 'react';
+import Image from 'next/image';
+import { CharacterType } from '@/lib/types';
+import config from '@/lib/config';
+import EgressHelper from '@livekit/egress-sdk';
+import {
+  Room,
+  RoomEvent,
+  RemoteTrack,
+  RemoteTrackPublication,
+  RemoteParticipant,
+  Track,
+  Participant,
+} from 'livekit-client';
+import { useSearchParams } from 'next/navigation';
 
 const default_character: CharacterType = {
   characterId: 'santa',
@@ -38,21 +46,20 @@ const EgressTemplate = () => {
   }
 
   useEffect(() => {
-
     function handleTrackSubscribed(
       track: RemoteTrack,
       publication: RemoteTrackPublication,
-      participant: RemoteParticipant,
+      participant: RemoteParticipant
     ) {
       if (track.kind === Track.Kind.Audio || track.kind === Track.Kind.Video) {
         const element = track.attach();
         document.body.appendChild(element);
       }
     }
-  
+
     const newRoom = new Room({ adaptiveStream: true });
     newRoom.on(RoomEvent.TrackSubscribed, handleTrackSubscribed);
-   
+
     EgressHelper.setRoom(newRoom, { autoEnd: true });
 
     const connectRoom = async () => {

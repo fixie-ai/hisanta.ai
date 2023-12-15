@@ -11,9 +11,13 @@ import { CharacterType } from '@/lib/types';
 const BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const b58 = base(BASE58);
 
-/** Given a UUID string, returns the short key to access it via the sharing page. */
-export function uuidToShareKey(uuid: string) {
-  const uuidObj = new Uuid(uuid);
+/** Given a room name, returns the short key to access it via the sharing page. */
+export function roomNameToShareKey(roomName: string) {
+  if (roomName.indexOf('Fixie_') === 0) {
+    roomName = roomName.substring(6);
+  }
+  console.log(`Converting room name to key: ${roomName}`);
+  const uuidObj = new Uuid(roomName);
   return b58.encode(uuidObj.toBytes());
 }
 
@@ -56,7 +60,8 @@ export function SharingDialogContent({
   // Duration is in milliseconds. We need minutes and seconds.
   const minutes = duration ? Math.floor(duration! / 60000) : '0';
   const seconds = duration ? ((duration! % 60000) / 1000).toFixed(0) : 0;
-  const shareUrl = `hisanta.ai/s/${uuidToShareKey(roomName)}`;
+  const shareUrl = `hisanta.ai/s/${roomNameToShareKey(roomName)}`;
+  console.log(`Share URL for room ${roomName} is ${shareUrl}`);
 
   return (
     <DialogContent>
