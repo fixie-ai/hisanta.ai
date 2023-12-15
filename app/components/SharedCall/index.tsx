@@ -39,7 +39,7 @@ export function SharedCall({ shareKey }: { shareKey: string }) {
       console.log(`Share UUID: ${uuid}`);
       setVideoUrl(`https://wsapi.fixie.ai/recording/Fixie_${uuid}`);
     } catch (e) {
-      console.error("Error occurred while trying to get video URL", e);
+      console.error('Error occurred while trying to get video URL', e);
       setErrorOccurred(true);
     }
     console.log(`Video URL: ${videoUrl}`);
