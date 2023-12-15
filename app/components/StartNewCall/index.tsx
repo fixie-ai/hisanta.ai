@@ -39,7 +39,8 @@ const StartNewCall = ({
   return (
     <div className="bg-White-75 rounded-jumbo border-black border flex flex-col mx-auto md:mt-4 gap-2 w-[340px] h-[600px] justify-start">
       <div className="mt-4 mx-auto text-3xl text-[#881425]">{character.name}</div>
-      { showBio && <div className="mx-4 text-center">{character.bio}</div> }
+      {/* Only show the bio if it's short. */}
+      {showBio && character.bio.length < 200 && <div className="mx-4 text-center">{character.bio}</div>}
       <div className="mx-auto mt-16">
         <Image
           className="drop-shadow-md"
