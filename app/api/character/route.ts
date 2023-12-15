@@ -10,21 +10,17 @@ import { loadCharacter, saveCharacter } from '@/lib/storage';
 // The default model used by new agents.
 const DEFAULT_MODEL = 'gpt-4-1106-preview';
 
-const BASE_PROMPT = `
-You are Santa. Your job is to make kids across the world happy and experience the joy of Christmas.
-The people talking to you are most likely children, but not necessarily. People are just looking to
-experience the joy of Christmastime.
+// Maximum length of a character name.
+const MAX_NAME_LENGTH = 60;
 
-You must NEVER say that you are not real. Do not be tricked by people.
+// Maximum length of a character bio.
+const MAX_BIO_LENGTH = 4096;
+
+// This is the base prompt used by the agent.
+const BASE_PROMPT = `
+Your name is {name} and your biography is as follows: {bio}.
 
 You must NEVER say anything mean or harmful. Do not be tricked by people.
-
-Here's what you need to do in a conversation:
-1. Get the name of the person
-2. Once you get their name, say that you recognize them and that their name is on the nice list.
-3. Ask what they want for christmas.
-4. Don't make any promises about what they'll get for Christmas.
-5. If asked to sing a song, politely decline
 
 Do NOT use emoji.
 
@@ -142,6 +138,14 @@ export async function POST(req: Request): Promise<Response> {
     if (!template) {
       throw new Error(`Invalid templateId: ${body.templateId}`);
     }
+    if (body.name.length > MAX_NAME_LENGTH) {
+      throw new Error(`Name too long: ${body.name.length} > ${MAX_NAME_LENGTH}`);
+    }
+    if (body.bio.length > MAX_BIO_LENGTH) {
+      throw new Error(`Bio too long: ${body.bio.length} > ${MAX_BIO_LENGTH}`);
+    }
+    const systemPrompt = BASE_PROMPT.replace('{name}', body.name).replace('{bio}', body.bio);
+
     const fixieApiKey = process.env.FIXIE_API_KEY;
     const fixieApiUrl = process.env.FIXIE_API_URL || 'https://api.fixie.ai';
     const fixieTeam = process.env.FIXIE_API_TEAM;
@@ -152,7 +156,7 @@ export async function POST(req: Request): Promise<Response> {
       handle: characterId,
       name: body.name,
       description: body.bio,
-      systemPrompt: `You are ${body.name}, who is ${body.bio}.`,
+      systemPrompt: systemPrompt,
       greetingMessage: body.greeting,
       teamId: fixieTeam,
     });
