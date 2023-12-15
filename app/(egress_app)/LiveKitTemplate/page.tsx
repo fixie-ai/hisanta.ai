@@ -4,7 +4,7 @@ import Image from "next/image";
 import { CharacterType } from "@/lib/types";
 import config from "@/lib/config";
 import EgressHelper from '@livekit/egress-sdk'
-import { Room } from 'livekit-client'
+import { Room, RoomEvent, RemoteTrack, RemoteTrackPublication, RemoteParticipant, Track, Participant } from 'livekit-client'
 import { useSearchParams } from 'next/navigation'
 
 const default_character: CharacterType = {
@@ -18,6 +18,7 @@ const default_character: CharacterType = {
   voiceId: "Kp00queBTLslXxHCu1jq",
 };
 
+  
 const EgressTemplate = () => {
   function getCharacterByAgentId(agentId: string): CharacterType {
     const character_raw = config.availableCharacters.find((character) => character.agentId === agentId);
@@ -38,12 +39,42 @@ const EgressTemplate = () => {
   }
 
   useEffect(() => {
-    const newRoom = new Room({ adaptiveStream: true });
-    EgressHelper.setRoom(newRoom, { autoEnd: true });
 
-    EgressHelper.onLayoutChanged((layout) => {
-        // Implement layout change logic if necessary
+    function handleTrackSubscribed(
+      track: RemoteTrack,
+      publication: RemoteTrackPublication,
+      participant: RemoteParticipant,
+    ) {
+      if (track.kind === Track.Kind.Audio || track.kind === Track.Kind.Video) {
+        track.setMuted(false)
+        console.log(track.mediaStreamTrack)
+
+        // Create an audio element
+        const audioElement = new Audio();
+        if (track.mediaStream){
+          audioElement.srcObject = track.mediaStream;
+        }
+    
+        // Set autoplay to true
+        audioElement.autoplay = true;
+    
+        // Append the audio element to the DOM (you can choose an appropriate parent element)
+        document.body.appendChild(audioElement);
+    
+        audioElement.play().catch((error) => {
+          console.error("error playing audio element", error)
+        });
+      }
+    
+      // Handle video tracks similarly with HTMLVideoElement if needed
+    }
+  
+    const newRoom = new Room({ 
+      adaptiveStream: true,
     });
+    newRoom.on(RoomEvent.TrackSubscribed, handleTrackSubscribed);
+   
+    EgressHelper.setRoom(newRoom, { autoEnd: true });
 
     const connectRoom = async () => {
         try {
@@ -61,7 +92,6 @@ const EgressTemplate = () => {
     connectRoom();
       
   }, []);
-    
 
   return (
     <div className="bg-gray-300 flex justify-center items-center w-screen h-screen">
