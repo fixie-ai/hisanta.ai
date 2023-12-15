@@ -54,7 +54,7 @@ const EgressTemplate = () => {
     const newRoom = new Room({ 
       adaptiveStream: true,
     });
-    //newRoom.on(RoomEvent.TrackSubscribed, handleTrackSubscribed);
+    newRoom.on(RoomEvent.TrackSubscribed, handleTrackSubscribed);
    
     EgressHelper.setRoom(newRoom, { autoEnd: true });
 
