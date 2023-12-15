@@ -68,12 +68,12 @@ export function SharedCall({ shareKey }: { shareKey: string }) {
                   }}
                   playing={playing}
                   width={340}
-                  controls={false}
+                  controls={true}
                   url={videoUrl}
                 />
               </div>
               <div className="my-auto h-full" />
-              <div className="m-4">
+              {/* <div className="m-4">
                 <EpicButton
                   disabled={!ready}
                   type="secondaryGreen"
@@ -101,7 +101,7 @@ export function SharedCall({ shareKey }: { shareKey: string }) {
                     )}
                   </div>
                 </EpicButton>
-              </div>
+              </div> */}
             </>
           )}
         </>
