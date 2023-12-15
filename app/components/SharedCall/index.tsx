@@ -31,11 +31,15 @@ export function SharedCall({ shareKey }: { shareKey: string }) {
   const [errorOccurred, setErrorOccurred] = useState(false);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
 
+  console.log(`Share key: ${shareKey}`);
+
   if (!errorOccurred && !videoUrl) {
     try {
       const uuid = shareKeyToUuid(shareKey);
+      console.log(`Share UUID: ${uuid}`);
       setVideoUrl(`https://wsapi.fixie.ai/recording/Fixie_${uuid}`);
     } catch (e) {
+      console.error("Error occurred while trying to get video URL", e);
       setErrorOccurred(true);
     }
     console.log(`Video URL: ${videoUrl}`);
