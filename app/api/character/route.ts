@@ -1,14 +1,14 @@
-export const runtime = "edge";
+export const runtime = 'edge';
 
-import { CharacterType, CreateCharacterRequest } from "@/lib/types";
-import { getTemplate } from "@/lib/config";
-import { FixieClient } from "fixie";
-import ShortUniqueId from "short-unique-id";
-import { gql } from "@apollo/client/core/index.js";
-import { loadCharacter, saveCharacter } from "@/lib/storage";
+import { CharacterType, CreateCharacterRequest } from '@/lib/types';
+import { getTemplate } from '@/lib/config';
+import { FixieClient } from 'fixie';
+import ShortUniqueId from 'short-unique-id';
+import { gql } from '@apollo/client/core/index.js';
+import { loadCharacter, saveCharacter } from '@/lib/storage';
 
 // The default model used by new agents.
-const DEFAULT_MODEL = "gpt-4-1106-preview";
+const DEFAULT_MODEL = 'gpt-4-1106-preview';
 
 const BASE_PROMPT = `
 You are Santa. Your job is to make kids across the world happy and experience the joy of Christmas.
@@ -135,15 +135,15 @@ export async function POST(req: Request): Promise<Response> {
 
   try {
     const body = (await req.json()) as CreateCharacterRequest;
-    if (typeof body !== "object") {
-      throw new Error("Invalid request body: expecting object");
+    if (typeof body !== 'object') {
+      throw new Error('Invalid request body: expecting object');
     }
     const template = getTemplate(body.templateId);
     if (!template) {
       throw new Error(`Invalid templateId: ${body.templateId}`);
     }
     const fixieApiKey = process.env.FIXIE_API_KEY;
-    const fixieApiUrl = process.env.FIXIE_API_URL || "https://api.fixie.ai";
+    const fixieApiUrl = process.env.FIXIE_API_URL || 'https://api.fixie.ai';
     const fixieTeam = process.env.FIXIE_API_TEAM;
 
     const client = new FixieClient({ apiKey: fixieApiKey, url: fixieApiUrl });
@@ -164,18 +164,16 @@ export async function POST(req: Request): Promise<Response> {
       name: body.name,
       image: template.image,
       bio: body.bio,
-      location: "",
+      location: '',
       ringtone: template.ringtone,
       voiceId: template.voiceId,
       bad: false,
     };
 
     await saveCharacter(character);
-    console.log(
-      `Creating character ${characterId}: ${JSON.stringify(character)}`
-    );
+    console.log(`Creating character ${characterId}: ${JSON.stringify(character)}`);
     return new Response(JSON.stringify(character), {
-      headers: { "content-type": "application/json" },
+      headers: { 'content-type': 'application/json' },
     });
   } catch (e: any) {
     console.log(e);

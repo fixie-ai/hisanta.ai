@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import React from 'react';
 import { NameInputProps } from '@/lib/types';
 
@@ -20,7 +20,7 @@ const NameInput: React.FC<NameInputProps> = ({ inputValue, onChange }) => {
           onChange={onChange}
         />
       </div>
-  </div>
+    </div>
   );
 };
 

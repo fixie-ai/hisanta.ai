@@ -1,21 +1,19 @@
-"use client";
-import { useEffect, useState } from "react";
-import EpicButton from "../Buttons";
-import { getCharacter } from "@/lib/config";
-import { PlayIcon, PauseIcon } from "@heroicons/react/20/solid";
-import ReactPlayer from "react-player";
-import { uuidToShareKey, shareKeyToUuid } from "../Sharing";
-import Link from "next/link";
-import { set } from "lodash";
-import { error } from "console";
+'use client';
+import { useEffect, useState } from 'react';
+import EpicButton from '../Buttons';
+import { getCharacter } from '@/lib/config';
+import { PlayIcon, PauseIcon } from '@heroicons/react/20/solid';
+import ReactPlayer from 'react-player';
+import { uuidToShareKey, shareKeyToUuid } from '../Sharing';
+import Link from 'next/link';
+import { set } from 'lodash';
+import { error } from 'console';
 
 function PlaybackError() {
   return (
     <div className="flex flex-col mx-auto justify-center items-center text-center p-4">
       <div className="mt-8 text-2xl text-Holiday-Red">Invalid link</div>
-      <div className="mt-8 text-lg text-Holiday-Green">
-        The link you are trying to access does not exist.
-      </div>
+      <div className="mt-8 text-lg text-Holiday-Green">The link you are trying to access does not exist.</div>
       <div className="mx-auto mt-12">
         <Link href="/">
           <EpicButton type="secondaryGreen" className="w-full">
@@ -53,9 +51,7 @@ export function SharedCall({ shareKey }: { shareKey: string }) {
         <PlaybackError />
       ) : (
         <>
-          <div className="mt-4 mx-auto text-3xl text-Holiday-Red">
-            Recorded call
-          </div>
+          <div className="mt-4 mx-auto text-3xl text-Holiday-Red">Recorded call</div>
           {videoUrl && (
             <>
               <div className="mx-auto relative">

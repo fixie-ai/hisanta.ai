@@ -1,0 +1,6 @@
+.pnp*
+.yarn*
+.vscode*
+.next
+node_modules
+dist

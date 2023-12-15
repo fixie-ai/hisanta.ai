@@ -1,30 +1,27 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import config from "@/lib/config";
-import { CharacterType } from "@/lib/types";
-import PickerButtons from "../ButtonGroup-Picker";
-import { useSearchParams } from "next/navigation";
+'use client';
+import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
+import config from '@/lib/config';
+import { CharacterType } from '@/lib/types';
+import PickerButtons from '../ButtonGroup-Picker';
+import { useSearchParams } from 'next/navigation';
 
 export default function CharacterPicker() {
   const searchParams = useSearchParams();
 
   let characters = config.availableCharacters;
-  const showBad = searchParams.get("nice") == "0" || false;
+  const showBad = searchParams.get('nice') == '0' || false;
 
   if (showBad) {
     characters = characters.filter((c) => c.bad === true);
   } else {
     characters = characters.filter((c) => c.bad !== true);
   }
-  const santa = characters.find(
-    (c) => c.characterId === "santa" || c.characterId === "badsanta"
-  );
+  const santa = characters.find((c) => c.characterId === 'santa' || c.characterId === 'badsanta');
 
   // handle state changes on the picker
   const [mainCharacter, setMainCharacter] = useState(santa); // Handle main character
-  const [selectedCharacter, setSelectedCharacter] =
-    useState<CharacterType | null>(null); // Handle border color change on click
+  const [selectedCharacter, setSelectedCharacter] = useState<CharacterType | null>(null); // Handle border color change on click
   const changeCharacter = (newCharacter: CharacterType) => {
     setMainCharacter(newCharacter);
     setSelectedCharacter(newCharacter);
@@ -57,34 +54,21 @@ export default function CharacterPicker() {
 
         <div className="flex space-x-5 mt-12 absolute bottom-[110px]">
           {characters.map((character, index) => (
-            <div
-              key={index}
-              onClick={() => changeCharacter(character)}
-              className="w-[64px]"
-            >
+            <div key={index} onClick={() => changeCharacter(character)} className="w-[64px]">
               <Image
                 src={`/images/${character.image}`}
                 alt={`Thumbnail ${index + 1}`}
                 width={64}
                 height={64}
                 className={`object-cover w-16 h-16 p-2 shadow-lg cursor-pointer items-center justify-center rounded-full ${
-                  character === selectedCharacter
-                    ? "ring-Holiday-Green ring-4"
-                    : "ring-2 ring-inset-2 ring-white"
+                  character === selectedCharacter ? 'ring-Holiday-Green ring-4' : 'ring-2 ring-inset-2 ring-white'
                 } `}
               />
             </div>
           ))}
         </div>
-        {selectedCharacter ? (
-          <PickerButtons
-            currentCharacter={selectedCharacter}
-            className="absolute bottom-4"
-          />
-        ) : (
-          ""
-        )}
+        {selectedCharacter ? <PickerButtons currentCharacter={selectedCharacter} className="absolute bottom-4" /> : ''}
       </div>
     </div>
   );
-};
+}

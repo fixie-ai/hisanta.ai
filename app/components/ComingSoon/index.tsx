@@ -13,7 +13,6 @@ const ComingSoon = () => {
         <Image src="/images/coming-soon-sticker.svg" alt="Coming Soon..." width={800} height={500} />
       </div>
     </div>
-    
   );
 };
 
