@@ -4,7 +4,7 @@ import EpicButton from '../Buttons';
 import { getCharacter } from '@/lib/config';
 import { PlayIcon, PauseIcon } from '@heroicons/react/20/solid';
 import ReactPlayer from 'react-player';
-import { uuidToShareKey, shareKeyToUuid } from '../Sharing';
+import { shareKeyToUuid } from '../Sharing';
 import Link from 'next/link';
 import { set } from 'lodash';
 import { error } from 'console';
