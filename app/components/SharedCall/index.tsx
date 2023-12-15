@@ -62,6 +62,10 @@ export function SharedCall({ shareKey }: { shareKey: string }) {
                 <ReactPlayer
                   onReady={onReady}
                   onError={() => setErrorOccurred(true)}
+                  onEnded={() => {
+                    console.log('Video ended');
+                    setPlaying(false);
+                  }}
                   playing={playing}
                   width={340}
                   controls={false}
