@@ -75,12 +75,13 @@ const EgressTemplate = () => {
     connectRoom();
   }, []);
 
-  const backgroundImageUrl = `/images/recording-background.png`;
+  //const backgroundImageUrl = `/images/recording-background.png`;
   return (
-    <div
+    <div className="bg-gray-300 flex justify-center items-center w-screen h-screen">
+    {/* <div
       className="bg-gray-300 flex justify-center items-center w-screen h-screen"
       style={{ backgroundImage: `url(${backgroundImageUrl})`, backgroundSize: 'cover' }}
-    >
+    > */}
       <div className="flex justify-center items-center w-2/3 h-2/3 mt-[-10%]">
         <Image
           className="object-contain max-w-full max-h-full"
