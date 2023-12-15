@@ -1,5 +1,5 @@
-import EpicButton from "../../components/Buttons";
-import { SharedCall } from "../../components/SharedCall";
+import EpicButton from "../../../components/Buttons";
+import { SharedCall } from "../../../components/SharedCall";
 import Link from "next/link";
 
 // Set the runtime to Edge.
