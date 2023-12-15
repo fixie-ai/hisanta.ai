@@ -13,8 +13,8 @@ const b58 = base(BASE58);
 
 /** Given a room name, returns the short key to access it via the sharing page. */
 export function roomNameToShareKey(roomName: string) {
-  if (roomName.indexOf('Fixie_') !== 0) {
-    throw new Error(`Invalid room name: ${roomName}`);
+  if (roomName.indexOf('Fixie_') === 0) {
+    roomName = roomName.substring(6);
   }
   const uuidObj = new Uuid(roomName.substring(6));
   return b58.encode(uuidObj.toBytes());
