@@ -18,10 +18,6 @@ const default_character: CharacterType = {
   voiceId: "Kp00queBTLslXxHCu1jq",
 };
 
-// const EgressTemplate = ({
-//   character
-// }: {character?: CharacterType}) => {
-
 const EgressTemplate = () => {
   function getCharacterByAgentId(agentId: string): CharacterType {
     const character_raw = config.availableCharacters.find((character) => character.agentId === agentId);
@@ -68,29 +64,18 @@ const EgressTemplate = () => {
     
 
   return (
-    // <div className="bg-gray-300 rounded-jumbo flex flex-col w-screen h-screen justify-center items-center mx-auto">
-    //   <div className="mx-auto mt-[-10%]"> {/* Adjust the percentage as needed */}
-    //     <Image
-    //       className="drop-shadow-md"
-    //       src={`/images/${character.image}`}
-    //       alt={`${character.name} image`}
-    //       width={200}
-    //       height={200}
-    //     />
-    //   </div>
-    // </div>
     <div className="bg-gray-300 flex justify-center items-center w-screen h-screen">
-  <div className="flex justify-center items-center w-2/3 h-2/3 mt-[-10%]"> {/* Adjust the negative margin as needed */}
-    <Image
-      className="object-contain max-w-full max-h-full"
-      src={`/images/${character.image}`}
-      alt={`${character.name} image`}
-      width={400}  // Set the natural size of the image or a default value
-      height={400} // Set the natural size of the image or a default value
-      layout="responsive"
-    />
-  </div>
-</div>
+      <div className="flex justify-center items-center w-2/3 h-2/3 mt-[-10%]"> 
+        <Image
+        className="object-contain max-w-full max-h-full"
+        src={`/images/${character.image}`}
+        alt={`${character.name} image`}
+        width={400}  
+        height={400} 
+        layout="responsive"
+      />
+      </div>
+    </div>
   );
 };
 
