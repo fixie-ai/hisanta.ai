@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
-import { Switch } from "../ui/switch";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Switch } from '../ui/switch';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export function NaughtyNiceSwitch() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const naughty = searchParams.get("nice") == "0" || false;
-  if (pathname !== "/") {
+  const naughty = searchParams.get('nice') == '0' || false;
+  if (pathname !== '/') {
     // We don't show the toggle on the character page.
     return null;
   }
 
   const onChange = (nice: boolean) => {
     if (nice) {
-      router.push("/?nice=1");
+      router.push('/?nice=1');
     } else {
-      router.push("/?nice=0");
+      router.push('/?nice=0');
     }
   };
 

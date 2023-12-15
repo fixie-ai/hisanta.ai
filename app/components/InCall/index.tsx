@@ -1,15 +1,15 @@
-"use client";
-import React from "react";
-import { useState } from "react";
-import Image from "next/image";
-import { ActiveCallProps } from "@/lib/types";
-import StartCallButton from "../Button-StartCall";
-import InterruptButton from "../Button-Interrupt";
-import EndCallButton from "../Button-EndCall";
-import NameInput from "../Input-Name";
+'use client';
+import React from 'react';
+import { useState } from 'react';
+import Image from 'next/image';
+import { ActiveCallProps } from '@/lib/types';
+import StartCallButton from '../Button-StartCall';
+import InterruptButton from '../Button-Interrupt';
+import EndCallButton from '../Button-EndCall';
+import NameInput from '../Input-Name';
 
 const InCall = ({ currentCharacter }: ActiveCallProps) => {
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log(`[InCall Component] Name changed to: ${event.target.value}`);

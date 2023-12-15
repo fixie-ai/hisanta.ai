@@ -19,7 +19,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/client@npm:^3.7.0, @apollo/client@npm:^3.8.1":
+"@apollo/client@npm:^3.7.0, @apollo/client@npm:^3.8.1, @apollo/client@npm:^3.8.8":
   version: 3.8.8
   resolution: "@apollo/client@npm:3.8.8"
   dependencies:
@@ -1240,6 +1240,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/prettier@npm:^2":
+  version: 2.7.3
+  resolution: "@types/prettier@npm:2.7.3"
+  checksum: 705384209cea6d1433ff6c187c80dcc0b95d99d5c5ce21a46a9a58060c527973506822e428789d842761e0280d25e3359300f017fbe77b9755bc772ab3dc2f83
+  languageName: node
+  linkType: hard
+
 "@types/prop-types@npm:*":
   version: 15.7.11
   resolution: "@types/prop-types@npm:15.7.11"
@@ -1472,12 +1479,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@upstash/redis@npm:1.25.1":
+  version: 1.25.1
+  resolution: "@upstash/redis@npm:1.25.1"
+  dependencies:
+    crypto-js: ^4.2.0
+  checksum: 694d9ff33b0a4bce95fa72effaface1b9c41cab7093d726fc1a9ef29eb5ac6eda3d4d0cc59c130bc6e62bf20eaa60a8ef423c257bac1484d3d76e73c56a3ea7e
+  languageName: node
+  linkType: hard
+
 "@vercel/analytics@npm:^1.1.1":
   version: 1.1.1
   resolution: "@vercel/analytics@npm:1.1.1"
   dependencies:
     server-only: ^0.0.1
   checksum: 25f0259a5730a05b9df3bb40309ff75db53d4136e2db24d8287eccb346de08e55484c885679746d4cfbc8418241c4a357ad07b34751380ffa108aaf844f4203e
+  languageName: node
+  linkType: hard
+
+"@vercel/kv@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@vercel/kv@npm:1.0.1"
+  dependencies:
+    "@upstash/redis": 1.25.1
+  checksum: 399ab8a846406cd61ea03909f04a5261ab0e06bac14e6a834f5292005305d9ee463179579fa74fe554db1cfecb706372bb4e9faa473433a146e2311095f6c29e
   languageName: node
   linkType: hard
 
@@ -2244,6 +2269,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"crypto-js@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "crypto-js@npm:4.2.0"
+  checksum: f051666dbc077c8324777f44fbd3aaea2986f198fe85092535130d17026c7c2ccf2d23ee5b29b36f7a4a07312db2fae23c9094b644cc35f7858b1b4fcaf27774
+  languageName: node
+  linkType: hard
+
 "css-in-js-utils@npm:^3.1.0":
   version: 3.1.0
   resolution: "css-in-js-utils@npm:3.1.0"
@@ -2678,7 +2710,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-import-resolver-node@npm:^0.3.6, eslint-import-resolver-node@npm:^0.3.9":
+"eslint-import-resolver-node@npm:^0.3.6, eslint-import-resolver-node@npm:^0.3.7, eslint-import-resolver-node@npm:^0.3.9":
   version: 0.3.9
   resolution: "eslint-import-resolver-node@npm:0.3.9"
   dependencies:
@@ -2689,7 +2721,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-import-resolver-typescript@npm:^3.5.2":
+"eslint-import-resolver-typescript@npm:^3.5.2, eslint-import-resolver-typescript@npm:^3.5.5":
   version: 3.6.1
   resolution: "eslint-import-resolver-typescript@npm:3.6.1"
   dependencies:
@@ -2716,6 +2748,33 @@ __metadata:
     eslint:
       optional: true
   checksum: 74c6dfea7641ebcfe174be61168541a11a14aa8d72e515f5f09af55cd0d0862686104b0524aa4b8e0ce66418a44aa38a94d2588743db5fd07a6b49ffd16921d2
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-import@npm:^2.27.5":
+  version: 2.29.1
+  resolution: "eslint-plugin-import@npm:2.29.1"
+  dependencies:
+    array-includes: ^3.1.7
+    array.prototype.findlastindex: ^1.2.3
+    array.prototype.flat: ^1.3.2
+    array.prototype.flatmap: ^1.3.2
+    debug: ^3.2.7
+    doctrine: ^2.1.0
+    eslint-import-resolver-node: ^0.3.9
+    eslint-module-utils: ^2.8.0
+    hasown: ^2.0.0
+    is-core-module: ^2.13.1
+    is-glob: ^4.0.3
+    minimatch: ^3.1.2
+    object.fromentries: ^2.0.7
+    object.groupby: ^1.0.1
+    object.values: ^1.1.7
+    semver: ^6.3.1
+    tsconfig-paths: ^3.15.0
+  peerDependencies:
+    eslint: ^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8
+  checksum: e65159aef808136d26d029b71c8c6e4cb5c628e65e5de77f1eb4c13a379315ae55c9c3afa847f43f4ff9df7e54515c77ffc6489c6a6f81f7dd7359267577468c
   languageName: node
   linkType: hard
 
@@ -2834,7 +2893,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8":
+"eslint@npm:^8.42.0":
   version: 8.55.0
   resolution: "eslint@npm:8.55.0"
   dependencies:
@@ -3570,6 +3629,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "hisanta.ai@workspace:."
   dependencies:
+    "@apollo/client": ^3.8.8
     "@datadog/browser-rum": ^5.5.0
     "@heroicons/react": ^2.0.18
     "@livekit/egress-sdk": ^0.1.2
@@ -3584,17 +3644,22 @@ __metadata:
     "@types/howler": ^2.2.11
     "@types/lodash": ^4.14.195
     "@types/node": ^18
+    "@types/prettier": ^2
     "@types/react": ^18
     "@types/react-dom": ^18
     "@typescript-eslint/eslint-plugin": ^5.59.9
     "@typescript-eslint/parser": ^5.59.9
     "@vercel/analytics": ^1.1.1
+    "@vercel/kv": ^1.0.1
     autoprefixer: ^10.0.1
     base-x: ^4.0.0
     class-variance-authority: ^0.7.0
     clsx: ^2.0.0
-    eslint: ^8
+    eslint: ^8.42.0
     eslint-config-next: ^14.0.3
+    eslint-import-resolver-node: ^0.3.7
+    eslint-import-resolver-typescript: ^3.5.5
+    eslint-plugin-import: ^2.27.5
     file-loader: ^6.2.0
     fixie: 6.3.4
     howler: ^2.2.4
@@ -3605,16 +3670,18 @@ __metadata:
     lucide-react: ^0.294.0
     next: ^14.0.3
     postcss: ^8
+    prettier: ^2.8.8
     react: ^18
     react-dom: ^18
     react-player: ^2.14.0
     react-screen-wake-lock: ^3.0.2
     react-swipeable: ^7.0.1
     react-use: ^17.4.2
+    short-unique-id: ^5.0.3
     tailwind-merge: ^2.1.0
     tailwindcss: ^3.3.0
     tailwindcss-animate: ^1.0.7
-    typescript: ^5
+    typescript: ^5.1.3
     uuid-tool: ^2.0.3
   languageName: unknown
   linkType: soft
@@ -5330,6 +5397,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"prettier@npm:^2.8.8":
+  version: 2.8.8
+  resolution: "prettier@npm:2.8.8"
+  bin:
+    prettier: bin-prettier.js
+  checksum: b49e409431bf129dd89238d64299ba80717b57ff5a6d1c1a8b1a28b590d998a34e083fa13573bc732bb8d2305becb4c9a4407f8486c81fa7d55100eb08263cf8
+  languageName: node
+  linkType: hard
+
 "proc-log@npm:^3.0.0":
   version: 3.0.0
   resolution: "proc-log@npm:3.0.0"
@@ -5933,6 +6009,16 @@ __metadata:
   version: 3.0.0
   resolution: "shebang-regex@npm:3.0.0"
   checksum: 1a2bcae50de99034fcd92ad4212d8e01eedf52c7ec7830eedcf886622804fe36884278f2be8be0ea5fde3fd1c23911643a4e0f726c8685b61871c8908af01222
+  languageName: node
+  linkType: hard
+
+"short-unique-id@npm:^5.0.3":
+  version: 5.0.3
+  resolution: "short-unique-id@npm:5.0.3"
+  bin:
+    short-unique-id: bin/short-unique-id
+    suid: bin/short-unique-id
+  checksum: 9e5e02276972b103d3f2808280b82ab9f90006dd0aea6a253158e71e3ed618c3ac8dfe509a267080b19826a5d4e20d7a3d1adb2f13e166109f56946da3fdff9b
   languageName: node
   linkType: hard
 
@@ -6543,6 +6629,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tsconfig-paths@npm:^3.15.0":
+  version: 3.15.0
+  resolution: "tsconfig-paths@npm:3.15.0"
+  dependencies:
+    "@types/json5": ^0.0.29
+    json5: ^1.0.2
+    minimist: ^1.2.6
+    strip-bom: ^3.0.0
+  checksum: 59f35407a390d9482b320451f52a411a256a130ff0e7543d18c6f20afab29ac19fbe55c360a93d6476213cc335a4d76ce90f67df54c4e9037f7d240920832201
+  languageName: node
+  linkType: hard
+
 "tslib@npm:2.6.2, tslib@npm:^2.0.0, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.4.0":
   version: 2.6.2
   resolution: "tslib@npm:2.6.2"
@@ -6668,7 +6766,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5":
+"typescript@npm:^5.1.3":
   version: 5.3.3
   resolution: "typescript@npm:5.3.3"
   bin:
@@ -6688,7 +6786,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^5#~builtin<compat/typescript>":
+"typescript@patch:typescript@^5.1.3#~builtin<compat/typescript>":
   version: 5.3.3
   resolution: "typescript@patch:typescript@npm%3A5.3.3#~builtin<compat/typescript>::version=5.3.3&hash=5da071"
   bin:

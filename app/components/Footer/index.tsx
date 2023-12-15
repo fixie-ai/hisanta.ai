@@ -1,7 +1,7 @@
-import config from "@/lib/config";
-import Link from "next/link";
-import Image from "next/image";
-import FixieLogo from "@/public/images/FixieLogo.svg";
+import config from '@/lib/config';
+import Link from 'next/link';
+import Image from 'next/image';
+import FixieLogo from '@/public/images/FixieLogo.svg';
 
 export default function Footer() {
   return (
@@ -17,17 +17,13 @@ export default function Footer() {
 }
 
 function Dot() {
-  return (
-    <div className="text-slate-700 font-['Inter-Regular'] text-xs mx-4">•</div>
-  );
+  return <div className="text-slate-700 font-['Inter-Regular'] text-xs mx-4">•</div>;
 }
 
 function Experiment() {
   return (
     <div className="flex flex-row">
-      <div className="text-slate-700 font-['Inter-SemiBold'] text-xs mr-2">
-        {config.footerText}
-      </div>
+      <div className="text-slate-700 font-['Inter-SemiBold'] text-xs mr-2">{config.footerText}</div>
       <Link href={config.referralUrl}>
         <Image src={FixieLogo} alt="Fixie Logo" width={60} height={20} />
       </Link>
