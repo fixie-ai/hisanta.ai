@@ -1,13 +1,14 @@
 export const runtime = "edge";
 
 import { CharacterType, CreateCharacterRequest } from "@/lib/types";
+import { getTemplate } from "@/lib/config";
 import { FixieClient } from "fixie";
 import ShortUniqueId from "short-unique-id";
 import { gql } from "@apollo/client/core/index.js";
 import { loadCharacter, saveCharacter } from "@/lib/storage";
 
 // The default model used by new agents.
-const DEFAULT_MODEL = "gpt-4-1106-preview"
+const DEFAULT_MODEL = "gpt-4-1106-preview";
 
 const BASE_PROMPT = `
 You are Santa. Your job is to make kids across the world happy and experience the joy of Christmas.
@@ -126,16 +127,6 @@ async function createAgent({
   return uuid;
 }
 
-/** Mapping from image ID to image filename. */
-const AVATARS: { [avatarKey: string]: string } = {
-  santa: "santa-hdpi.png",
-  elfie: "elfie-hdpi.png",
-  mrsClaus: "mrs-claus-hdpi.png",
-  rudolf: "rudolf-hdpi.png",
-  grouch: "the-grouch-hdpi.png",
-  badsanta: "bad-santa.png",
-};
-
 /** Create a new Character. */
 export async function POST(req: Request): Promise<Response> {
   const uid = new ShortUniqueId({ length: 10 });
@@ -143,40 +134,39 @@ export async function POST(req: Request): Promise<Response> {
   console.log(`Generating characterId: ${characterId}`);
 
   try {
+    const body = (await req.json()) as CreateCharacterRequest;
+    if (typeof body !== "object") {
+      throw new Error("Invalid request body: expecting object");
+    }
+    const template = getTemplate(body.templateId);
+    if (!template) {
+      throw new Error(`Invalid templateId: ${body.templateId}`);
+    }
     const fixieApiKey = process.env.FIXIE_API_KEY;
     const fixieApiUrl = process.env.FIXIE_API_URL || "https://api.fixie.ai";
     const fixieTeam = process.env.FIXIE_API_TEAM;
 
     const client = new FixieClient({ apiKey: fixieApiKey, url: fixieApiUrl });
-    const body = (await req.json()) as CreateCharacterRequest;
-    if (typeof body !== "object") {
-      throw new Error("Invalid request body: expecting object");
-    }
     const agentId = await createAgent({
       client,
       handle: characterId,
       name: body.name,
-      description: body.description,
-      systemPrompt: `You are ${body.name}, who is ${body.description}.`,
-      greetingMessage: body.description,
+      description: body.bio,
+      systemPrompt: `You are ${body.name}, who is ${body.bio}.`,
+      greetingMessage: body.greeting,
       teamId: fixieTeam,
     });
     console.log(`Created agent ${agentId}`);
-
-    const image: string = AVATARS[body.avatar];
-    if (!image) {
-      throw new Error(`Invalid avatar key: ${body.avatar}`);
-    }
 
     const character: CharacterType = {
       characterId,
       agentId,
       name: body.name,
-      image,
-      bio: "Custom character",
-      location: "Unknown",
-      ringtone: "/sounds/jinglebells.mp3",
-      voiceId: body.voiceId,
+      image: template.image,
+      bio: body.bio,
+      location: "",
+      ringtone: template.ringtone,
+      voiceId: template.voiceId,
       bad: false,
     };
 
