@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import CharacterPicker from "./components/CharacterPicker";
-import Badges from "./components/Badges";
-import { CheckTooBusy } from "./components/CheckTooBusy";
-import CallSantaButton from "./components/Button-CallSanta";
+import CharacterPicker from "../components/CharacterPicker";
+import Badges from "../components/Badges";
+import { CheckTooBusy } from "../components/CheckTooBusy";
+import CallSantaButton from "../components/Button-CallSanta";
 
 export default function Home() {
   return (

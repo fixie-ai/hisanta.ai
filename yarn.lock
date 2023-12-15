@@ -313,6 +313,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@livekit/egress-sdk@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "@livekit/egress-sdk@npm:0.1.2"
+  peerDependencies:
+    livekit-client: ^1.7.0
+  checksum: 9121ce0f89b74ac13117551a5c0a489578c2706b6d0d6da9716b69189a0588ed644d53ef49330a63f67f04f41cec6a9857fc5c8a28eb2d9f3680059e3495ed5d
+  languageName: node
+  linkType: hard
+
 "@next/env@npm:14.0.4":
   version: 14.0.4
   resolution: "@next/env@npm:14.0.4"
@@ -3563,6 +3572,7 @@ __metadata:
   dependencies:
     "@datadog/browser-rum": ^5.5.0
     "@heroicons/react": ^2.0.18
+    "@livekit/egress-sdk": ^0.1.2
     "@radix-ui/react-accordion": ^1.1.2
     "@radix-ui/react-checkbox": ^1.0.4
     "@radix-ui/react-dialog": ^1.0.5
