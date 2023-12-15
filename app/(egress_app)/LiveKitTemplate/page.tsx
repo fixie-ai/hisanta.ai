@@ -5,7 +5,8 @@ import { CharacterType } from "@/lib/types";
 import config from "@/lib/config";
 import EgressHelper from '@livekit/egress-sdk'
 import { Room } from 'livekit-client'
-  
+import { useSearchParams } from 'next/navigation'
+
 const default_character: CharacterType = {
   characterId: "santa",
   name: "Santa",
@@ -22,9 +23,6 @@ const default_character: CharacterType = {
 // }: {character?: CharacterType}) => {
 
 const EgressTemplate = () => {
-
-  const character = default_character;
-
   function getCharacterByAgentId(agentId: string): CharacterType {
     const character_raw = config.availableCharacters.find((character) => character.agentId === agentId);
     if (character_raw) {
@@ -34,6 +32,14 @@ const EgressTemplate = () => {
     }
   }
 
+  let character = default_character;
+  const searchParams = useSearchParams();
+
+  const agentId = searchParams.get("agentId")
+
+  if (agentId) {
+    character = getCharacterByAgentId(agentId);
+  }
 
   useEffect(() => {
     const newRoom = new Room({ adaptiveStream: true });
