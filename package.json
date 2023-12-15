@@ -51,6 +51,7 @@
   },
   "devDependencies": {
     "@types/base-x": "^3.0.6",
+    "@types/extract-files": "8.1.1",
     "@types/howler": "^2.2.11",
     "@types/lodash": "^4.14.195",
     "@types/node": "^18",
@@ -76,6 +77,9 @@
   "volta": {
     "node": "18.17.0",
     "yarn": "3.6.0"
+  },
+  "resolutions": {
+    "@types/extract-files": "8.1.1"
   },
   "packageManager": "yarn@3.6.0"
 }

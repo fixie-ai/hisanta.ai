@@ -45,6 +45,10 @@ function FooterLinks() {
       <div className="text-slate-700 font-['Inter-SemiBold'] text-xs">
         <Link href="https://fixie.ai/voice">Fixie Voice</Link>
       </div>
+      <Dot />
+      <div className="text-slate-700 font-['Inter-SemiBold'] text-xs">
+        <Link href="https://fixie.ai/privacy">Privacy Policy</Link>
+      </div>
     </>
   );
 }

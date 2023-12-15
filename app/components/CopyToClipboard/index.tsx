@@ -2,6 +2,7 @@ import React from 'react';
 import { DocumentDuplicateIcon } from '@heroicons/react/24/outline';
 import { useCopyToClipboard } from 'react-use';
 import { useToast } from '../ui/use-toast';
+import { datadogRum } from '@datadog/browser-rum';
 
 /** Copies the provided value to the clipboard when clicked. */
 export function CopyToClipboard({ value, children }: { value: string; children: React.ReactNode }) {
@@ -9,6 +10,7 @@ export function CopyToClipboard({ value, children }: { value: string; children: 
   const { toast } = useToast();
 
   const onClick = () => {
+    datadogRum.addAction('share-copied', { value });
     copyToClipboard(value);
     toast({
       title: 'Copied to clipboard!',
