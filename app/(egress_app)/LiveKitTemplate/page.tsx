@@ -46,27 +46,9 @@ const EgressTemplate = () => {
       participant: RemoteParticipant,
     ) {
       if (track.kind === Track.Kind.Audio || track.kind === Track.Kind.Video) {
-        track.setMuted(false)
-        console.log(track.mediaStreamTrack)
-
-        // Create an audio element
-        const audioElement = new Audio();
-        if (track.mediaStream){
-          audioElement.srcObject = track.mediaStream;
-        }
-    
-        // Set autoplay to true
-        audioElement.autoplay = true;
-    
-        // Append the audio element to the DOM (you can choose an appropriate parent element)
-        document.body.appendChild(audioElement);
-    
-        audioElement.play().catch((error) => {
-          console.error("error playing audio element", error)
-        });
+        const element = track.attach();
+        document.body.appendChild(element);
       }
-    
-      // Handle video tracks similarly with HTMLVideoElement if needed
     }
   
     const newRoom = new Room({ 
