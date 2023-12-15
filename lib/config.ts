@@ -1,4 +1,4 @@
-import { CharacterType } from './types';
+import { CharacterType, CharacterTemplate } from './types';
 
 /** Defines the top-level application config. */
 const config = {
@@ -100,4 +100,20 @@ export default config;
 /** Return metadata associated with the given character. */
 export function getCharacter(characterId: string): CharacterType | null {
   return config.availableCharacters.find(obj => obj.characterId === characterId) ?? null;
+}
+
+export const characterTemplates: CharacterTemplate[] = [
+  {
+    templateId: "penguin",
+    image: "penguin-hdpi.png",
+    voiceId: "3zdD5uMcIVtKzAQocDHU",
+    names: ["Pengly", "Bebop", "Mr. Feet", "Dipstick", "Icee"],
+    bios: ["A penguin who loves to dance.", "A penguin who loves to eat fish.", "A penguin who loves to swim.", "A penguin who loves to slide."],
+    greetings: ["Hi, I'm {name}. Merry Christmas!"],
+    ringtone: "/sounds/jinglebells.mp3",
+  },
+];
+
+export function getTemplate(templateId: string): CharacterTemplate | null {
+  return characterTemplates.find(obj => obj.templateId === templateId) ?? null;
 }

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@apollo/client": "^3.8.8",
     "@datadog/browser-rum": "^5.5.0",
     "@heroicons/react": "^2.0.18",
     "@livekit/egress-sdk": "^0.1.2",
@@ -20,6 +21,7 @@
     "@radix-ui/react-toast": "^1.1.5",
     "@radix-ui/react-toggle": "^1.0.3",
     "@vercel/analytics": "^1.1.1",
+    "@vercel/kv": "^1.0.1",
     "autoprefixer": "^10.0.1",
     "base-x": "^4.0.0",
     "class-variance-authority": "^0.7.0",
@@ -39,6 +41,7 @@
     "react-screen-wake-lock": "^3.0.2",
     "react-swipeable": "^7.0.1",
     "react-use": "^17.4.2",
+    "short-unique-id": "^5.0.3",
     "tailwind-merge": "^2.1.0",
     "tailwindcss-animate": "^1.0.7",
     "uuid-tool": "^2.0.3"
