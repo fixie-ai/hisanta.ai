@@ -87,7 +87,15 @@ export interface VoiceSessionStats {
  * the call is active. It creates and manages the Fixie VoiceSession object
  * and passes that down to the ActiveCall component.
  */
-export function CallCharacter({ character, showBio, shareButton }: { character: CharacterType; showBio?: boolean, shareButton?: boolean }) {
+export function CallCharacter({
+  character,
+  showBio,
+  shareButton,
+}: {
+  character: CharacterType;
+  showBio?: boolean;
+  shareButton?: boolean;
+}) {
   const searchParams = useSearchParams();
   const [inCall, setInCall] = useState(false);
   const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);

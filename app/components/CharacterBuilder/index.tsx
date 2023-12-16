@@ -110,22 +110,23 @@ export function CharacterBuilder() {
 
   const onCreate = () => {
     const createRequest = {
-        templateId: characterTemplates[characterIndex].templateId,
-        name: name,
-        bio: description,
-        greeting: greeting.replace('{name}', name)
+      templateId: characterTemplates[characterIndex].templateId,
+      name: name,
+      bio: description,
+      greeting: greeting.replace('{name}', name),
     };
     fetch('/api/character', {
-        method: 'POST',
-        body: JSON.stringify(createRequest),
-    }).then((res) => res.json())
-    .then((data) => {
+      method: 'POST',
+      body: JSON.stringify(createRequest),
+    })
+      .then((res) => res.json())
+      .then((data) => {
         console.log('Created character: ', data);
         router.push(`/c/${data.characterId}?share=true`);
-    }
-    ).catch((err) => {
+      })
+      .catch((err) => {
         console.log('Error creating character: ', err);
-    });
+      });
   };
 
   return (
@@ -164,7 +165,7 @@ export function CharacterBuilder() {
       />
       <div className="mt-auto" />
       <div className="m-4">
-        <EpicButton type="primary" className="w-full" onClick={onCreate} >
+        <EpicButton type="primary" className="w-full" onClick={onCreate}>
           Create character
         </EpicButton>
       </div>
