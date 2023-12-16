@@ -10,6 +10,7 @@ import { Textarea } from '../ui/textarea';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { set } from 'lodash';
 
 function LeftArrow({ onClick }: { onClick: () => void }) {
   return <ChevronLeftIcon onClick={onClick} className="w-12 h-12 p-2 border-2 border-Holiday-Green rounded-full" />;
@@ -78,6 +79,7 @@ export function CharacterBuilder() {
   const router = useRouter();
   const [testCallEnabled, setTestCallEnabled] = useState(false);
 
+  const [error, setError] = useState('');
   const [name, setName] = useState('');
   const [userSetName, setUserSetName] = useState(false);
   const [description, setDescription] = useState('');
@@ -91,22 +93,38 @@ export function CharacterBuilder() {
   };
 
   useEffect(() => {
-    if (!userSetName || name == '') {
+    if (!userSetName) {
       setName(characterTemplates[characterIndex].names[0]);
     }
   }, [characterIndex, userSetName, name]);
 
   useEffect(() => {
-    if (!userSetDescription || description == '') {
+    if (!userSetDescription) {
       setDescription(characterTemplates[characterIndex].bios[0]);
     }
   }, [characterIndex, userSetDescription, description]);
 
   useEffect(() => {
-    if (!userSetGreeting || greeting == '') {
+    if (!userSetGreeting) {
       setGreeting(characterTemplates[characterIndex].greetings[0]);
     }
   }, [characterIndex, userSetGreeting, greeting]);
+
+  useEffect(() => {
+    setError('');
+    if (!name) {
+      setError('Please choose a name!');
+      return;
+    }
+    if (!description) {
+      setError('Please describe your character!');
+      return;
+    }
+    if (!greeting) {
+      setError('Please set a greeting!');
+      return;
+    }
+  }, [name, description, greeting]);
 
   const onCreate = () => {
     const createRequest = {
@@ -119,13 +137,23 @@ export function CharacterBuilder() {
       method: 'POST',
       body: JSON.stringify(createRequest),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+            throw new Error(res.statusText);
+        }
+        return res.json();
+      })
       .then((data) => {
         console.log('Created character: ', data);
-        router.push(`/c/${data.characterId}?share=true`);
+        if (data.characterId) {
+            router.push(`/c/${data.characterId}?share=true`);
+        } else {
+            setError('Error creating character: ' + data);
+        }
       })
       .catch((err) => {
         console.log('Error creating character: ', err);
+        setError('Error creating character: ' + err);
       });
   };
 
@@ -137,6 +165,7 @@ export function CharacterBuilder() {
       <Input
         className="w-11/12 mx-auto font-[Inter-Regular]"
         placeholder="Name"
+        maxLength={58}
         value={name}
         onInput={(e) => {
           setUserSetName(true);
@@ -146,6 +175,7 @@ export function CharacterBuilder() {
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Describe your character</div>
       <Textarea
         value={description}
+        maxLength={4000}
         onInput={(e) => {
           setUserSetDescription(true);
           setDescription((e.target as HTMLTextAreaElement).value);
@@ -164,8 +194,9 @@ export function CharacterBuilder() {
         }}
       />
       <div className="mt-auto" />
+      <div className="font-[Inter-Regular] text-center text-red-500 italic">{error}</div>
       <div className="m-4">
-        <EpicButton type="primary" className="w-full" onClick={onCreate}>
+        <EpicButton disabled={error !== ''} type="primary" className="w-full" onClick={onCreate}>
           Create character
         </EpicButton>
       </div>
