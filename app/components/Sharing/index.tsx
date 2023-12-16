@@ -86,17 +86,16 @@ export function SharingDialogContent({
                   datadogRum.addAction('share-native', { shareUrl });
                   navigator.share({
                     title: 'HiSanta.ai',
-                    text: `I just had a call with ${character.name} on HiSanta.ai! Check it out: https://${shareUrl}`,                    
+                    text: `I just had a call with ${character.name} on HiSanta.ai! Check it out: https://${shareUrl}`,
                   });
                 }}
               >
                 <div className="w-fit mx-auto flex flex-row gap-2 items-center">
-                  <ShareIcon />
+                  <ShareIcon className="h-8 w-8" />
                   Share
                 </div>
               </EpicButton>
-            ) :
-            (
+            ) : (
               <>
                 <Link href={`https://www.facebook.com/sharer/sharer.php?u=https://${shareUrl}`} target="_blank">
                   <EpicButton
