@@ -77,7 +77,7 @@ export function SharingDialogContent({
                 <CopyToClipboard value={`https://${shareUrl}`}>{shareUrl}</CopyToClipboard>
               </div>
             </div>
-            {hasNativeShare && (
+            {hasNativeShare ? (
               <EpicButton
                 type="secondaryGreen"
                 className="w-full"
@@ -85,8 +85,7 @@ export function SharingDialogContent({
                   datadogRum.addAction('share-native', { shareUrl });
                   navigator.share({
                     title: 'HiSanta.ai',
-                    text: `I just had a call with ${character.name} on HiSanta.ai! Check it out: https://${shareUrl}`,
-                    url: `https://${shareUrl}`,
+                    text: `I just had a call with ${character.name} on HiSanta.ai! Check it out: https://${shareUrl}`,                    
                   });
                 }}
               >
@@ -95,8 +94,8 @@ export function SharingDialogContent({
                   Share
                 </div>
               </EpicButton>
-            )}
-            {!hasNativeShare && (
+            ) :
+            (
               <>
                 <Link href={`https://www.facebook.com/sharer/sharer.php?u=https://${shareUrl}`} target="_blank">
                   <EpicButton
