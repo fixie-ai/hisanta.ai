@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { CharacterType } from '@/lib/types';
 import EpicButton from '../Buttons';
 import { useRouter } from 'next/navigation';
+import { ShareCharacter } from '../ShareCharacter';
 
 const StartNewCall = ({
   character,
@@ -11,12 +12,14 @@ const StartNewCall = ({
   startCallEnabled,
   onDebugOpen,
   showBio,
+  shareButton,
 }: {
   character: CharacterType;
   onCallStart: () => void;
   startCallEnabled: boolean;
   onDebugOpen: () => void;
   showBio?: boolean;
+  shareButton?: boolean;
 }) => {
   const router = useRouter();
   const [taps, setTaps] = useState(0);
@@ -65,10 +68,16 @@ const StartNewCall = ({
           </div>
         )}
       </div>
-      <div className="m-4">
-        <EpicButton onClick={() => router.push(homeLink)} type="secondaryGreen" className="w-full">
-          Go back
-        </EpicButton>
+      <div className="m-4 flex flex-col">
+        {shareButton === true ? (
+          <div className="w-full">
+            <ShareCharacter character={character} />
+          </div>
+        ) : (
+          <EpicButton onClick={() => router.push(homeLink)} type="secondaryGreen" className="w-full">
+            Go back
+          </EpicButton>
+        )}
       </div>
     </div>
   );

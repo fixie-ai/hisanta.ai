@@ -76,7 +76,7 @@ function FeedbackForm({
             <div className="font-[Inter-Regular]">
               Thanks for your feedback. Feel free to share more about your experience below.
             </div>
-            <div>
+            <div className="h-max">
               <Textarea
                 className="font-[Inter-Regular]"
                 placeholder="Your feedback here"

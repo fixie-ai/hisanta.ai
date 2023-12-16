@@ -16,6 +16,7 @@ import { useWakeLock } from 'react-screen-wake-lock';
 import { CallFeedback } from '../CallFeedback';
 import { datadogRum } from '@datadog/browser-rum';
 import { CallError } from '../CallError';
+import { ShareCharacter } from '../ShareCharacter';
 
 const DEFAULT_ASR_PROVIDER = 'deepgram';
 const DEFAULT_TTS_PROVIDER = 'eleven-ws';
@@ -86,7 +87,7 @@ export interface VoiceSessionStats {
  * the call is active. It creates and manages the Fixie VoiceSession object
  * and passes that down to the ActiveCall component.
  */
-export function CallCharacter({ character, showBio }: { character: CharacterType; showBio?: boolean }) {
+export function CallCharacter({ character, showBio, shareButton }: { character: CharacterType; showBio?: boolean, shareButton?: boolean }) {
   const searchParams = useSearchParams();
   const [inCall, setInCall] = useState(false);
   const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
@@ -396,6 +397,7 @@ export function CallCharacter({ character, showBio }: { character: CharacterType
           character={character}
           onDebugOpen={onDebugOpen}
           showBio={showBio}
+          shareButton={shareButton}
         />
       )}
       <CallFeedback
