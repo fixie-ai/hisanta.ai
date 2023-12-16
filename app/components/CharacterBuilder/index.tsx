@@ -139,16 +139,16 @@ export function CharacterBuilder() {
     })
       .then((res) => {
         if (!res.ok) {
-            throw new Error(res.statusText);
+          throw new Error(res.statusText);
         }
         return res.json();
       })
       .then((data) => {
         console.log('Created character: ', data);
         if (data.characterId) {
-            router.push(`/c/${data.characterId}?share=true`);
+          router.push(`/c/${data.characterId}?share=true`);
         } else {
-            setError('Error creating character: ' + data);
+          setError('Error creating character: ' + data);
         }
       })
       .catch((err) => {
