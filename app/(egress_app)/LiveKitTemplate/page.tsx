@@ -80,8 +80,8 @@ const EgressTemplate = () => {
     <div
       className="bg-gray-300 flex justify-center items-center"
       style={{
-        width: '100vw',    // Set width to 100% of the viewport width
-        height: '100vw',   // Set height equal to the width for a square ratio
+        width: '100vw',    
+        height: '100vw',   
         backgroundImage: `url(${backgroundImageUrl})`,
         backgroundSize: 'cover'
       }}
