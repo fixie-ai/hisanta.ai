@@ -8,6 +8,7 @@ import { CopyToClipboard } from '../CopyToClipboard';
 import Link from 'next/link';
 import { CharacterType } from '@/lib/types';
 import { datadogRum } from '@datadog/browser-rum';
+import { ShareIcon } from '@heroicons/react/24/outline';
 
 const BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const b58 = base(BASE58);
@@ -90,7 +91,7 @@ export function SharingDialogContent({
                 }}
               >
                 <div className="w-fit mx-auto flex flex-row gap-2 items-center">
-                  <Image src="/images/logo-share.svg" alt="Share icon" width={48} height={48} className="w-8 h-8" />
+                  <ShareIcon />
                   Share
                 </div>
               </EpicButton>
