@@ -61,6 +61,7 @@ export function SharingDialogContent({
   const minutes = duration ? Math.floor(duration! / 60000) : '0';
   const seconds = duration ? ((duration! % 60000) / 1000).toFixed(0) : 0;
   const shareUrl = `hisanta.ai/s/${roomNameToShareKey(roomName)}`;
+  const hasNativeShare = 'share' in navigator
   console.log(`Share URL for room ${roomName} is ${shareUrl}`);
 
   return (
@@ -73,35 +74,57 @@ export function SharingDialogContent({
               <div className="text-sm">
                 Your {minutes}:{seconds.toString().padStart(2, '0')} call can be replayed here:
               </div>
-              <div className="mt-4 text-base">
+              <div className="mt-4 text-sm">
                 <CopyToClipboard value={`https://${shareUrl}`}>{shareUrl}</CopyToClipboard>
               </div>
             </div>
-            <Link href={`https://www.facebook.com/sharer/sharer.php?u=https://${shareUrl}`} target="_blank">
-              <EpicButton type="secondaryGreen" className="w-full" onClick={onClose}>
+            {hasNativeShare && (
+              <EpicButton
+                type="secondaryGreen"
+                className="w-full"
+                onClick={() => {
+                  navigator.share({
+                    title: 'HiSanta.ai',
+                    text: `I just had a call with ${character.name} on HiSanta.ai! Check it out: https://${shareUrl}`,
+                    url: `https://${shareUrl}`,
+                  });
+                }}
+              >
                 <div className="w-fit mx-auto flex flex-row gap-2 items-center">
-                  <Image
-                    src="/images/logo-facebook.svg"
-                    alt="Facebook logo"
-                    width={48}
-                    height={48}
-                    className="w-8 h-8"
-                  />
-                  Share on Facebook
+                  <Image src="/images/logo-share.svg" alt="Share icon" width={48} height={48} className="w-8 h-8" />
+                  Share
                 </div>
               </EpicButton>
-            </Link>
-            <Link
-              href={`https://twitter.com/intent/tweet?text=I just had a call with ${character.name} on HiSanta.ai! Check it out: https://${shareUrl}`}
-              target="_blank"
-            >
-              <EpicButton type="secondaryGreen" className="w-full" onClick={onClose}>
-                <div className="w-fit mx-auto flex flex-row gap-2 items-center">
-                  <Image src="/images/logo-twitter.svg" alt="Twitter logo" width={48} height={48} className="w-8 h-8" />
-                  Share on Twitter
-                </div>
-              </EpicButton>
-            </Link>
+            )}
+            {!hasNativeShare && (
+            <>
+              <Link href={`https://www.facebook.com/sharer/sharer.php?u=https://${shareUrl}`} target="_blank">
+                <EpicButton type="secondaryGreen" className="w-full" onClick={onClose}>
+                  <div className="w-fit mx-auto flex flex-row gap-2 items-center">
+                    <Image
+                      src="/images/logo-facebook.svg"
+                      alt="Facebook logo"
+                      width={48}
+                      height={48}
+                      className="w-8 h-8"
+                    />
+                    Share on Facebook
+                  </div>
+                </EpicButton>
+              </Link>
+              <Link
+                href={`https://twitter.com/intent/tweet?text=I just had a call with ${character.name} on HiSanta.ai! Check it out: https://${shareUrl}`}
+                target="_blank"
+              >
+                <EpicButton type="secondaryGreen" className="w-full" onClick={onClose}>
+                  <div className="w-fit mx-auto flex flex-row gap-2 items-center">
+                    <Image src="/images/logo-twitter.svg" alt="Twitter logo" width={48} height={48} className="w-8 h-8" />
+                    Share on Twitter
+                  </div>
+                </EpicButton>
+              </Link>
+              </>  
+            )}
             <EpicButton className="w-full h-12" onClick={onClose}>
               Close
             </EpicButton>
