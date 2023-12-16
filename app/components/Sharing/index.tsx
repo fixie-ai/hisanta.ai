@@ -8,6 +8,7 @@ import { CopyToClipboard } from '../CopyToClipboard';
 import Link from 'next/link';
 import { CharacterType } from '@/lib/types';
 import { datadogRum } from '@datadog/browser-rum';
+import { ShareIcon } from '@heroicons/react/24/outline';
 
 const BASE58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const b58 = base(BASE58);
@@ -61,6 +62,7 @@ export function SharingDialogContent({
   const minutes = duration ? Math.floor(duration! / 60000) : '0';
   const seconds = duration ? ((duration! % 60000) / 1000).toFixed(0) : 0;
   const shareUrl = `hisanta.ai/s/${roomNameToShareKey(roomName)}`;
+  const hasNativeShare = 'share' in navigator;
 
   return (
     <DialogContent>
@@ -72,49 +74,76 @@ export function SharingDialogContent({
               <div className="text-sm">
                 Your {minutes}:{seconds.toString().padStart(2, '0')} call can be replayed here:
               </div>
-              <div className="mt-4 text-base">
+              <div className="mt-4 text-sm">
                 <CopyToClipboard value={`https://${shareUrl}`}>{shareUrl}</CopyToClipboard>
               </div>
             </div>
-            <Link href={`https://www.facebook.com/sharer/sharer.php?u=https://${shareUrl}`} target="_blank">
+            {hasNativeShare ? (
               <EpicButton
                 type="secondaryGreen"
                 className="w-full"
                 onClick={() => {
-                  datadogRum.addAction('share-to-facebook', { shareUrl });
-                  onClose();
+                  datadogRum.addAction('share-native', { shareUrl });
+                  navigator.share({
+                    title: 'HiSanta.ai',
+                    text: `I just had a call with ${character.name} on HiSanta.ai! Check it out: https://${shareUrl}`,
+                  });
                 }}
               >
                 <div className="w-fit mx-auto flex flex-row gap-2 items-center">
-                  <Image
-                    src="/images/logo-facebook.svg"
-                    alt="Facebook logo"
-                    width={48}
-                    height={48}
-                    className="w-8 h-8"
-                  />
-                  Share on Facebook
+                  <ShareIcon className="h-8 w-8" />
+                  Share
                 </div>
               </EpicButton>
-            </Link>
-            <Link
-              href={`https://twitter.com/intent/tweet?text=I just had a call with ${character.name} on HiSanta.ai! Check it out: https://${shareUrl}`}
-              target="_blank"
-            >
-              <EpicButton
-                type="secondaryGreen"
-                className="w-full"
-                onClick={() => {
-                  datadogRum.addAction('share-to-twitter', { shareUrl });
-                  onClose();
-                }}
-              >
-                <div className="w-fit mx-auto flex flex-row gap-2 items-center">
-                  <Image src="/images/logo-twitter.svg" alt="Twitter logo" width={48} height={48} className="w-8 h-8" />
-                  Share on Twitter
-                </div>
-              </EpicButton>
-            </Link>
+            ) : (
+              <>
+                <Link href={`https://www.facebook.com/sharer/sharer.php?u=https://${shareUrl}`} target="_blank">
+                  <EpicButton
+                    type="secondaryGreen"
+                    className="w-full"
+                    onClick={() => {
+                      datadogRum.addAction('share-to-facebook', { shareUrl });
+                      onClose();
+                    }}
+                  >
+                    <div className="w-fit mx-auto flex flex-row gap-2 items-center">
+                      <Image
+                        src="/images/logo-facebook.svg"
+                        alt="Facebook logo"
+                        width={48}
+                        height={48}
+                        className="w-8 h-8"
+                      />
+                      Share on Facebook
+                    </div>
+                  </EpicButton>
+                </Link>
+                <Link
+                  href={`https://twitter.com/intent/tweet?text=I just had a call with ${character.name} on HiSanta.ai! Check it out: https://${shareUrl}`}
+                  target="_blank"
+                >
+                  <EpicButton
+                    type="secondaryGreen"
+                    className="w-full"
+                    onClick={() => {
+                      datadogRum.addAction('share-to-twitter', { shareUrl });
+                      onClose();
+                    }}
+                  >
+                    <div className="w-fit mx-auto flex flex-row gap-2 items-center">
+                      <Image
+                        src="/images/logo-twitter.svg"
+                        alt="Twitter logo"
+                        width={48}
+                        height={48}
+                        className="w-8 h-8"
+                      />
+                      Share on Twitter
+                    </div>
+                  </EpicButton>
+                </Link>
+              </>
+            )}
             <EpicButton className="w-full h-12" onClick={onClose}>
               Close
             </EpicButton>
