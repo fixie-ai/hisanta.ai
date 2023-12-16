@@ -78,20 +78,26 @@ const EgressTemplate = () => {
   const backgroundImageUrl = `/images/recording-background.png`;
   return (
     <div
-      className="bg-gray-300 flex justify-center items-center w-screen h-screen"
-      style={{ backgroundImage: `url(${backgroundImageUrl})`, backgroundSize: 'cover' }}
+      className="bg-gray-300 flex justify-center items-center"
+      style={{
+        width: '100vw',    // Set width to 100% of the viewport width
+        height: '100vw',   // Set height equal to the width for a square ratio
+        backgroundImage: `url(${backgroundImageUrl})`,
+        backgroundSize: 'cover'
+      }}
     >
-      <div className="flex justify-center items-center w-2/3 h-2/3 mt-[-10%]">
-        <Image
-          className="object-contain max-w-full max-h-full"
-          src={`/images/${character.image}`}
-          alt={`${character.name} image`}
-          width={400}
-          height={400}
-          layout="responsive"
-        />
-      </div>
-    </div>
+  <div className="flex justify-center items-center w-2/3 h-2/3 mt-[-10%]">
+    <Image
+      className="object-contain max-w-full max-h-full"
+      src={`/images/${character.image}`}
+      alt={`${character.name} image`}
+      width={400}
+      height={400}
+      layout="responsive"
+    />
+  </div>
+</div>
+
   );
 };
 
