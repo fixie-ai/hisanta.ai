@@ -7,6 +7,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { LaunchDarklyProvider } from '../components/LaunchDarkly';
 import { Datadog } from '../components/Datadog';
 import { Toaster } from '../components/ui/toaster';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: config.siteName,
@@ -17,7 +18,17 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="">
-      <head />
+      <head>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=AW-11148404279" />
+        <Script id="google-analytics">
+          {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'AW-11148404279');
+        `}
+        </Script>
+      </head>
       <body>
         <LaunchDarklyProvider>
           <Header />
