@@ -68,10 +68,10 @@ const StartNewCall = ({
             </EpicButton>
           </div>
         ) : (
-          <div className="rounded-full align-middle justify-center w-full flex flex-row mx-auto border border-Holiday-Green p-4">
-            <div className="text-lg color-Holiday-Green">
-              <div className="overflow-hidden whitespace-nowrap overflow-ellipsis">Dialing {character.name}...</div>
-            </div>
+          <div className="w-full">
+            <EpicButton disabled={true} onClick={onMakeCall} type="primary" className="w-full">
+              <div className="overflow-hidden whitespace-nowrap overflow-ellipsis">Dialing {character.name}</div>
+            </EpicButton>
           </div>
         )}
       </div>

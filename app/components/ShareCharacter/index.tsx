@@ -8,7 +8,7 @@ export function ShareCharacter({ character }: { character: CharacterType }) {
       <DialogTrigger className="w-full">
         <div className="w-full">
           <EpicButton type="secondaryGreen" className="w-full">
-            <div className="overflow-hidden whitespace-nowrap overflow-ellipsis">Call {character.name}</div>
+            <div className="overflow-hidden whitespace-nowrap overflow-ellipsis">Share {character.name}</div>
           </EpicButton>
         </div>
       </DialogTrigger>
