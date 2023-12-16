@@ -7,10 +7,12 @@ import PickerButtons from '../ButtonGroup-Picker';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import EpicButton from '../Buttons';
+import { useFlags } from 'launchdarkly-react-client-sdk';
 
 export default function CharacterPicker() {
   const searchParams = useSearchParams();
   const [buildOwn, setBuildOwn] = useState(false);
+  const { customCharactersEnabled } = useFlags();
 
   let characters = config.availableCharacters;
   const showBad = searchParams.get('nice') == '0' || false;
@@ -74,7 +76,7 @@ export default function CharacterPicker() {
         </div>
         <div className="absolute bottom-[95px]">
           <div className="flex space-x-5 mt-12 justify-center">
-            {characters.slice(0, 3).map((character, index) => (
+            {characters.slice(0, customCharactersEnabled && !showBad ? 3 : 4).map((character, index) => (
               <div key={index} onClick={() => changeCharacter(character)} className="w-[64px]">
                 <Image
                   src={`/images/${character.image}`}
@@ -88,32 +90,36 @@ export default function CharacterPicker() {
               </div>
             ))}
           </div>
-          <div className="flex space-x-5 mt-4 justify-center">
-            {characters.slice(3, 4).map((character, index) => (
-              <div key={index} onClick={() => changeCharacter(character)} className="w-[64px]">
-                <Image
-                  src={`/images/${character.image}`}
-                  alt={`Thumbnail ${index + 1}`}
-                  width={64}
-                  height={64}
-                  className={`object-cover w-16 h-16 p-2 shadow-lg cursor-pointer items-center justify-center rounded-full ${
-                    character === selectedCharacter ? 'ring-Holiday-Green ring-4' : 'ring-2 ring-inset-2 ring-white'
-                  } `}
-                />
+          {customCharactersEnabled && !showBad && (
+            <>
+              <div className="flex space-x-5 mt-4 justify-center">
+                {characters.slice(3, 4).map((character, index) => (
+                  <div key={index} onClick={() => changeCharacter(character)} className="w-[64px]">
+                    <Image
+                      src={`/images/${character.image}`}
+                      alt={`Thumbnail ${index + 1}`}
+                      width={64}
+                      height={64}
+                      className={`object-cover w-16 h-16 p-2 shadow-lg cursor-pointer items-center justify-center rounded-full ${
+                        character === selectedCharacter ? 'ring-Holiday-Green ring-4' : 'ring-2 ring-inset-2 ring-white'
+                      } `}
+                    />
+                  </div>
+                ))}
+                <div onClick={() => handleCreateClick()} className="w-[64px]">
+                  <Image
+                    src={`/images/questionmark.png`}
+                    alt={`New character`}
+                    width={64}
+                    height={64}
+                    className={`object-cover w-16 h-16 p-2 shadow-lg cursor-pointer items-center justify-center rounded-full ${
+                      !selectedCharacter ? 'ring-Holiday-Green ring-4' : 'ring-2 ring-inset-2 ring-white'
+                    } `}
+                  />
+                </div>
               </div>
-            ))}
-            <div onClick={() => handleCreateClick()} className="w-[64px]">
-              <Image
-                src={`/images/questionmark.png`}
-                alt={`New character`}
-                width={64}
-                height={64}
-                className={`object-cover w-16 h-16 p-2 shadow-lg cursor-pointer items-center justify-center rounded-full ${
-                  !selectedCharacter ? 'ring-Holiday-Green ring-4' : 'ring-2 ring-inset-2 ring-white'
-                } `}
-              />
-            </div>
-          </div>
+            </>
+          )}
         </div>
         {selectedCharacter ? (
           <PickerButtons currentCharacter={selectedCharacter} className="absolute bottom-4" />
