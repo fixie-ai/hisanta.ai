@@ -20,11 +20,16 @@ const EpicButton = ({ children, type, className, disabled, onClick }: EpicButton
       edge: 'bg-Holiday-Red',
       shadow: '',
     },
+    disabled: {
+      front: 'bg-white text-gray-400',
+      edge: 'bg-gray-400',
+      shadow: '',
+    },
   };
 
-  let frontClass = mappings[buttonType].front;
-  let edgeClass = mappings[buttonType].edge;
-  let shadowClass = mappings[buttonType].shadow;
+  let frontClass = disabled ? mappings.disabled.front : mappings[buttonType].front;
+  let edgeClass = disabled ? mappings.disabled.edge : mappings[buttonType].edge;
+  let shadowClass = disabled ? mappings.disabled.shadow : mappings[buttonType].shadow;
 
   return (
     <button disabled={disabled} onClick={onClick} className={`pushable ${className}`}>

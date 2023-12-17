@@ -231,7 +231,9 @@ export default function ActiveCall({
   return (
     <>
       <div className="bg-slate-100 rounded-jumbo border border-black flex flex-col w-11/12 mx-auto md:mt-4 gap-4 w-[340px] h-[600px] justify-between">
-        <div className="mt-4 mx-auto text-3xl text-[#881425]">{character.name}</div>
+        <div className="mt-4 mx-auto text-3xl text-[#881425] text-center">
+          <p className="mx-4 line-clamp-2">{character.name}</p>
+        </div>
         <Conversation
           voiceSession={voiceSession}
           character={character}
