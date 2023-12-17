@@ -28,13 +28,13 @@ const default_character: CharacterType = {
 
 const EgressTemplate = () => {
 
-  const fetchCharacterIdFromAgentId = async (characterId: string) => {
+  const fetchCharacterIdFromAgentId = async (agentId: string) => {
     try {
-      const res = await fetch(`/api/agentToCharacter/${characterId}`, {
+      const res = await fetch(`/api/agentToCharacter/${agentId}`, {
         method: 'GET',
       });
       if (!res.ok) {
-        throw new Error(`Error fetching character ${characterId}: ${res.status} ${res.statusText}`);
+        throw new Error(`Error fetching character from agent Id ${agentId}: ${res.status} ${res.statusText}`);
       }
       return await res.json();
     } catch (error) {
@@ -68,25 +68,6 @@ const EgressTemplate = () => {
 
   let setCharacter: CharacterType = default_character;
 
-  if (agentId) {
-    // Check if the agentId is from one of the premade characters.
-    let character = getCharacterByAgentIdLocal(agentId);
-    if (character) {
-      setCharacter = character;
-    }
-    else {
-      // If not, retrieve the character Id from the agentId for custom built characters.
-      fetchCharacterIdFromAgentId(agentId).then((characterId) => {
-        if (characterId) {
-          character = getCharacterByCharacterIdLocal(characterId);
-          if (character) {
-            setCharacter = character;
-          }
-        }
-      })
-    }
-  }
-
   useEffect(() => {
     function handleTrackSubscribed(
       track: RemoteTrack,
@@ -96,6 +77,25 @@ const EgressTemplate = () => {
       if (track.kind === Track.Kind.Audio || track.kind === Track.Kind.Video) {
         const element = track.attach();
         document.body.appendChild(element);
+      }
+    }
+
+    if (agentId) {
+      // Check if the agentId is from one of the premade characters.
+      let character = getCharacterByAgentIdLocal(agentId);
+      if (character) {
+        setCharacter = character;
+      }
+      else {
+        // If not, retrieve the character Id from the agentId for custom built characters.
+        fetchCharacterIdFromAgentId(agentId).then((characterId) => {
+          if (characterId) {
+            character = getCharacterByCharacterIdLocal(characterId);
+            if (character) {
+              setCharacter = character;
+            }
+          }
+        })
       }
     }
 
