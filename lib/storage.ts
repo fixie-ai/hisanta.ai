@@ -17,7 +17,7 @@ export async function saveCharacter(character: CharacterType): Promise<void> {
 
 /** Load the Character ID mapped to the given Agent ID from KV. */
 export async function loadCharacterIdByAgentId(agentId: string): Promise<string> {
-  const characterId = await kv.json.get(`agent-character:${agentId}`);
+  const characterId = await kv.json.get(`agent:${agentId}`);
   if (characterId === null) {
     throw new Error(`Character ID not found for Agent ${agentId}`);
   }
@@ -26,5 +26,5 @@ export async function loadCharacterIdByAgentId(agentId: string): Promise<string>
 
 /** Store the mapping of Agent ID to Character ID to KV. */
 export async function saveAgentCharacterMapping(agentId: string, characterId: string): Promise<void> {
-  await kv.set(`agent-character:${agentId}`, characterId);
+  await kv.set(`agent:${agentId}`, characterId);
 }
