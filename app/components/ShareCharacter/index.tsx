@@ -27,6 +27,9 @@ export function ShareCharacter({ character }: { character: CharacterType }) {
           <DialogDescription>
             <div className="mx-auto w-full flex flex-col gap-4 mb-4">
               <div className="text-center flex flex-col w-full bg-slate-100 rounded-3xl font-[Inter-Regular] p-4 mb-4">
+                <div className="text-sm">
+                  Share this link with your friends and family to let them chat with {character.name}!
+                </div>
                 <div className="mt-4 text-base">
                   <CopyToClipboard value={`https://${shareUrl}`}>{shareUrl}</CopyToClipboard>
                 </div>
@@ -74,7 +77,6 @@ export function ShareCharacter({ character }: { character: CharacterType }) {
                   </div>
                 </EpicButton>
               </Link>
-              <EpicButton className="w-full h-12">Close</EpicButton>
             </div>
           </DialogDescription>
         </DialogHeader>
