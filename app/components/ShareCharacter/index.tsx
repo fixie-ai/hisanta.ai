@@ -5,6 +5,7 @@ import { CopyToClipboard } from '../CopyToClipboard';
 import Link from 'next/link';
 import Image from 'next/image';
 import { datadogRum } from '@datadog/browser-rum';
+import { ShareIcon } from '@heroicons/react/24/outline';
 
 export function ShareCharacter({ character }: { character: CharacterType }) {
   const shareUrl = `hisanta.ai/c/${character.characterId}`;
