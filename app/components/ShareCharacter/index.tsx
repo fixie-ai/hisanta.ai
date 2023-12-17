@@ -43,7 +43,7 @@ export function ShareCharacter({ character }: { character: CharacterType }) {
                   type="secondaryGreen"
                   className="w-full"
                   onClick={() => {
-                    datadogRum.addAction('share-native', { shareUrl });
+                    datadogRum.addAction('share-char-native', { shareUrl });
                     navigator.share({
                       title: 'HiSanta.ai',
                       text: `I created a voice character named ${character.name} on HiSanta.ai! Check it out: https://${shareUrl}`,
