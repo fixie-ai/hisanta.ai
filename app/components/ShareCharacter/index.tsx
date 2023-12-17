@@ -8,6 +8,8 @@ import { datadogRum } from '@datadog/browser-rum';
 
 export function ShareCharacter({ character }: { character: CharacterType }) {
   const shareUrl = `hisanta.ai/c/${character.characterId}`;
+  const hasNativeShare = 'share' in navigator;
+
   return (
     <Dialog>
       <DialogTrigger className="w-full">
@@ -34,49 +36,71 @@ export function ShareCharacter({ character }: { character: CharacterType }) {
                   <CopyToClipboard value={`https://${shareUrl}`}>{shareUrl}</CopyToClipboard>
                 </div>
               </div>
-              <Link href={`https://www.facebook.com/sharer/sharer.php?u=https://${shareUrl}`} target="_blank">
+
+              {hasNativeShare ? (
                 <EpicButton
                   type="secondaryGreen"
                   className="w-full"
                   onClick={() => {
-                    datadogRum.addAction('share-char-to-facebook', { shareUrl });
+                    datadogRum.addAction('share-native', { shareUrl });
+                    navigator.share({
+                      title: 'HiSanta.ai',
+                      text: `I created a voice character named ${character.name} on HiSanta.ai! Check it out: https://${shareUrl}`,
+                    });
                   }}
                 >
                   <div className="w-fit mx-auto flex flex-row gap-2 items-center">
-                    <Image
-                      src="/images/logo-facebook.svg"
-                      alt="Facebook logo"
-                      width={48}
-                      height={48}
-                      className="w-8 h-8"
-                    />
-                    Share on Facebook
+                    <ShareIcon className="h-8 w-8" />
+                    Share
                   </div>
                 </EpicButton>
-              </Link>
-              <Link
-                href={`https://twitter.com/intent/tweet?text=I just created a virtual character you can chat with on HiSanta.ai! Check it out: https://${shareUrl}`}
-                target="_blank"
-              >
-                <EpicButton
-                  type="secondaryGreen"
-                  className="w-full"
-                  onClick={() => {
-                    datadogRum.addAction('share-char-to-twitter', { shareUrl });
-                  }}
-                >
-                  <div className="w-fit mx-auto flex flex-row gap-2 items-center">
-                    <Image
-                      src="/images/logo-twitter.svg"
-                      alt="Twitter logo"
-                      width={48}
-                      height={48}
-                      className="w-8 h-8"
-                    />
-                    Share on Twitter
-                  </div>
-                </EpicButton>
-              </Link>
+              ) : (
+                <>
+                  <Link href={`https://www.facebook.com/sharer/sharer.php?u=https://${shareUrl}`} target="_blank">
+                    <EpicButton
+                      type="secondaryGreen"
+                      className="w-full"
+                      onClick={() => {
+                        datadogRum.addAction('share-char-to-facebook', { shareUrl });
+                      }}
+                    >
+                      <div className="w-fit mx-auto flex flex-row gap-2 items-center">
+                        <Image
+                          src="/images/logo-facebook.svg"
+                          alt="Facebook logo"
+                          width={48}
+                          height={48}
+                          className="w-8 h-8"
+                        />
+                        Share on Facebook
+                      </div>
+                    </EpicButton>
+                  </Link>
+                  <Link
+                    href={`https://twitter.com/intent/tweet?text=I just created a virtual character you can chat with on HiSanta.ai! Check it out: https://${shareUrl}`}
+                    target="_blank"
+                  >
+                    <EpicButton
+                      type="secondaryGreen"
+                      className="w-full"
+                      onClick={() => {
+                        datadogRum.addAction('share-char-to-twitter', { shareUrl });
+                      }}
+                    >
+                      <div className="w-fit mx-auto flex flex-row gap-2 items-center">
+                        <Image
+                          src="/images/logo-twitter.svg"
+                          alt="Twitter logo"
+                          width={48}
+                          height={48}
+                          className="w-8 h-8"
+                        />
+                        Share on Twitter
+                      </div>
+                    </EpicButton>
+                  </Link>
+                </>
+              )}
             </div>
           </DialogDescription>
         </DialogHeader>

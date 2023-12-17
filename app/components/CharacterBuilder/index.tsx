@@ -10,7 +10,8 @@ import { Textarea } from '../ui/textarea';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-import { set } from 'lodash';
+import { datadogRum } from '@datadog/browser-rum';
+import { create } from 'lodash';
 
 function LeftArrow({ onClick }: { onClick: () => void }) {
   return (
@@ -88,7 +89,6 @@ function CharacterChooser({ onChoose }: { onChoose: (index: number) => void }) {
 
 export function CharacterBuilder() {
   const router = useRouter();
-  const [testCallEnabled, setTestCallEnabled] = useState(false);
 
   const [error, setError] = useState('');
   const [name, setName] = useState('');
@@ -144,6 +144,8 @@ export function CharacterBuilder() {
       bio: description,
       greeting: greeting.replace('{name}', name),
     };
+    datadogRum.addAction('create-character', createRequest);
+
     fetch('/api/character', {
       method: 'POST',
       body: JSON.stringify(createRequest),
@@ -163,6 +165,10 @@ export function CharacterBuilder() {
         }
       })
       .catch((err) => {
+        datadogRum.addAction('create-character-error', {
+            createRequest,
+            error: err
+        });
         console.log('Error creating character: ', err);
         setError('Error creating character: ' + err);
       });
