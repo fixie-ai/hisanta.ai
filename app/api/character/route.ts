@@ -5,7 +5,7 @@ import { getTemplate } from '@/lib/config';
 import { FixieClient } from 'fixie';
 import ShortUniqueId from 'short-unique-id';
 import { gql } from '@apollo/client/core/index.js';
-import { loadCharacter, saveCharacter } from '@/lib/storage';
+import { saveCharacter } from '@/lib/storage';
 
 // The default model used by new agents.
 const DEFAULT_MODEL = 'gpt-4-1106-preview';
