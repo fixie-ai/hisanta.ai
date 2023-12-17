@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, ReactElement } from 'react';
+import React, { useEffect, useState, ReactElement } from 'react';
 import Image from 'next/image';
 import { CharacterType } from '@/lib/types';
 import config from '@/lib/config';
@@ -11,7 +11,6 @@ import {
   RemoteTrackPublication,
   RemoteParticipant,
   Track,
-  Participant,
 } from 'livekit-client';
 import { useSearchParams } from 'next/navigation';
 
@@ -27,6 +26,11 @@ const default_character: CharacterType = {
 };
 
 const EgressTemplate = () => {
+  const [character, setCharacter] = useState(default_character);
+  const [isLoadingCharacter, setIsLoadingCharacter] = useState(true);
+  const [isConnectingRoom, setIsConnectingRoom] = useState(true);
+  const searchParams = useSearchParams();
+  const agentId = searchParams.get('agentId');
 
   const fetchCharacterIdFromAgentId = async (agentId: string) => {
     try {
@@ -42,7 +46,6 @@ const EgressTemplate = () => {
       return null;  // Return null in case of an error
     }
   };
-  
 
   function getCharacterByAgentIdLocal(agentId: string): CharacterType | null {
     const character_raw = config.availableCharacters.find((character) => character.agentId === agentId);
@@ -62,72 +65,69 @@ const EgressTemplate = () => {
     }
   }
 
-  const searchParams = useSearchParams();
+  useEffect(() => {
+    const loadCharacterData = async () => {
+      if (agentId) {
+        const localCharacter = getCharacterByAgentIdLocal(agentId);
+        if (localCharacter) {
+          setCharacter(localCharacter);
+        } else {
+          const characterId = await fetchCharacterIdFromAgentId(agentId);
+          if (characterId) {
+            const fetchedCharacter = getCharacterByCharacterIdLocal(characterId);
+            if (fetchedCharacter) {
+              setCharacter(fetchedCharacter);
+            }
+          }
+        }
+      }
+      setIsLoadingCharacter(false);
+    };
 
-  const agentId = searchParams.get('agentId');
-
-  let setCharacter: CharacterType = default_character;
+    loadCharacterData();
+  }, [agentId]);
 
   useEffect(() => {
-    function handleTrackSubscribed(
-      track: RemoteTrack,
-      publication: RemoteTrackPublication,
-      participant: RemoteParticipant
-    ) {
+    const newRoom = new Room({ adaptiveStream: true });
+    newRoom.on(RoomEvent.TrackSubscribed, (track, publication, participant) => {
       if (track.kind === Track.Kind.Audio || track.kind === Track.Kind.Video) {
         const element = track.attach();
         document.body.appendChild(element);
       }
-    }
-
-    if (agentId) {
-      // Check if the agentId is from one of the premade characters.
-      let character = getCharacterByAgentIdLocal(agentId);
-      if (character) {
-        setCharacter = character;
-      }
-      else {
-        // If not, retrieve the character Id from the agentId for custom built characters.
-        fetchCharacterIdFromAgentId(agentId).then((characterId) => {
-          if (characterId) {
-            character = getCharacterByCharacterIdLocal(characterId);
-            if (character) {
-              setCharacter = character;
-            }
-          }
-        })
-      }
-    }
-
-    const newRoom = new Room({ adaptiveStream: true });
-    newRoom.on(RoomEvent.TrackSubscribed, handleTrackSubscribed);
+    });
 
     EgressHelper.setRoom(newRoom, { autoEnd: true });
 
     const connectRoom = async () => {
       try {
         await newRoom.connect(EgressHelper.getLiveKitURL(), EgressHelper.getAccessToken());
-        EgressHelper.startRecording();
+        setIsConnectingRoom(false);
       } catch (error) {
         console.error('Failed to connect:', error);
-        // Handle connection errors here
       }
     };
-
     connectRoom();
-  }, []);
+  }, []); 
+
+  useEffect(() => {
+    if (!isLoadingCharacter && !isConnectingRoom) {
+      EgressHelper.startRecording();
+    }
+  }, [isLoadingCharacter, isConnectingRoom]);
+
+  if (isLoadingCharacter) {
+    return <div>Loading Character...</div>;
+  }
 
   const backgroundImageUrl = `/images/recording-background.png`;
   return (
-    <div
-      className="bg-gray-300 flex justify-center items-center w-screen h-screen"
-      style={{ backgroundImage: `url(${backgroundImageUrl})`, backgroundSize: 'cover' }}
-    >
+    <div className="bg-gray-300 flex justify-center items-center w-screen h-screen"
+         style={{ backgroundImage: `url(${backgroundImageUrl})`, backgroundSize: 'cover' }}>
       <div className="flex justify-center items-center w-2/3 h-2/3 mt-[-10%]">
         <Image
           className="object-contain max-w-full max-h-full"
-          src={`/images/${setCharacter.image}`}
-          alt={`${setCharacter.name} image`}
+          src={`/images/${character.image}`}
+          alt={`${character.name} image`}
           width={400}
           height={400}
           layout="responsive"
@@ -142,5 +142,3 @@ EgressTemplate.getLayout = function getLayout(page: ReactElement) {
 };
 
 export default EgressTemplate;
-
-
