@@ -106,7 +106,6 @@ export const characterTemplates: CharacterTemplate[] = [
   {
     templateId: 'pengiuno',
     image: 'pengiuno.png',
-    //voiceId: 'PbbiNudVH6uwmVtlcir0',
     voiceId: 'LMY7ePnSpVvVRoLcu1gXcDGeRSRqP9z6rnmaCvpU',
     names: ['Penguino'],
     bios: [
@@ -118,7 +117,6 @@ export const characterTemplates: CharacterTemplate[] = [
   {
     templateId: 'yeti',
     image: 'yeti.png',
-    //voiceId: 'VAWMUs3fmb04envbDair',
     voiceId: 'crgPOqIHzeGhJhIs1cdl',
     names: ['Yonder'],
     bios: [
@@ -130,7 +128,6 @@ export const characterTemplates: CharacterTemplate[] = [
   {
     templateId: 'foxie-elf',
     image: 'foxie-elf.png',
-    //voiceId: 'Vz9g9EMIhPcyYvemrs16',
     voiceId: '9jqPwHo7pXLmRLdvoU49',
     names: ['Foxie'],
     bios: [
@@ -142,7 +139,6 @@ export const characterTemplates: CharacterTemplate[] = [
   {
     templateId: 'snowman',
     image: 'snowman.png',
-    //voiceId: 'gUf7kHqwGlNZmQfXRJeZ',
     voiceId: 'eKKpObCl4AmBDDbcjKQ0',
     names: ['Frostwick'],
     bios: [
@@ -154,7 +150,6 @@ export const characterTemplates: CharacterTemplate[] = [
   {
     templateId: 'elfo',
     image: 'elfo.png',
-    //voiceId: 'RNof3kF4672HS4ihOOzh',
     voiceId: 'FfXGdYVQSasF74w0J85E',
     names: ['Elfo'],
     bios: [
@@ -166,7 +161,6 @@ export const characterTemplates: CharacterTemplate[] = [
   {
     templateId: 'krampus',
     image: 'krampus.png',
-    //voiceId: 'RHKza7Dzbso4lC4OL8aS',
     voiceId: 'Kw6bwhvTaOuAcf6oyXJL',
     names: ['Kringle'],
     bios: [
@@ -178,7 +172,6 @@ export const characterTemplates: CharacterTemplate[] = [
   {
     templateId: 'elfsa',
     image: 'elfsa.png',
-    //voiceId: 'tW6vxfs3O9j7PBVk0vmh',
     voiceId: 'cdElCEnJKCnFlocnOIjJ',
     names: ['Elfsa'],
     bios: [
@@ -190,7 +183,6 @@ export const characterTemplates: CharacterTemplate[] = [
   {
     templateId: 'owly',
     image: 'owly.png',
-    //voiceId: 'fIwKev49x9uUhxh7OM7W',
     voiceId: 'diKjq2Yspwgg6q64ynH4',
     names: ['Owly'],
     bios: [
@@ -202,7 +194,6 @@ export const characterTemplates: CharacterTemplate[] = [
   {
     templateId: 'polar-bear',
     image: 'polar-bear.png',
-    //voiceId: 'ky729BOa2thZBsnt9kuo',
     voiceId: 'cDGeRSRqP9z6rnmaCvpU',
     names: ['Borealis'],
     bios: [
@@ -214,7 +205,6 @@ export const characterTemplates: CharacterTemplate[] = [
   {
     templateId: 'captain-walrus',
     image: 'captain-walrus.png',
-    //    voiceId: '4HVOSnahLmqGVgOn5syQkj',
     voiceId: 'K0x67p8OyNiJj8zFgtEx',
     names: ['Captain Walrus'],
     bios: [
