@@ -13,11 +13,21 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { set } from 'lodash';
 
 function LeftArrow({ onClick }: { onClick: () => void }) {
-  return <ChevronLeftIcon onClick={onClick} className="w-12 h-12 p-2 border-2 border-Holiday-Green rounded-full" />;
+  return (
+    <ChevronLeftIcon
+      onClick={onClick}
+      className="w-12 h-12 p-2 border-2 border-Holiday-Green rounded-full cursor-pointer"
+    />
+  );
 }
 
 function RightArrow({ onClick }: { onClick: () => void }) {
-  return <ChevronRightIcon onClick={onClick} className="w-12 h-12 p-2 border-2 border-Holiday-Green rounded-full" />;
+  return (
+    <ChevronRightIcon
+      onClick={onClick}
+      className="w-12 h-12 p-2 border-2 border-Holiday-Green rounded-full cursor-pointer"
+    />
+  );
 }
 
 function CharacterChooserItem({ character }: { character: CharacterTemplate }) {
@@ -29,6 +39,7 @@ function CharacterChooserItem({ character }: { character: CharacterTemplate }) {
         alt={`${character.templateId} image`}
         width={300}
         height={300}
+        priority={true}
       />
     </div>
   );
