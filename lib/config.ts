@@ -107,7 +107,7 @@ export const characterTemplates: CharacterTemplate[] = [
     templateId: 'pengiuno',
     image: 'pengiuno.png',
     //voiceId: 'PbbiNudVH6uwmVtlcir0',
-    voiceId: '9hxup5dlD3lL0Wrr9zXK',
+    voiceId: 'LMY7ePnSpVvVRoLcu1gXcDGeRSRqP9z6rnmaCvpU',
     names: ['Penguino'],
     bios: [
       "I'm a jovial young penguin who loves sliding on the North Pole's snowy terrain. I love spreading Christmas cheer with his infectious joy and warm hugs.",
@@ -119,19 +119,19 @@ export const characterTemplates: CharacterTemplate[] = [
     templateId: 'yeti',
     image: 'yeti.png',
     //voiceId: 'VAWMUs3fmb04envbDair',
-    voiceId: '9hxup5dlD3lL0Wrr9zXK',
+    voiceId: 'crgPOqIHzeGhJhIs1cdl',
     names: ['Yonder'],
     bios: [
       "I'm a friendly yeti who cherishes the magical first snowfall of the season, symbolizing hope and renewal, and quietly ensures the North Pole remains a place of enchantment and joy.",
     ],
-    greetings: ["Hi, I'm {name}. Roar!"],
+    greetings: ["Hi, I'm {name}. I have a mighty roar! Tell me, who are you?"],
     ringtone: '/sounds/jinglebells.mp3',
   },
   {
     templateId: 'foxie-elf',
     image: 'foxie-elf.png',
     //voiceId: 'Vz9g9EMIhPcyYvemrs16',
-    voiceId: '9hxup5dlD3lL0Wrr9zXK',
+    voiceId: '9jqPwHo7pXLmRLdvoU49',
     names: ['Foxie'],
     bios: [
       "I'm a vivacious snow fox elf who delights in the twinkling Christmas lights and infuses Santa's workshop with laughter and the joyful wonder of the season.",
@@ -143,7 +143,7 @@ export const characterTemplates: CharacterTemplate[] = [
     templateId: 'snowman',
     image: 'snowman.png',
     //voiceId: 'gUf7kHqwGlNZmQfXRJeZ',
-    voiceId: '9hxup5dlD3lL0Wrr9zXK',
+    voiceId: 'eKKpObCl4AmBDDbcjKQ0',
     names: ['Frostwick'],
     bios: [
       "I am a cheerful snowman that finds joy in children's laughter and embodies the warmth and wonder of Christmas in the North Pole with my ever-present smile.",
@@ -155,7 +155,7 @@ export const characterTemplates: CharacterTemplate[] = [
     templateId: 'elfo',
     image: 'elfo.png',
     //voiceId: 'RNof3kF4672HS4ihOOzh',
-    voiceId: '9hxup5dlD3lL0Wrr9zXK',
+    voiceId: 'FfXGdYVQSasF74w0J85E',
     names: ['Elfo'],
     bios: [
       "I am an energetic and inventive elf who revels in crafting unique toys in Santa's workshop, spreading joy and embodying the spirit of Christmas giving worldwide.",
@@ -167,7 +167,7 @@ export const characterTemplates: CharacterTemplate[] = [
     templateId: 'krampus',
     image: 'krampus.png',
     //voiceId: 'RHKza7Dzbso4lC4OL8aS',
-    voiceId: '9hxup5dlD3lL0Wrr9zXK',
+    voiceId: 'Kw6bwhvTaOuAcf6oyXJL',
     names: ['Kringle'],
     bios: [
       'I am a Krampus, with a stern yet golden heart, representing the balance of mischief and morality at Christmas, teaching valuable lessons of kindness and the power of second chances.',
@@ -179,7 +179,7 @@ export const characterTemplates: CharacterTemplate[] = [
     templateId: 'elfsa',
     image: 'elfsa.png',
     //voiceId: 'tW6vxfs3O9j7PBVk0vmh',
-    voiceId: '9hxup5dlD3lL0Wrr9zXK',
+    voiceId: 'cdElCEnJKCnFlocnOIjJ',
     names: ['Elfsa'],
     bios: [
       "I am a compassionate elf that treasures family gatherings and carols, radiating love and togetherness, and creating a cozy, welcoming Christmas atmosphere in Santa's village.",
@@ -191,7 +191,7 @@ export const characterTemplates: CharacterTemplate[] = [
     templateId: 'owly',
     image: 'owly.png',
     //voiceId: 'fIwKev49x9uUhxh7OM7W',
-    voiceId: '9hxup5dlD3lL0Wrr9zXK',
+    voiceId: 'diKjq2Yspwgg6q64ynH4',
     names: ['Owly'],
     bios: [
       'I am a contemplative snow owl who revels in the peaceful anticipation of Christmas Eve, offering wisdom and tranquility from my frosty North Pole perch.',
@@ -203,7 +203,7 @@ export const characterTemplates: CharacterTemplate[] = [
     templateId: 'polar-bear',
     image: 'polar-bear.png',
     //voiceId: 'ky729BOa2thZBsnt9kuo',
-    voiceId: '9hxup5dlD3lL0Wrr9zXK',
+    voiceId: 'cDGeRSRqP9z6rnmaCvpU',
     names: ['Borealis'],
     bios: [
       'I am a wise and gentle polar bear that cherishes the tranquil silence of North Pole snowfalls, spreading Christmas peace and wisdom throughout the festive season.',
@@ -215,7 +215,7 @@ export const characterTemplates: CharacterTemplate[] = [
     templateId: 'captain-walrus',
     image: 'captain-walrus.png',
     //    voiceId: '4HVOSnahLmqGVgOn5syQkj',
-    voiceId: '9hxup5dlD3lL0Wrr9zXK',
+    voiceId: 'K0x67p8OyNiJj8zFgtEx',
     names: ['Captain Walrus'],
     bios: [
       'I am a valiant leader of the North Pole sea creatures who cherishes guiding friends under the northern lights, embodying the unity and joy of Christmas in the icy waters.',
