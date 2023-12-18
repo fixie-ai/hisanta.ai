@@ -117,7 +117,7 @@ export function CharacterBuilder() {
   }, [characterIndex, userSetDescription, description]);
 
   useEffect(() => {
-    if (!userSetGreeting) {
+    if (!userSetGreeting && !customCharactersEmptyBio) {
       setGreeting(characterTemplates[characterIndex].greetings[0]);
     }
   }, [characterIndex, userSetGreeting, greeting]);
@@ -167,8 +167,8 @@ export function CharacterBuilder() {
       })
       .catch((err) => {
         datadogRum.addAction('create-character-error', {
-            createRequest,
-            error: err
+          createRequest,
+          error: err,
         });
         console.log('Error creating character: ', err);
         setError('Error creating character: ' + err);
