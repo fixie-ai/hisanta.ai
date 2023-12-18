@@ -199,12 +199,12 @@ export function CharacterBuilder() {
           setDescription((e.target as HTMLTextAreaElement).value);
         }}
         className="w-11/12 mx-auto font-[Inter-Regular]"
-        placeholder='Describe your character. For example: \"You are a friendly, outgoing person who loves to spread holiday cheer. You are a great listener and love to hear about holiday traditions.\"'
+        placeholder='For example: "You are a friendly, outgoing person who loves to spread holiday cheer. You are a great listener and love to hear about holiday traditions."'
       />
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Set greeting</div>
       <Input
         className="w-11/12 mx-auto font-[Inter-Regular]"
-        placeholder='Give your character a greeting message. For example: \"What up, dog? Merry Christmas!\"'
+        placeholder='For example: "What up, dog? Merry Christmas!"'
         value={greeting.replace('{name}', name)}
         onInput={(e) => {
           setUserSetGreeting(true);
