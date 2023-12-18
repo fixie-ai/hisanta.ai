@@ -106,7 +106,7 @@ export const characterTemplates: CharacterTemplate[] = [
   {
     templateId: 'pengiuno',
     image: 'pengiuno.png',
-    voiceId: 'LMY7ePnSpVvVRoLcu1gXcDGeRSRqP9z6rnmaCvpU',
+    voiceId: 'LMY7ePnSpVvVRoLcu1gX',
     names: ['Penguino'],
     bios: [
       "I'm a jovial young penguin who loves sliding on the North Pole's snowy terrain. I love spreading Christmas cheer with his infectious joy and warm hugs.",
