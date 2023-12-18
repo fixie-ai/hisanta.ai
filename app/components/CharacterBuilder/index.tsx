@@ -11,7 +11,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { datadogRum } from '@datadog/browser-rum';
-import { create } from 'lodash';
+import { useFlags } from 'launchdarkly-react-client-sdk';
 
 function LeftArrow({ onClick }: { onClick: () => void }) {
   return (
@@ -89,6 +89,7 @@ function CharacterChooser({ onChoose }: { onChoose: (index: number) => void }) {
 
 export function CharacterBuilder() {
   const router = useRouter();
+  const { customCharactersEmptyBio } = useFlags();
 
   const [error, setError] = useState('');
   const [name, setName] = useState('');
@@ -104,13 +105,13 @@ export function CharacterBuilder() {
   };
 
   useEffect(() => {
-    if (!userSetName) {
+    if (!userSetName && !customCharactersEmptyBio) {
       setName(characterTemplates[characterIndex].names[0]);
     }
   }, [characterIndex, userSetName, name]);
 
   useEffect(() => {
-    if (!userSetDescription) {
+    if (!userSetDescription && !customCharactersEmptyBio) {
       setDescription(characterTemplates[characterIndex].bios[0]);
     }
   }, [characterIndex, userSetDescription, description]);
