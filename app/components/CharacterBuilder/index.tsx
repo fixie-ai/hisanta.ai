@@ -11,7 +11,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { datadogRum } from '@datadog/browser-rum';
-import { create } from 'lodash';
+import { useFlags } from 'launchdarkly-react-client-sdk';
 
 function LeftArrow({ onClick }: { onClick: () => void }) {
   return (
@@ -89,6 +89,7 @@ function CharacterChooser({ onChoose }: { onChoose: (index: number) => void }) {
 
 export function CharacterBuilder() {
   const router = useRouter();
+  const { customCharactersEmptyBio } = useFlags();
 
   const [error, setError] = useState('');
   const [name, setName] = useState('');
@@ -104,19 +105,19 @@ export function CharacterBuilder() {
   };
 
   useEffect(() => {
-    if (!userSetName) {
+    if (!userSetName && !customCharactersEmptyBio) {
       setName(characterTemplates[characterIndex].names[0]);
     }
   }, [characterIndex, userSetName, name]);
 
   useEffect(() => {
-    if (!userSetDescription) {
+    if (!userSetDescription && !customCharactersEmptyBio) {
       setDescription(characterTemplates[characterIndex].bios[0]);
     }
   }, [characterIndex, userSetDescription, description]);
 
   useEffect(() => {
-    if (!userSetGreeting) {
+    if (!userSetGreeting && !customCharactersEmptyBio) {
       setGreeting(characterTemplates[characterIndex].greetings[0]);
     }
   }, [characterIndex, userSetGreeting, greeting]);
@@ -144,7 +145,7 @@ export function CharacterBuilder() {
       bio: description,
       greeting: greeting.replace('{name}', name),
     };
-    datadogRum.addAction('create-character', createRequest);
+    datadogRum.addAction('create-character', { ...createRequest, emptyInitialBio: customCharactersEmptyBio });
 
     fetch('/api/character', {
       method: 'POST',
@@ -166,8 +167,8 @@ export function CharacterBuilder() {
       })
       .catch((err) => {
         datadogRum.addAction('create-character-error', {
-            createRequest,
-            error: err
+          createRequest,
+          error: err,
         });
         console.log('Error creating character: ', err);
         setError('Error creating character: ' + err);
@@ -181,7 +182,7 @@ export function CharacterBuilder() {
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Name your character</div>
       <Input
         className="w-11/12 mx-auto font-[Inter-Regular]"
-        placeholder="Name"
+        placeholder="Name your character"
         maxLength={58}
         value={name}
         onInput={(e) => {
@@ -198,12 +199,12 @@ export function CharacterBuilder() {
           setDescription((e.target as HTMLTextAreaElement).value);
         }}
         className="w-11/12 mx-auto font-[Inter-Regular]"
-        placeholder="Describe your character"
+        placeholder='For example: "You are a friendly, outgoing person who loves to spread holiday cheer. You are a great listener and love to hear about holiday traditions."'
       />
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Set greeting</div>
       <Input
         className="w-11/12 mx-auto font-[Inter-Regular]"
-        placeholder="Set your character's greeting message"
+        placeholder='For example: "What up, dog? Merry Christmas!"'
         value={greeting.replace('{name}', name)}
         onInput={(e) => {
           setUserSetGreeting(true);
