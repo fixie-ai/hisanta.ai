@@ -145,7 +145,7 @@ export function CharacterBuilder() {
       bio: description,
       greeting: greeting.replace('{name}', name),
     };
-    datadogRum.addAction('create-character', createRequest);
+    datadogRum.addAction('create-character', { ...createRequest, emptyInitialBio: customCharactersEmptyBio });
 
     fetch('/api/character', {
       method: 'POST',
