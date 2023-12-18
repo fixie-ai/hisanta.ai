@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState, ReactElement } from 'react';
 import Image from 'next/image';
-import { CharacterType } from '@/lib/types';
+import { CharacterType, CharacterTemplate } from '@/lib/types';
 import config from '@/lib/config';
 import { getTemplate } from '@/lib/config';
 import EgressHelper from '@livekit/egress-sdk';
@@ -27,7 +27,7 @@ const default_character: CharacterType = {
 };
 
 const EgressTemplate = () => {
-  const [character, setCharacter] = useState(default_character);
+  const [character, setCharacter] = useState<CharacterType | CharacterTemplate>(default_character);
   const [isLoadingCharacter, setIsLoadingCharacter] = useState(true);
   const [isConnectingRoom, setIsConnectingRoom] = useState(true);
   const searchParams = useSearchParams();
@@ -65,10 +65,8 @@ const EgressTemplate = () => {
           setCharacter(localCharacter);
         } else {
           const characterId = await fetchCharacterIdFromAgentId(agentId);
-          console.log('characterId', characterId)
           if (characterId) {
             const fetchedCharacter = getTemplate(characterId);
-            console.log('fetchedCharacter', fetchedCharacter)
             if (fetchedCharacter) {
               setCharacter(fetchedCharacter);
             }
@@ -121,7 +119,7 @@ const EgressTemplate = () => {
         <Image
           className="object-contain max-w-full max-h-full"
           src={`/images/${character.image}`}
-          alt={`${character.name} image`}
+          alt={`image`}
           width={400}
           height={400}
           layout="responsive"
