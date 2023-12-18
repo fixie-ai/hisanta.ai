@@ -5,7 +5,7 @@ import { getTemplate } from '@/lib/config';
 import { FixieClient } from 'fixie';
 import ShortUniqueId from 'short-unique-id';
 import { gql } from '@apollo/client/core/index.js';
-import { saveCharacter } from '@/lib/storage';
+import { saveCharacter, saveAgentCharacterMapping } from '@/lib/storage';
 
 // The default model used by new agents.
 const DEFAULT_MODEL = 'gpt-4-1106-preview';
@@ -175,6 +175,7 @@ export async function POST(req: Request): Promise<Response> {
     };
 
     await saveCharacter(character);
+    await saveAgentCharacterMapping(character.agentId, template.templateId);
     console.log(`Creating character ${characterId}: ${JSON.stringify(character)}`);
     return new Response(JSON.stringify(character), {
       headers: { 'content-type': 'application/json' },
