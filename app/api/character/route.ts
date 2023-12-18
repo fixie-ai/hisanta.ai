@@ -175,7 +175,7 @@ export async function POST(req: Request): Promise<Response> {
     };
 
     await saveCharacter(character);
-    await saveAgentCharacterMapping(character.agentId, character.characterId);
+    await saveAgentCharacterMapping(character.agentId, template.templateId);
     console.log(`Creating character ${characterId}: ${JSON.stringify(character)}`);
     return new Response(JSON.stringify(character), {
       headers: { 'content-type': 'application/json' },

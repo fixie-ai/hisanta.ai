@@ -3,6 +3,7 @@ import React, { useEffect, useState, ReactElement } from 'react';
 import Image from 'next/image';
 import { CharacterType } from '@/lib/types';
 import config from '@/lib/config';
+import { getTemplate } from '@/lib/config';
 import EgressHelper from '@livekit/egress-sdk';
 import {
   Room,
@@ -56,15 +57,6 @@ const EgressTemplate = () => {
     }
   }
 
-  function getCharacterByCharacterIdLocal(characterId: string): CharacterType | null {
-    const character_raw = config.availableCharacters.find((character) => character.characterId === characterId);
-    if (character_raw) {
-      return character_raw;
-    } else {
-      return null;
-    }
-  }
-
   useEffect(() => {
     const loadCharacterData = async () => {
       if (agentId) {
@@ -73,8 +65,10 @@ const EgressTemplate = () => {
           setCharacter(localCharacter);
         } else {
           const characterId = await fetchCharacterIdFromAgentId(agentId);
+          console.log('characterId', characterId)
           if (characterId) {
-            const fetchedCharacter = getCharacterByCharacterIdLocal(characterId);
+            const fetchedCharacter = getTemplate(characterId);
+            console.log('fetchedCharacter', fetchedCharacter)
             if (fetchedCharacter) {
               setCharacter(fetchedCharacter);
             }
