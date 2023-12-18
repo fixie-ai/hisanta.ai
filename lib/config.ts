@@ -17,7 +17,7 @@ const config = {
       location: 'The North Pole',
       ringtone: '/sounds/jinglebells.mp3',
       agentId: '5d37e2c5-1e96-4c48-b3f1-98ac08d40b9a',
-      voiceId: 'Kp00queBTLslXxHCu1jq',
+      voiceId: '9hxup5dlD3lL0Wrr9zXK',
     },
     {
       characterId: 'mrs-claus',
