@@ -57,3 +57,7 @@ export type CreateCharacterRequest = {
   // The character's greeting.
   greeting: string;
 };
+
+export type GenerateCharacterImageRequest = {
+  characterDescription: string;
+};
