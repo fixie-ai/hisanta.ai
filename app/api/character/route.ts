@@ -62,6 +62,7 @@ async function createAgent({
   systemPrompt,
   greetingMessage,
   teamId,
+  temperature,
 }: {
   client: FixieClient;
   handle: string;
@@ -70,6 +71,7 @@ async function createAgent({
   systemPrompt: string;
   greetingMessage: string;
   teamId?: string;
+  temperature?: number;
 }): Promise<string> {
   console.log(
     `Creating agent ${handle} with parameters: ${JSON.stringify({
@@ -78,6 +80,7 @@ async function createAgent({
       systemPrompt,
       greetingMessage,
       teamId,
+      temperature,
     })}`
   );
 
@@ -114,6 +117,7 @@ async function createAgent({
         model: DEFAULT_MODEL,
         systemPrompt,
         greetingMessage,
+        temperature,
       }),
       teamId,
     },
@@ -159,6 +163,7 @@ export async function POST(req: Request): Promise<Response> {
       systemPrompt: systemPrompt,
       greetingMessage: body.greeting,
       teamId: fixieTeam,
+      temperature: 0.7,
     });
     console.log(`Created agent ${agentId}`);
 
