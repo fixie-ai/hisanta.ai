@@ -17,6 +17,17 @@
   src: url('/fonts/Inter-Regular.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'Inter-Bold'; 
+  src: url('/fonts/Inter-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Inter-Light';
+  src: url('/fonts/Inter-Light.ttf') format('truetype');
+}
+
+
 :root {
   --foreground-rgb: 47, 70, 101; /*  #2F4665; */
   --background-start-rgb: 234, 233, 223;
@@ -40,6 +51,15 @@ body::before {
   background-size: cover;
   opacity: 0.15; /* Adjust this value to change the opacity */
   z-index: -1; /* This ensures the pseudo-element is behind the body content */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* for IE and Edge */
+  scrollbar-width: none;  /* for Firefox */
 }
 
 .pushable {

@@ -176,8 +176,8 @@ export function CharacterBuilder() {
   };
 
   return (
-    <div className="bg-White-75 rounded-jumbo border-black border flex flex-col mx-auto md:mt-4 gap-2 w-[340px] h-[600px] justify-start">
-      <div className="mt-4 mx-auto text-base text-Holiday-Red">Choose a character</div>
+    <div className="bg-White-75 rounded-jumbo border-black border flex flex-col mx-auto md:mt-4 gap-2 w-[340px] h-[600px] justify-start overflow-y-auto hide-scrollbar">
+      <div className="mt-4 mx-auto text-base text-Holiday-Red">Choose an avatar</div>
       <CharacterChooser onChoose={onChooseCharacter} />
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Name your character</div>
       <Input
@@ -190,17 +190,25 @@ export function CharacterBuilder() {
           setName((e.target as HTMLInputElement).value);
         }}
       />
-      <div className="mt-4 mx-auto text-base text-Holiday-Red">Describe your character</div>
-      <Textarea
-        value={description}
-        maxLength={4000}
-        onInput={(e) => {
-          setUserSetDescription(true);
-          setDescription((e.target as HTMLTextAreaElement).value);
-        }}
-        className="w-11/12 mx-auto font-[Inter-Regular]"
-        placeholder='For example: "You are a friendly, outgoing person who loves to spread holiday cheer. You are a great listener and love to hear about holiday traditions."'
-      />
+      <div className="mt-4 mx-auto text-base text-Holiday-Red">Give your character a story</div>
+      <div className="ml-4 mr-4 mx-auto font-[Inter-Light] text-sm font-thin"> <span className="font-[Inter-Bold]">Dont skip this! </span>The background you create sets the stage for their personality, interests, and the way they interact with you. </div>
+      
+      <div className="bg-gray-200 rounded-xl p-1 flex-col justify-center items-center ml-4 mr-4">
+        <Textarea
+            value={description}
+            maxLength={4000}
+            onInput={(e) => {
+                setUserSetDescription(true);
+                setDescription((e.target as HTMLTextAreaElement).value);
+            }}
+            className="mx-auto font-[Inter-Regular] bg-white border border-[#1E293B] rounded-lg"
+            placeholder='For example: "You are a friendly, outgoing person who loves to spread holiday cheer. You are a great listener and love to hear about holiday traditions."'
+        />
+        <button className="hover:bg-blue-200 w-2/3 h-1/5 px-3 mb-4 mt-1 mx-auto bg-white font-[Inter-Bold] text-sm font-thin rounded-xl text-center text-gray-800 tracking-widest leading-normal overflow-hidden flex items-center justify-center gap-1">
+          Regenerate Avatar
+        </button>
+        
+      </div>
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Set greeting</div>
       <Input
         className="w-11/12 mx-auto font-[Inter-Regular]"
