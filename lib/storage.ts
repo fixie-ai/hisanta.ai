@@ -28,3 +28,18 @@ export async function loadCharacterIdByAgentId(agentId: string): Promise<string>
 export async function saveAgentCharacterMapping(agentId: string, characterId: string): Promise<void> {
   await kv.set(`agent:${agentId}`, characterId);
 }
+
+/** Save Agent ID to Image */
+export async function saveAgentImageMapping(agentId: string, image: string): Promise<void> {
+  await kv.set(`agentImage:${agentId}`, image);
+}
+
+/** Load Agent ID to Image */
+export async function loadAgentImageMapping(agentId: string): Promise<string> {
+  const image = await kv.get(`agentImage:${agentId}`);
+  if (image === null) {
+    throw new Error(`Image not found for Agent ${agentId}`);
+  }
+  return String(image);
+}
+
