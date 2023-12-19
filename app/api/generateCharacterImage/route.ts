@@ -5,15 +5,12 @@ import { GenerateCharacterImageRequest } from '@/lib/types';
 export async function POST(req: Request): Promise<Response> {
     try {
         const body = await req.json() as GenerateCharacterImageRequest;
-        console.log("mybody", body)
         if (typeof body !== 'object') {
             throw new Error('Invalid request body: expecting object');
         }
         const characterDescription = body.characterDescription; // replace with actual data fields from your request
         const openAIResponse = await callAzureOpenAI(characterDescription)
-        console.log("openairesponse", openAIResponse)
         const imageUrl = openAIResponse.data[0].url; 
-        console.log("imageurl", imageUrl)
 
         // Download the image 
         const imageResponse = await axios.get(imageUrl, {responseType: 'arraybuffer'});
