@@ -85,7 +85,6 @@ function CharacterChooser({
   const [templates, setTemplates] = useState(characterTemplates);
 
   useEffect(() => {
-    console.log('custom character changed', customCharacter);
     const newTemplates = customCharacter ? [...characterTemplates, customCharacter] : characterTemplates;
     setTemplates(newTemplates);
   }, [customCharacter]);
@@ -93,7 +92,6 @@ function CharacterChooser({
   useEffect(() => {
     if (customCharacter) {
       setCharacterIndex(templates.length - 1);
-      console.log('new index', templates.length - 1);
     } else {
       setCharacterIndex(0);
     }
@@ -204,7 +202,7 @@ export function CharacterBuilder() {
   const [customCharacter, setCustomCharacter] = useState<CharacterTemplate | null>(null);
   const [isGeneratingAvatar, setIsGeneratingAvatar] = useState(false);
   const [templates, setTemplates] = useState(characterTemplates);
-  const [customImageBlob, setCustomImageBlob] = useState<Blob | null>(null);
+  const [customImageBlob, setCustomImageBlob] = useState<string | null>(null);
 
   useEffect(() => {
     const newTemplates = customCharacter ? [...characterTemplates, customCharacter] : characterTemplates;
@@ -258,7 +256,6 @@ export function CharacterBuilder() {
       setError('Please describe your character!');
       return;
     }
-    console.log('generating avatar');
     setIsGeneratingAvatar(true);
     fetch('/api/generateCharacterImage', {
       method: 'POST',
@@ -273,7 +270,9 @@ export function CharacterBuilder() {
       .then((blob) => {
         // Create a URL for the Blob
         const imageURL = URL.createObjectURL(blob);
-        setCustomImageBlob(blob);
+        blobToBase64(blob).then((base64) => {
+          setCustomImageBlob(base64 as string);
+        });
         setCustomCharacter({
           templateId: 'custom',
           names: ['name'],
@@ -283,8 +282,6 @@ export function CharacterBuilder() {
           voiceId: '',
           ringtone: '',
         });
-        console.log('Generated character image URL: ', imageURL);
-        console.log('generated character: ', customCharacter);
 
         setIsGeneratingAvatar(false);
       })
@@ -294,6 +291,15 @@ export function CharacterBuilder() {
         setError('Error Generating Avatar');
       });
   };
+
+  function blobToBase64(blob: Blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
 
   const onCreate = () => {
 
@@ -319,7 +325,6 @@ export function CharacterBuilder() {
         return res.json();
       })
       .then((data) => {
-        console.log('Created character: ', data);
         if (data.characterId) {
           router.push(`/c/${data.characterId}?share=true`);
         } else {

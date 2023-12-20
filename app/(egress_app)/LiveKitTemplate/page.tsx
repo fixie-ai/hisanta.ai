@@ -8,10 +8,10 @@ import EgressHelper from '@livekit/egress-sdk';
 import { Room, RoomEvent, RemoteTrack, RemoteTrackPublication, RemoteParticipant, Track } from 'livekit-client';
 import { useSearchParams } from 'next/navigation';
 
-const default_image: String = 'santa-hdpi.png';
+const default_image: string = 'santa-hdpi.png';
 
 const EgressTemplate = () => {
-  const [image, setImage] = useState<String>(default_image);
+  const [image, setImage] = useState<string>(default_image);
   const [isLoadingCharacter, setIsLoadingCharacter] = useState(true);
   const [isConnectingRoom, setIsConnectingRoom] = useState(true);
   const searchParams = useSearchParams();
@@ -54,7 +54,7 @@ const EgressTemplate = () => {
           } else {
             const fetchedCharacter = getTemplate(character.templateId);
             if (fetchedCharacter) {
-              setImage(fetchedCharacter.image);
+              setImage("/images/"+fetchedCharacter.image);
             }
           }
         }
@@ -106,7 +106,7 @@ const EgressTemplate = () => {
       <div className="flex justify-center items-center w-2/3 h-2/3 mt-[-10%]">
         <Image
           className="object-contain max-w-full max-h-full"
-          src={`/images/${image}`}
+          src={image}
           alt={`image`}
           width={400}
           height={400}

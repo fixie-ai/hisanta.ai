@@ -208,7 +208,6 @@ export async function POST(req: Request): Promise<Response> {
         throw new Error('Missing customImage');
       }
       const characterData = await saveAgentCharacterMapping(character.agentId, 'custom', body.customImage)
-      console.log(`Saved custom image for ${character.agentId}`)
       character.image = characterData.generatedImageURL;
     } else {
       await saveAgentCharacterMapping(character.agentId, template.templateId, null);
@@ -216,7 +215,6 @@ export async function POST(req: Request): Promise<Response> {
     await saveCharacter(character);
 
 
-    console.log(`Creating character ${characterId}: ${JSON.stringify(character)}`);
     return new Response(JSON.stringify(character), {
       headers: { 'content-type': 'application/json' },
     });

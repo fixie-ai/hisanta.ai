@@ -62,7 +62,7 @@ export type CreateCharacterRequest = {
 
   ringtone: string;
   
-  customImage: Blob | null;
+  customImage: string | null;
 
 };
 

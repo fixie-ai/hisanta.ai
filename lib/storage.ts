@@ -35,8 +35,7 @@ export async function loadCharacterByAgentId(agentId: string): Promise<AgentToCh
 }
 
 /** Store the mapping of Agent ID to Character Data to KV. */
-export async function saveAgentCharacterMapping(agentId: string, templateId: string, imageBlob: Blob | null): Promise<AgentToCharacterData> {
-  console.log(`Saving agent ${agentId} with templateId ${templateId}`);
+export async function saveAgentCharacterMapping(agentId: string, templateId: string, imageBlob: string | null): Promise<AgentToCharacterData> {
   const uuid = new Uuid().toString();
 
   let characterData = {
@@ -45,12 +44,12 @@ export async function saveAgentCharacterMapping(agentId: string, templateId: str
   }
   if (imageBlob) {
     // Create an object with the templateId and generatedImage
-    const { url } = await put(uuid, imageBlob, { access: 'public'}); 
+    const imageBuffer = Buffer.from(imageBlob.split(',')[1], 'base64');
+    const { url } = await put(uuid, imageBuffer, { access: 'public'}); 
     characterData = {
       templateId: templateId,
       generatedImageURL: url,  
     };
-    console.log('image url: ', url)
   } 
 
   // Save this object in your key-value store with the agent's ID as the key
