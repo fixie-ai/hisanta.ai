@@ -74,3 +74,9 @@ export type AgentToCharacterData = {
   templateId: string;
   generatedImageURL: string;
 };
+
+export type CharacterVoiceType = {
+  voiceId: string;
+  descriptor: string;
+  character: string;
+};

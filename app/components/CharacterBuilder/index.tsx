@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { characterTemplates } from '@/lib/config';
-import { CharacterTemplate, CharacterType } from '@/lib/types';
+import { characterTemplates, characterVoices } from '@/lib/config';
+import { CharacterTemplate, CharacterType, CharacterVoiceType } from '@/lib/types';
 import EpicButton from '../Buttons';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
@@ -130,18 +130,27 @@ function CharacterChooser({
   );
 }
 
-function VoiceChooserItem({ character }: { character: CharacterTemplate }) {
+function VoiceChooserItem({ voice, index }: { voice: CharacterVoiceType, index: number }) {
   return (
-    <div className="w-full">
-      <Image
-        className="drop-shadow-md"
-        src={`/images/${character.image}`}
-        alt={`${character.templateId} image`}
-        width={300}
-        height={300}
-        priority={true}
-      />
+    <div className="w-full h-full p-3 bg-gray-300 rounded-md flex flex-col items-center justify-center gap-2">
+  <div className="text-center text-blue-800 text-lg font-luckiest-guy leading-6 break-words">VOICE #{index+1}</div>
+  <div className="text-center text-blue-900 text-sm font-inter font-medium leading-6 break-words">{voice.descriptor}</div>
+  <div className="self-stretch h-6 px-3 py-1 bg-white rounded-md overflow-hidden flex items-center justify-center gap-1.5">
+    <div className="w-5 h-5 relative">
+      {/* Inline styles are needed here for non-standard sizes */}
+      <div style={{
+        width: '12.34px',
+        height: '14.79px',
+        position: 'absolute',
+        left: '4px',
+        top: '2.61px',
+        background: '#2F4665'
+      }}></div>
     </div>
+    <div className="text-center text-blue-800 text-xs font-inter font-bold tracking-wider break-words">Play sample</div>
+  </div>
+</div>
+
   );
 }
 
@@ -151,14 +160,14 @@ function VoiceChooser({ onChoose, disabled }: { onChoose: (index: number) => voi
   const handleLeftClick = () => {
     setVoiceIndex((index) => {
       if (index == 0) {
-        return characterTemplates.length - 1;
+        return characterVoices.length - 1;
       } else {
         return index - 1;
       }
     });
   };
   const handleRightClick = () => {
-    setVoiceIndex((voiceIndex + 1) % characterTemplates.length);
+    setVoiceIndex((voiceIndex + 1) % characterVoices.length);
   };
 
   useEffect(() => {
@@ -176,8 +185,8 @@ function VoiceChooser({ onChoose, disabled }: { onChoose: (index: number) => voi
           showThumbs={false}
           showArrows={false}
         >
-          {characterTemplates.map((character, index) => (
-            <VoiceChooserItem key={index} character={character} />
+          {characterVoices.map((voice, index) => (
+            <VoiceChooserItem key={index} voice={voice} index={index}/>
           ))}
         </Carousel>
       </div>
@@ -350,9 +359,10 @@ export function CharacterBuilder() {
         disabled={isGeneratingAvatar}
         isGeneratingAvatar={isGeneratingAvatar}
       />
+      <VoiceChooser onChoose={onChooseVoice} disabled={isGeneratingAvatar}></VoiceChooser>
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Name your character</div>
       <Input
-        className="w-11/12 mx-auto font-[Inter-Regular]"
+        className="w-11/12 mx-auto font-[Inter-Regular] border border-[#1E293B] rounded-lg"
         placeholder="Name your character"
         maxLength={58}
         value={name}
@@ -389,7 +399,7 @@ export function CharacterBuilder() {
       </div>
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Customize greeting</div>
       <Input
-        className="w-11/12 mx-auto font-[Inter-Regular]"
+        className="w-11/12 mx-auto font-[Inter-Regular] border border-[#1E293B] rounded-lg"
         placeholder='For example: "What up, dog? Merry Christmas!"'
         value={greeting.replace('{name}', name)}
         onInput={(e) => {
@@ -398,7 +408,6 @@ export function CharacterBuilder() {
         }}
       />
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Choose a voice</div>
-      <VoiceChooser onChoose={onChooseVoice} disabled={isGeneratingAvatar}></VoiceChooser>
       <div className="mt-auto" />
       <div className="font-[Inter-Regular] text-center text-red-500 italic">{error}</div>
       <div className="m-4">

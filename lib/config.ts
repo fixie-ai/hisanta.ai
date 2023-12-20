@@ -1,4 +1,4 @@
-import { CharacterType, CharacterTemplate } from './types';
+import { CharacterType, CharacterTemplate, CharacterVoiceType } from './types';
 
 /** Defines the top-level application config. */
 const config = {
@@ -231,3 +231,57 @@ export const DALLE_BASE_PROMPT = `Your job is to create festive avatars of North
     The avatar should have a plain background, and the image should feature the character's head only, never their shoulders or neck, or body. Feel free to include things like Santa hats, Poinsetta flowers, or other christmas and holiday accents. Also ensure the avatars use a 16-bit level of detail.
     Never respond with a question, always respond with an image. Now, generate an image with the following description: \n`;
 export const DALLE_MODEL = 'dall-e-3'
+
+
+export const characterVoices: CharacterVoiceType[] = [
+  {
+    voiceId: 'LMY7ePnSpVvVRoLcu1gX',
+    descriptor: 'child',
+    character: 'penguino the penguin',
+  },
+  {
+    voiceId: 'cDGeRSRqP9z6rnmaCvpU',
+    descriptor: 'male',
+    character: 'borealis the polar bear',
+  },
+  {
+    voiceId: '9jqPwHo7pXLmRLdvoU49',
+    descriptor: 'female',
+    character: 'foxie the snow fox elf',
+  },
+  {
+    voiceId: 'diKjq2Yspwgg6q64ynH4',
+    descriptor: 'female',
+    character: 'owly the snow owl',
+  },
+  {
+    voiceId: 'eKKpObCl4AmBDDbcjKQ0',
+    descriptor: 'male',
+    character: 'frostwick the snowman',
+  },
+  {
+    voiceId: 'K0x67p8OyNiJj8zFgtEx',
+    descriptor: 'old male',
+    character: 'captain-walrus',
+  },
+  {
+    voiceId: 'FfXGdYVQSasF74w0J85E',
+    descriptor: 'young male',
+    character: 'elfo the elf',
+  },
+  {
+    voiceId: 'cdElCEnJKCnFlocnOIjJ',
+    descriptor: 'young female',
+    character: 'elfsa the elf',
+  },
+  {
+    voiceId: 'crgPOqIHzeGhJhIs1cdl',
+    descriptor: 'american male',
+    character: 'yonder the yeti',
+  },
+  {
+    voiceId: 'Kw6bwhvTaOuAcf6oyXJL',
+    descriptor: 'indian male',
+    character: 'kringle the krampus',
+  }
+];
