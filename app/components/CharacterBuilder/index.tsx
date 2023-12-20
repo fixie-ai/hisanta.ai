@@ -364,6 +364,16 @@ export function CharacterBuilder() {
           setName((e.target as HTMLInputElement).value);
         }}
       />
+      <div className="mt-4 mx-auto text-base text-Holiday-Red">Customize greeting</div>
+      <Input
+        className="w-11/12 mx-auto font-[Inter-Regular] border border-[#1E293B] rounded-lg"
+        placeholder='For example: "What up, dog? Merry Christmas!"'
+        value={greeting.replace('{name}', name)}
+        onInput={(e) => {
+          setUserSetGreeting(true);
+          setGreeting((e.target as HTMLInputElement).value);
+        }}
+      />
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Give your character a story</div>
       <div className="ml-4 mr-4 mx-auto font-[Inter-Light] text-sm font-thin">
         {' '}
@@ -390,18 +400,7 @@ export function CharacterBuilder() {
           Regenerate Avatar
         </button>
       </div>
-      <div className="mt-4 mx-auto text-base text-Holiday-Red">Customize greeting</div>
-      <Input
-        className="w-11/12 mx-auto font-[Inter-Regular] border border-[#1E293B] rounded-lg"
-        placeholder='For example: "What up, dog? Merry Christmas!"'
-        value={greeting.replace('{name}', name)}
-        onInput={(e) => {
-          setUserSetGreeting(true);
-          setGreeting((e.target as HTMLInputElement).value);
-        }}
-      />
-      <div className="mt-4 mx-auto text-base text-Holiday-Red">Choose a voice</div>
-      <div className="mt-auto" />
+      
       <div className="font-[Inter-Regular] text-center text-red-500 italic">{error}</div>
       <div className="m-4">
         <EpicButton disabled={error !== '' || isGeneratingAvatar} type="primary" className="w-full" onClick={onCreate}>
