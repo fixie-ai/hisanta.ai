@@ -389,11 +389,11 @@ export function CharacterBuilder() {
             setUserSetDescription(true);
             setDescription((e.target as HTMLTextAreaElement).value);
           }}
-          className="mx-auto font-[Inter-Regular] bg-white border border-[#1E293B] rounded-lg min-h-[120px]"
+          className="mx-auto font-[Inter-Regular] bg-white border border-[#1E293B] rounded-xl min-h-[120px] resize-none"
           placeholder='For example: "You are a friendly, outgoing person who loves to spread holiday cheer. You are a great listener and love to hear about holiday traditions."'
         />
         <button
-          className="hover:bg-blue-200 tracking-normal leading-tight w-2/3 h-1/5 px-3 mb-4 mt-1 mx-auto bg-white font-[Inter-Bold] text-sm font-thin rounded-xl text-center text-gray-800 overflow-hidden flex items-center justify-center gap-1"
+          className="hover:bg-blue-200 tracking-normal leading-tight w-2/3 h-1/6 px-3 mb-3 mt-2 mx-auto bg-white font-[Inter-Bold] text-xs font-thin rounded-xl text-center text-gray-800 overflow-hidden flex items-center justify-center gap-1"
           onClick={onRegenerateAvatar}
           disabled={isGeneratingAvatar}
         >

@@ -21,8 +21,8 @@ const EpicButton = ({ children, type, className, disabled, onClick }: EpicButton
       shadow: '',
     },
     disabled: {
-      front: 'bg-white text-gray-400',
-      edge: 'bg-gray-400',
+      front: 'bg-white text-gray-500',
+      edge: 'bg-gray-500',
       shadow: '',
     },
   };
