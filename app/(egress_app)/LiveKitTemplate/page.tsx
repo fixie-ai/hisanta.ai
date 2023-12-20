@@ -1,26 +1,17 @@
 'use client';
 import React, { useEffect, useState, ReactElement } from 'react';
 import Image from 'next/image';
-import { CharacterType, CharacterTemplate } from '@/lib/types';
+import { CharacterType, CharacterTemplate, AgentToCharacterData } from '@/lib/types';
 import config from '@/lib/config';
 import { getTemplate } from '@/lib/config';
 import EgressHelper from '@livekit/egress-sdk';
 import { Room, RoomEvent, RemoteTrack, RemoteTrackPublication, RemoteParticipant, Track } from 'livekit-client';
 import { useSearchParams } from 'next/navigation';
 
-const default_character: CharacterType = {
-  characterId: 'santa',
-  name: 'Santa',
-  image: 'santa-hdpi.png',
-  bio: "It's Santa.",
-  location: 'The North Pole',
-  ringtone: '/sounds/jinglebells.mp3',
-  agentId: '5d37e2c5-1e96-4c48-b3f1-98ac08d40b9a',
-  voiceId: 'Kp00queBTLslXxHCu1jq',
-};
+const default_image: String = 'santa-hdpi.png';
 
 const EgressTemplate = () => {
-  const [character, setCharacter] = useState<CharacterType | CharacterTemplate>(default_character);
+  const [image, setImage] = useState<String>(default_image);
   const [isLoadingCharacter, setIsLoadingCharacter] = useState(true);
   const [isConnectingRoom, setIsConnectingRoom] = useState(true);
   const searchParams = useSearchParams();
@@ -43,7 +34,7 @@ const EgressTemplate = () => {
 
   function getCharacterByAgentIdLocal(agentId: string): CharacterType | null {
     const character_raw = config.availableCharacters.find((character) => character.agentId === agentId);
-    if (character_raw) {
+    if (character_raw) { 
       return character_raw;
     } else {
       return null;
@@ -55,13 +46,15 @@ const EgressTemplate = () => {
       if (agentId) {
         const localCharacter = getCharacterByAgentIdLocal(agentId);
         if (localCharacter) {
-          setCharacter(localCharacter);
+          setImage(localCharacter.image);
         } else {
-          const characterId = await fetchCharacterIdFromAgentId(agentId);
-          if (characterId) {
-            const fetchedCharacter = getTemplate(characterId);
+          const character: AgentToCharacterData = await fetchCharacterIdFromAgentId(agentId);
+          if (character.templateId === 'custom') {
+            setImage(character.generatedImageURL)
+          } else {
+            const fetchedCharacter = getTemplate(character.templateId);
             if (fetchedCharacter) {
-              setCharacter(fetchedCharacter);
+              setImage(fetchedCharacter.image);
             }
           }
         }
@@ -113,7 +106,7 @@ const EgressTemplate = () => {
       <div className="flex justify-center items-center w-2/3 h-2/3 mt-[-10%]">
         <Image
           className="object-contain max-w-full max-h-full"
-          src={`/images/${character.image}`}
+          src={`/images/${image}`}
           alt={`image`}
           width={400}
           height={400}

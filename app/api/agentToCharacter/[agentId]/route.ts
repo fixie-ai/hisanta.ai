@@ -1,14 +1,14 @@
 export const runtime = 'edge';
 
-import { loadCharacterIdByAgentId } from '@/lib/storage';
+import { loadCharacterByAgentId } from '@/lib/storage';
 
 type RouteSegment = { params: { agentId: string } };
 
 /** Return the given character. */
 export async function GET(req: Request, { params }: RouteSegment): Promise<Response> {
   try {
-    const characterId = await loadCharacterIdByAgentId(params.agentId);
-    return new Response(JSON.stringify(characterId), {
+    const character = await loadCharacterByAgentId(params.agentId);
+    return new Response(JSON.stringify(character), {
       headers: { 'content-type': 'application/json' },
       status: 200,
     });

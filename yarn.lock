@@ -166,6 +166,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fastify/busboy@npm:^2.0.0":
+  version: 2.1.0
+  resolution: "@fastify/busboy@npm:2.1.0"
+  checksum: 3233abd10f73e50668cb4bb278a79b7b3fadd30215ac6458299b0e5a09a29c3586ec07597aae6bd93f5cbedfcef43a8aeea51829cd28fc13850cdbcd324c28d5
+  languageName: node
+  linkType: hard
+
 "@floating-ui/core@npm:^1.4.2":
   version: 1.5.2
   resolution: "@floating-ui/core@npm:1.5.2"
@@ -1494,6 +1501,15 @@ __metadata:
   dependencies:
     server-only: ^0.0.1
   checksum: 25f0259a5730a05b9df3bb40309ff75db53d4136e2db24d8287eccb346de08e55484c885679746d4cfbc8418241c4a357ad07b34751380ffa108aaf844f4203e
+  languageName: node
+  linkType: hard
+
+"@vercel/blob@npm:^0.16.1":
+  version: 0.16.1
+  resolution: "@vercel/blob@npm:0.16.1"
+  dependencies:
+    undici: 5.28.2
+  checksum: 7154b0e336968e9492dcaef66a36e65f6bd3905c1a723e430d128df5a3e6244523c1b34b765cd27f7cb4e8c3fd58014c6ad77491fb90aa914efb3d85f564bd98
   languageName: node
   linkType: hard
 
@@ -3631,6 +3647,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.59.9
     "@typescript-eslint/parser": ^5.59.9
     "@vercel/analytics": ^1.1.1
+    "@vercel/blob": ^0.16.1
     "@vercel/kv": ^1.0.1
     autoprefixer: ^10.0.1
     base-x: ^4.0.0
@@ -6812,6 +6829,15 @@ __metadata:
   version: 5.26.5
   resolution: "undici-types@npm:5.26.5"
   checksum: 3192ef6f3fd5df652f2dc1cd782b49d6ff14dc98e5dced492aa8a8c65425227da5da6aafe22523c67f035a272c599bb89cfe803c1db6311e44bed3042fc25487
+  languageName: node
+  linkType: hard
+
+"undici@npm:5.28.2":
+  version: 5.28.2
+  resolution: "undici@npm:5.28.2"
+  dependencies:
+    "@fastify/busboy": ^2.0.0
+  checksum: f9e9335803f962fff07c3c11c6d50bbc76248bacf97035047155adb29c3622a65bd6bff23a22218189740133149d22e63b68131d8c40e78ac6cb4b6d686a6dfa
   languageName: node
   linkType: hard
 

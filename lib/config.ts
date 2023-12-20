@@ -18,6 +18,7 @@ const config = {
       ringtone: '/sounds/jinglebells.mp3',
       agentId: '5d37e2c5-1e96-4c48-b3f1-98ac08d40b9a',
       voiceId: 'Kp00queBTLslXxHCu1jq',
+      generatedImage: false, 
     },
     {
       characterId: 'mrs-claus',
@@ -28,6 +29,7 @@ const config = {
       ringtone: '/sounds/deckthehalls.mp3',
       agentId: '339f7e31-4d7e-461b-8d75-6afad87224de',
       voiceId: 'ePzPl7sij9imLmib0Hvd',
+      generatedImage: false, 
     },
     {
       characterId: 'rudolf',
@@ -38,6 +40,7 @@ const config = {
       agentId: '7fbf92b7-7348-4025-8eaf-0c3207fe089f',
       voiceId: 'e9qncEcV5lKJHWC16xAR',
       ringtone: '/sounds/grandma.mp3',
+      generatedImage: false, 
     },
     {
       characterId: 'elfie',
@@ -48,6 +51,7 @@ const config = {
       ringtone: '/sounds/twelvedays.mp3',
       agentId: 'ab882fa5-286f-41fc-85d9-2b3f5ebbc023',
       voiceId: '3zdD5uMcIVtKzAQocDHU',
+      generatedImage: false, 
     },
     {
       characterId: 'badsanta',
@@ -59,6 +63,7 @@ const config = {
       agentId: 'e6ef8ebe-85ba-4b6e-b1a6-1a79849325f7',
       voiceId: 'tb9Rgoz1ryYKpuUG7mlL',
       bad: true,
+      generatedImage: false, 
     },
     {
       characterId: 'grouch',
@@ -70,6 +75,7 @@ const config = {
       agentId: '1e6b4faa-ba1d-444f-b23e-cf64ef680e32',
       voiceId: '9hxup5dlD3lL0Wrr9zXK',
       bad: true,
+      generatedImage: false, 
     },
     {
       characterId: 'karen',
@@ -81,6 +87,7 @@ const config = {
       agentId: '7e11f5fa-6779-416c-b688-3478ccb5e142',
       voiceId: 'joL5nBmTAhATqjDe5Upd',
       bad: true,
+      generatedImage: false, 
     },
     {
       characterId: 'badelfie',
@@ -92,6 +99,7 @@ const config = {
       agentId: '0829fcb7-07ac-42a5-9b84-05294402ff63',
       voiceId: '3zdD5uMcIVtKzAQocDHU',
       bad: true,
+      generatedImage: false, 
     },
   ],
 };

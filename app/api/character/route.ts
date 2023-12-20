@@ -136,7 +136,24 @@ export async function POST(req: Request): Promise<Response> {
     if (typeof body !== 'object') {
       throw new Error('Invalid request body: expecting object');
     }
-    const template = getTemplate(body.templateId);
+    let template = null;
+    if (body.templateId === 'custom'){
+      template = {
+        templateId: 'custom',
+        image: body.customImage,
+        voiceId: body.voiceId,
+        names: [body.name],
+        bios: [body.bio],
+        greetings: [body.greeting],
+        ringtone: body.ringtone,
+      }
+    } else {
+      template = getTemplate(body.templateId);
+      if (template) {
+        template.voiceId = body.voiceId;
+        template.ringtone = body.ringtone;
+      }
+    }
     if (!template) {
       throw new Error(`Invalid templateId: ${body.templateId}`);
     }
@@ -165,20 +182,31 @@ export async function POST(req: Request): Promise<Response> {
     });
     console.log(`Created agent ${agentId}`);
 
-    const character: CharacterType = {
+    let character: CharacterType; 
+    character = {
       characterId,
       agentId,
-      name: body.name,
+      name: body.name, 
       image: template.image,
       bio: body.bio,
       location: '',
       ringtone: template.ringtone,
       voiceId: template.voiceId,
       bad: false,
+      generatedImage: false,
     };
-
+    if (body.templateId === 'custom'){
+      character.generatedImage = true;
+    }
+    
     await saveCharacter(character);
-    await saveAgentCharacterMapping(character.agentId, template.templateId);
+    if (character.generatedImage) {
+      const base64Image = await convertImageToBase64(character.image);
+      await saveAgentCharacterMapping(character.agentId, 'custom', base64Image)
+    } else {
+      await saveAgentCharacterMapping(character.agentId, template.templateId, '');
+    }
+
     console.log(`Creating character ${characterId}: ${JSON.stringify(character)}`);
     return new Response(JSON.stringify(character), {
       headers: { 'content-type': 'application/json' },
@@ -186,5 +214,19 @@ export async function POST(req: Request): Promise<Response> {
   } catch (e: any) {
     console.log(e);
     return new Response(JSON.stringify({ error: e.message }), { status: 400 });
+  }
+}
+
+async function convertImageToBase64(imageUrl: string) {
+  try {
+    const response = await fetch(imageUrl);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.statusText}`);
+    }
+    const buffer = await response.arrayBuffer();
+    return buffer.toString();
+  } catch (error) {
+    console.error('Error converting image to Base64', error);
+    throw error;
   }
 }

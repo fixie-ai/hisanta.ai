@@ -8,6 +8,7 @@ export type CharacterType = {
   agentId: string;
   voiceId: string;
   bad?: boolean;
+  generatedImage: boolean; 
 };
 export interface ActiveCallProps {
   currentCharacter: CharacterType;
@@ -56,8 +57,20 @@ export type CreateCharacterRequest = {
   bio: string;
   // The character's greeting.
   greeting: string;
+
+  voiceId: string;
+
+  ringtone: string;
+  
+  customImage: string;
+
 };
 
 export type GenerateCharacterImageRequest = {
   characterDescription: string;
+};
+
+export type AgentToCharacterData = {
+  templateId: string;
+  generatedImageURL: string;
 };
