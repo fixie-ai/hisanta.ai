@@ -17,19 +17,30 @@ import { set } from 'lodash';
 
 
 function LeftArrow({ onClick, disabled}: { onClick: () => void, disabled: boolean }) {
+  const handleClick = () => {
+    if (!disabled) {
+      onClick();
+    }
+  }
   return (
     <ChevronLeftIcon
       aria-disabled={disabled}
-      onClick={onClick}
+      onClick={handleClick}
       className="w-12 h-12 p-2 border-2 border-Holiday-Green rounded-full cursor-pointer"
     />
   );
 }
 
 function RightArrow({ onClick, disabled }: { onClick: () => void, disabled: boolean }) {
+  const handleClick = () => {
+    if (!disabled) {
+      onClick();
+    }
+  }
   return (
     <ChevronRightIcon
-      onClick={onClick}
+      aria-disabled={disabled}
+      onClick={handleClick}
       className="w-12 h-12 p-2 border-2 border-Holiday-Green rounded-full cursor-pointer"
     />
   );
@@ -39,7 +50,7 @@ function CharacterChooserItem({ character, isGeneratingAvatar }: { character: Ch
   return (
     <div className="w-full">
       {isGeneratingAvatar ? (
-        <Skeleton className="w-[300px] h-[300px] rounded-md" />
+        <Skeleton className="w-[100px] h-[100px] rounded-full bg-primary/10" />
       ) : (
         <Image
           className="drop-shadow-md"
