@@ -204,6 +204,7 @@ export function CharacterBuilder() {
   const [customCharacter, setCustomCharacter] = useState<CharacterTemplate | null>(null);
   const [isGeneratingAvatar, setIsGeneratingAvatar] = useState(false);
   const [templates, setTemplates] = useState(characterTemplates);
+  const [customImageBlob, setCustomImageBlob] = useState<Blob | null>(null);
 
   useEffect(() => {
     const newTemplates = customCharacter ? [...characterTemplates, customCharacter] : characterTemplates;
@@ -272,6 +273,7 @@ export function CharacterBuilder() {
       .then((blob) => {
         // Create a URL for the Blob
         const imageURL = URL.createObjectURL(blob);
+        setCustomImageBlob(blob);
         setCustomCharacter({
           templateId: 'custom',
           names: ['name'],
@@ -294,6 +296,7 @@ export function CharacterBuilder() {
   };
 
   const onCreate = () => {
+
     const createRequest = {
       templateId: templates[characterIndex].templateId,
       name: name,
@@ -301,7 +304,7 @@ export function CharacterBuilder() {
       greeting: greeting.replace('{name}', name),
       voiceId: characterTemplates[voiceIndex].voiceId,
       ringtone: templates[characterIndex].templateId === 'custom' ? templates[characterIndex].ringtone : '',
-      customImage: templates[characterIndex].templateId === 'custom' ? templates[characterIndex].image : '',
+      customImage: customImageBlob,
     };
     datadogRum.addAction('create-character', { ...createRequest, emptyInitialBio: customCharactersEmptyBio });
 

@@ -136,24 +136,22 @@ export async function POST(req: Request): Promise<Response> {
     if (typeof body !== 'object') {
       throw new Error('Invalid request body: expecting object');
     }
-    let template = null;
-    if (body.templateId === 'custom'){
+    
+    let template = null; 
+    if (body.templateId === 'custom') {
       template = {
         templateId: 'custom',
-        image: body.customImage,
+        image: '',
         voiceId: body.voiceId,
-        names: [body.name],
-        bios: [body.bio],
-        greetings: [body.greeting],
+        names: [],
+        bios: [],
+        greetings: [],
         ringtone: body.ringtone,
       }
     } else {
       template = getTemplate(body.templateId);
-      if (template) {
-        template.voiceId = body.voiceId;
-        template.ringtone = body.ringtone;
-      }
     }
+    
     if (!template) {
       throw new Error(`Invalid templateId: ${body.templateId}`);
     }
@@ -197,15 +195,26 @@ export async function POST(req: Request): Promise<Response> {
     };
     if (body.templateId === 'custom'){
       character.generatedImage = true;
+      character.image = ''
+      character.name = body.name;
+      character.bio = body.bio;
+      character.ringtone = body.ringtone;
+      character.voiceId = body.voiceId;
+      character.generatedImage = true; 
     }
     
-    await saveCharacter(character);
     if (character.generatedImage) {
-      const base64Image = await convertImageToBase64(character.image);
-      await saveAgentCharacterMapping(character.agentId, 'custom', base64Image)
+      if (!body.customImage) {
+        throw new Error('Missing customImage');
+      }
+      const characterData = await saveAgentCharacterMapping(character.agentId, 'custom', body.customImage)
+      console.log(`Saved custom image for ${character.agentId}`)
+      character.image = characterData.generatedImageURL;
     } else {
-      await saveAgentCharacterMapping(character.agentId, template.templateId, '');
+      await saveAgentCharacterMapping(character.agentId, template.templateId, null);
     }
+    await saveCharacter(character);
+
 
     console.log(`Creating character ${characterId}: ${JSON.stringify(character)}`);
     return new Response(JSON.stringify(character), {
@@ -217,16 +226,4 @@ export async function POST(req: Request): Promise<Response> {
   }
 }
 
-async function convertImageToBase64(imageUrl: string) {
-  try {
-    const response = await fetch(imageUrl);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch image: ${response.statusText}`);
-    }
-    const buffer = await response.arrayBuffer();
-    return buffer.toString();
-  } catch (error) {
-    console.error('Error converting image to Base64', error);
-    throw error;
-  }
-}
+

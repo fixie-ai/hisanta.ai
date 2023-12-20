@@ -2,6 +2,7 @@ import { kv } from '@vercel/kv';
 import { put, head } from '@vercel/blob'; 
 import { CharacterType, AgentToCharacterData } from '@/lib/types';
 import { Uuid } from 'uuid-tool';
+import fs from 'fs';
 
 /** Load the given Character from KV. */
 export async function loadCharacter(characterId: string): Promise<CharacterType> {
@@ -33,17 +34,26 @@ export async function loadCharacterByAgentId(agentId: string): Promise<AgentToCh
   }
 }
 
-
 /** Store the mapping of Agent ID to Character Data to KV. */
-export async function saveAgentCharacterMapping(agentId: string, templateId: string, generatedImage: string): Promise<void> {
+export async function saveAgentCharacterMapping(agentId: string, templateId: string, imageBlob: Blob | null): Promise<AgentToCharacterData> {
+  console.log(`Saving agent ${agentId} with templateId ${templateId}`);
   const uuid = new Uuid().toString();
-  // Create an object with the templateId and generatedImage
-  const { url } = await put(uuid, generatedImage, { access: 'public'}); 
-  const characterData = {
+
+  let characterData = {
     templateId: templateId,
-    generatedImageURL: url,  
-  };
+    generatedImageURL: '',
+  }
+  if (imageBlob) {
+    // Create an object with the templateId and generatedImage
+    const { url } = await put(uuid, imageBlob, { access: 'public'}); 
+    characterData = {
+      templateId: templateId,
+      generatedImageURL: url,  
+    };
+    console.log('image url: ', url)
+  } 
 
   // Save this object in your key-value store with the agent's ID as the key
   await kv.set(`agent:${agentId}`, characterData);
+  return characterData;
 }
