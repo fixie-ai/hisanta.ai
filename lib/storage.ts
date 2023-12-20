@@ -42,4 +42,3 @@ export async function loadAgentImageMapping(agentId: string): Promise<string> {
   }
   return String(image);
 }
-

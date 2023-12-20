@@ -12,16 +12,15 @@ import { Carousel } from 'react-responsive-carousel';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { datadogRum } from '@datadog/browser-rum';
 import { useFlags } from 'launchdarkly-react-client-sdk';
-import { Skeleton } from "../ui/skeleton"
+import { Skeleton } from '../ui/skeleton';
 import { set } from 'lodash';
 
-
-function LeftArrow({ onClick, disabled}: { onClick: () => void, disabled: boolean }) {
+function LeftArrow({ onClick, disabled }: { onClick: () => void; disabled: boolean }) {
   const handleClick = () => {
     if (!disabled) {
       onClick();
     }
-  }
+  };
   return (
     <ChevronLeftIcon
       aria-disabled={disabled}
@@ -31,12 +30,12 @@ function LeftArrow({ onClick, disabled}: { onClick: () => void, disabled: boolea
   );
 }
 
-function RightArrow({ onClick, disabled }: { onClick: () => void, disabled: boolean }) {
+function RightArrow({ onClick, disabled }: { onClick: () => void; disabled: boolean }) {
   const handleClick = () => {
     if (!disabled) {
       onClick();
     }
-  }
+  };
   return (
     <ChevronRightIcon
       aria-disabled={disabled}
@@ -46,7 +45,13 @@ function RightArrow({ onClick, disabled }: { onClick: () => void, disabled: bool
   );
 }
 
-function CharacterChooserItem({ character, isGeneratingAvatar }: { character: CharacterTemplate, isGeneratingAvatar: boolean }) {
+function CharacterChooserItem({
+  character,
+  isGeneratingAvatar,
+}: {
+  character: CharacterTemplate;
+  isGeneratingAvatar: boolean;
+}) {
   return (
     <div className="w-full">
       {isGeneratingAvatar ? (
@@ -54,7 +59,7 @@ function CharacterChooserItem({ character, isGeneratingAvatar }: { character: Ch
       ) : (
         <Image
           className="drop-shadow-md"
-          src={character.templateId === "custom" ? character.image : `/images/${character.image}`}
+          src={character.templateId === 'custom' ? character.image : `/images/${character.image}`}
           alt={`${character.templateId} image`}
           width={300}
           height={300}
@@ -65,12 +70,22 @@ function CharacterChooserItem({ character, isGeneratingAvatar }: { character: Ch
   );
 }
 
-function CharacterChooser({ onChoose, customCharacter, disabled, isGeneratingAvatar}: { onChoose: (index: number) => void, customCharacter: CharacterTemplate | null, disabled: boolean, isGeneratingAvatar: boolean }) {
+function CharacterChooser({
+  onChoose,
+  customCharacter,
+  disabled,
+  isGeneratingAvatar,
+}: {
+  onChoose: (index: number) => void;
+  customCharacter: CharacterTemplate | null;
+  disabled: boolean;
+  isGeneratingAvatar: boolean;
+}) {
   const [characterIndex, setCharacterIndex] = useState(0);
   const [templates, setTemplates] = useState(characterTemplates);
 
   useEffect(() => {
-    console.log("custom character changed", customCharacter);
+    console.log('custom character changed', customCharacter);
     const newTemplates = customCharacter ? [...characterTemplates, customCharacter] : characterTemplates;
     setTemplates(newTemplates);
   }, [customCharacter]);
@@ -78,18 +93,18 @@ function CharacterChooser({ onChoose, customCharacter, disabled, isGeneratingAva
   useEffect(() => {
     if (customCharacter) {
       setCharacterIndex(templates.length - 1);
-      console.log("new index", templates.length - 1)
+      console.log('new index', templates.length - 1);
     } else {
       setCharacterIndex(0);
     }
-  }, [templates])
+  }, [templates]);
 
   const handleLeftClick = () => {
-    setCharacterIndex(prevIndex => prevIndex === 0 ? templates.length - 1 : prevIndex - 1);
+    setCharacterIndex((prevIndex) => (prevIndex === 0 ? templates.length - 1 : prevIndex - 1));
   };
 
   const handleRightClick = () => {
-    setCharacterIndex(prevIndex => (prevIndex + 1) % templates.length);
+    setCharacterIndex((prevIndex) => (prevIndex + 1) % templates.length);
   };
 
   useEffect(() => {
@@ -98,7 +113,7 @@ function CharacterChooser({ onChoose, customCharacter, disabled, isGeneratingAva
 
   return (
     <div className="flex flex-row justify-between items-center w-full px-4">
-      <LeftArrow onClick={handleLeftClick} disabled={disabled}/>
+      <LeftArrow onClick={handleLeftClick} disabled={disabled} />
       <div className="w-[100px]">
         <Carousel
           selectedItem={characterIndex}
@@ -107,14 +122,12 @@ function CharacterChooser({ onChoose, customCharacter, disabled, isGeneratingAva
           showThumbs={false}
           showArrows={false}
         >
-          {
-            templates.map((character, index) => (
-              <CharacterChooserItem key={index} character={character} isGeneratingAvatar={isGeneratingAvatar} />
-            ))
-          }
+          {templates.map((character, index) => (
+            <CharacterChooserItem key={index} character={character} isGeneratingAvatar={isGeneratingAvatar} />
+          ))}
         </Carousel>
       </div>
-      <RightArrow onClick={handleRightClick} disabled={disabled}/>
+      <RightArrow onClick={handleRightClick} disabled={disabled} />
     </div>
   );
 }
@@ -134,7 +147,7 @@ function VoiceChooserItem({ character }: { character: CharacterTemplate }) {
   );
 }
 
-function VoiceChooser({ onChoose, disabled }: { onChoose: (index: number) => void, disabled: boolean }) {
+function VoiceChooser({ onChoose, disabled }: { onChoose: (index: number) => void; disabled: boolean }) {
   const [voiceIndex, setVoiceIndex] = useState(0);
 
   const handleLeftClick = () => {
@@ -170,7 +183,7 @@ function VoiceChooser({ onChoose, disabled }: { onChoose: (index: number) => voi
           ))}
         </Carousel>
       </div>
-      <RightArrow onClick={handleRightClick} disabled={disabled}/>
+      <RightArrow onClick={handleRightClick} disabled={disabled} />
     </div>
   );
 }
@@ -197,7 +210,7 @@ export function CharacterBuilder() {
 
   const onChooseVoice = (index: number) => {
     setVoiceIndex(index);
-  }
+  };
 
   useEffect(() => {
     if (!userSetName && !customCharactersEmptyBio) {
@@ -238,41 +251,41 @@ export function CharacterBuilder() {
       setError('Please describe your character!');
       return;
     }
-    console.log("generating avatar");
+    console.log('generating avatar');
     setIsGeneratingAvatar(true);
     fetch('/api/generateCharacterImage', {
-      method: 'POST', 
-      body: JSON.stringify({ characterDescription: description })
+      method: 'POST',
+      body: JSON.stringify({ characterDescription: description }),
     })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error(res.statusText);
-      }
-      return res.blob(); // Get the response as a Blob
-    })
-    .then((blob) => {
-      // Create a URL for the Blob
-      const imageURL = URL.createObjectURL(blob);
-      setCustomCharacter({
-        templateId: "custom",
-        names: ["name"],
-        bios: ["description"],
-        greetings: ["greeting"],
-        image: imageURL, // base64 encoded image
-        voiceId: "",
-        ringtone: "", 
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(res.statusText);
+        }
+        return res.blob(); // Get the response as a Blob
+      })
+      .then((blob) => {
+        // Create a URL for the Blob
+        const imageURL = URL.createObjectURL(blob);
+        setCustomCharacter({
+          templateId: 'custom',
+          names: ['name'],
+          bios: ['description'],
+          greetings: ['greeting'],
+          image: imageURL, // base64 encoded image
+          voiceId: '',
+          ringtone: '',
+        });
+        console.log('Generated character image URL: ', imageURL);
+        console.log('generated character: ', customCharacter);
+
+        setIsGeneratingAvatar(false);
+      })
+      .catch((error) => {
+        console.error('Error generating character image:', error);
+        setIsGeneratingAvatar(false);
+        setError('Error Generating Avatar');
       });
-      console.log('Generated character image URL: ', imageURL);
-      console.log('generated character: ', customCharacter)
-      
-      setIsGeneratingAvatar(false);
-    })
-    .catch((error) => {
-      console.error('Error generating character image:', error);
-      setIsGeneratingAvatar(false);
-      setError('Error Generating Avatar');
-    });
-  }
+  };
 
   const onCreate = () => {
     const createRequest = {
@@ -314,7 +327,12 @@ export function CharacterBuilder() {
   return (
     <div className="bg-White-75 rounded-jumbo border-black border flex flex-col mx-auto md:mt-4 gap-2 w-[340px] h-[600px] justify-start overflow-y-auto hide-scrollbar">
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Choose an avatar</div>
-      <CharacterChooser onChoose={onChooseCharacter} customCharacter={customCharacter} disabled={isGeneratingAvatar} isGeneratingAvatar={isGeneratingAvatar}/>
+      <CharacterChooser
+        onChoose={onChooseCharacter}
+        customCharacter={customCharacter}
+        disabled={isGeneratingAvatar}
+        isGeneratingAvatar={isGeneratingAvatar}
+      />
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Name your character</div>
       <Input
         className="w-11/12 mx-auto font-[Inter-Regular]"
@@ -327,25 +345,30 @@ export function CharacterBuilder() {
         }}
       />
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Give your character a story</div>
-      <div className="ml-4 mr-4 mx-auto font-[Inter-Light] text-sm font-thin"> <span className="font-[Inter-Bold]">Dont skip this! </span>The background you create sets the stage for their personality, interests, and the way they interact with you. </div>
-      
+      <div className="ml-4 mr-4 mx-auto font-[Inter-Light] text-sm font-thin">
+        {' '}
+        <span className="font-[Inter-Bold]">Dont skip this! </span>The background you create sets the stage for their
+        personality, interests, and the way they interact with you.{' '}
+      </div>
+
       <div className="bg-gray-200 rounded-xl p-1 flex-col justify-center items-center ml-4 mr-4">
         <Textarea
-            value={description}
-            maxLength={4000}
-            onInput={(e) => {
-                setUserSetDescription(true);
-                setDescription((e.target as HTMLTextAreaElement).value);
-            }}
-            className="mx-auto font-[Inter-Regular] bg-white border border-[#1E293B] rounded-lg"
-            placeholder='For example: "You are a friendly, outgoing person who loves to spread holiday cheer. You are a great listener and love to hear about holiday traditions."'
+          value={description}
+          maxLength={4000}
+          onInput={(e) => {
+            setUserSetDescription(true);
+            setDescription((e.target as HTMLTextAreaElement).value);
+          }}
+          className="mx-auto font-[Inter-Regular] bg-white border border-[#1E293B] rounded-lg min-h-[120px]"
+          placeholder='For example: "You are a friendly, outgoing person who loves to spread holiday cheer. You are a great listener and love to hear about holiday traditions."'
         />
-        <button className="hover:bg-blue-200 tracking-normal leading-tight w-2/3 h-1/5 px-3 mb-4 mt-1 mx-auto bg-white font-[Inter-Bold] text-sm font-thin rounded-xl text-center text-gray-800 overflow-hidden flex items-center justify-center gap-1"
-                onClick={onRegenerateAvatar}
-                disabled={isGeneratingAvatar}>
+        <button
+          className="hover:bg-blue-200 tracking-normal leading-tight w-2/3 h-1/5 px-3 mb-4 mt-1 mx-auto bg-white font-[Inter-Bold] text-sm font-thin rounded-xl text-center text-gray-800 overflow-hidden flex items-center justify-center gap-1"
+          onClick={onRegenerateAvatar}
+          disabled={isGeneratingAvatar}
+        >
           Regenerate Avatar
         </button>
-        
       </div>
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Customize greeting</div>
       <Input
