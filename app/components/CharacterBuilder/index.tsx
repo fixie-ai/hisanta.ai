@@ -344,7 +344,7 @@ export function CharacterBuilder() {
   };
 
   return (
-    <div className="bg-White-75 rounded-jumbo border-black border flex flex-col mx-auto md:mt-4 gap-2 w-[340px] h-[600px] justify-start overflow-y-auto hide-scrollbar">
+    <div className="bg-White-75 rounded-jumbo border-black border flex flex-col mx-auto md:mt-4 gap-2 w-[340px] h-[870px] justify-start">
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Choose an avatar</div>
       <CharacterChooser
         onChoose={onChooseCharacter}
