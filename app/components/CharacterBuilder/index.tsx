@@ -309,7 +309,7 @@ export function CharacterBuilder() {
       bio: description,
       greeting: greeting.replace('{name}', name),
       voiceId: characterTemplates[voiceIndex].voiceId,
-      ringtone: templates[characterIndex].templateId === 'custom' ? templates[characterIndex].ringtone : '',
+      ringtone: characterTemplates[voiceIndex].ringtone,
       customImage: customImageBlob,
     };
     datadogRum.addAction('create-character', { ...createRequest, emptyInitialBio: customCharactersEmptyBio });

@@ -38,6 +38,7 @@ export default function Page({ params }: { params: { character: string } }) {
         setErr(`${res.status} ${res.statusText}`);
       }
       const data = await res.json();
+      console.log('fetched character', data)
       setCharacterObj(data);
     };
     fetchCharacter();
