@@ -10,7 +10,7 @@ export async function POST(req: Request): Promise<Response> {
       throw new Error('Invalid request body: expecting object');
     }
     const characterDescription = body.characterDescription;
-    const openAIResponse = await callAzureOpenAI(characterDescription);
+    const openAIResponse = await callOpenAI(characterDescription);
     const imageUrl = openAIResponse.data[0].url;
 
     // Download the image
@@ -34,6 +34,46 @@ export async function POST(req: Request): Promise<Response> {
     return new Response(JSON.stringify({ error: e.message }), { status: 400 });
   }
 }
+
+async function callOpenAI(prompt: string) {
+  const apiKey = process.env.OPENAI_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('OpenAI key is undefined');
+  }
+
+  const endpoint = 'https://api.openai.com/v1/images/generations';
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${apiKey}`,
+  };
+
+  const body = JSON.stringify({
+    model: "dall-e-3",
+    prompt: DALLE_BASE_PROMPT + prompt,
+    n: 1,
+    size: "1024x1024" // Include size parameter as in your curl example
+  });
+
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: headers,
+      body: body
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error: any) {
+    throw new Error(`API request failed: ${error.message}`);
+  }
+}
+
+
+
 
 async function callAzureOpenAI(prompt: string) {
   const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
