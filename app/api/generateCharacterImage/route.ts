@@ -1,7 +1,7 @@
 import { kv } from '@vercel/kv';
 import axios from 'axios';
 import { GenerateCharacterImageRequest } from '@/lib/types';
-import { base_prompt } from '@/lib/config';
+import { DALLE_BASE_PROMPT } from '@/lib/config';
 
 export async function POST(req: Request): Promise<Response> {
   try {
@@ -53,7 +53,7 @@ async function callAzureOpenAI(prompt: string) {
 
   const body = JSON.stringify({
     model: 'dall-e-3',
-    prompt: base_prompt + prompt,
+    prompt: DALLE_BASE_PROMPT + prompt,
     n: 1,
   });
 
