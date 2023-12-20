@@ -27,7 +27,7 @@ const InCall = ({ currentCharacter }: ActiveCallProps) => {
             {currentCharacter.name}
           </header>
           <Image
-            src={`/images/${currentCharacter.image}`}
+            src={currentCharacter.generatedImage ? currentCharacter.image : `/images/${currentCharacter.image}`}
             alt={`${currentCharacter.name} Image.`}
             width={175}
             height={175}
