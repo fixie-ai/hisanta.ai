@@ -8,7 +8,7 @@ export async function POST(req: Request): Promise<Response> {
         if (typeof body !== 'object') {
             throw new Error('Invalid request body: expecting object');
         }
-        const characterDescription = body.characterDescription; // replace with actual data fields from your request
+        const characterDescription = body.characterDescription; 
         const openAIResponse = await callAzureOpenAI(characterDescription)
         const imageUrl = openAIResponse.data[0].url; 
 
@@ -19,13 +19,10 @@ export async function POST(req: Request): Promise<Response> {
         return new Response(imageBuffer, {
             status: 200, 
             headers: {
-                'Content-Type': imageResponse.headers['content-type'], // Set the appropriate content type for the image
+                'Content-Type': imageResponse.headers['content-type'],
                 'Content-Length': String(imageBuffer.length),
             }
         });
-
-
-        
     } catch (e: any) {
         console.error(e);
         return new Response(JSON.stringify({ error: e.message }), { status: 400 });

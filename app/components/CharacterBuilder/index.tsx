@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { characterTemplates } from '@/lib/config';
-import { CharacterTemplate } from '@/lib/types';
+import { CharacterTemplate, CharacterType } from '@/lib/types';
 import EpicButton from '../Buttons';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
@@ -12,17 +12,21 @@ import { Carousel } from 'react-responsive-carousel';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { datadogRum } from '@datadog/browser-rum';
 import { useFlags } from 'launchdarkly-react-client-sdk';
+import { Skeleton } from "../ui/skeleton"
+import { set } from 'lodash';
 
-function LeftArrow({ onClick }: { onClick: () => void }) {
+
+function LeftArrow({ onClick, disabled}: { onClick: () => void, disabled: boolean }) {
   return (
     <ChevronLeftIcon
+      aria-disabled={disabled}
       onClick={onClick}
       className="w-12 h-12 p-2 border-2 border-Holiday-Green rounded-full cursor-pointer"
     />
   );
 }
 
-function RightArrow({ onClick }: { onClick: () => void }) {
+function RightArrow({ onClick, disabled }: { onClick: () => void, disabled: boolean }) {
   return (
     <ChevronRightIcon
       onClick={onClick}
@@ -31,7 +35,80 @@ function RightArrow({ onClick }: { onClick: () => void }) {
   );
 }
 
-function CharacterChooserItem({ character }: { character: CharacterTemplate }) {
+function CharacterChooserItem({ character, isGeneratingAvatar }: { character: CharacterTemplate, isGeneratingAvatar: boolean }) {
+  return (
+    <div className="w-full">
+      {isGeneratingAvatar ? (
+        <Skeleton className="w-[300px] h-[300px] rounded-md" />
+      ) : (
+        <Image
+          className="drop-shadow-md"
+          src={character.templateId === "custom" ? character.image : `/images/${character.image}`}
+          alt={`${character.templateId} image`}
+          width={300}
+          height={300}
+          priority={true}
+        />
+      )}
+    </div>
+  );
+}
+
+function CharacterChooser({ onChoose, customCharacter, disabled, isGeneratingAvatar}: { onChoose: (index: number) => void, customCharacter: CharacterTemplate | null, disabled: boolean, isGeneratingAvatar: boolean }) {
+  const [characterIndex, setCharacterIndex] = useState(0);
+  const [templates, setTemplates] = useState(characterTemplates);
+
+  useEffect(() => {
+    console.log("custom character changed", customCharacter);
+    const newTemplates = customCharacter ? [...characterTemplates, customCharacter] : characterTemplates;
+    setTemplates(newTemplates);
+  }, [customCharacter]);
+
+  useEffect(() => {
+    if (customCharacter) {
+      setCharacterIndex(templates.length - 1);
+      console.log("new index", templates.length - 1)
+    } else {
+      setCharacterIndex(0);
+    }
+  }, [templates])
+
+  const handleLeftClick = () => {
+    setCharacterIndex(prevIndex => prevIndex === 0 ? templates.length - 1 : prevIndex - 1);
+  };
+
+  const handleRightClick = () => {
+    setCharacterIndex(prevIndex => (prevIndex + 1) % templates.length);
+  };
+
+  useEffect(() => {
+    onChoose(characterIndex);
+  }, [characterIndex, onChoose]);
+
+  return (
+    <div className="flex flex-row justify-between items-center w-full px-4">
+      <LeftArrow onClick={handleLeftClick} disabled={disabled}/>
+      <div className="w-[100px]">
+        <Carousel
+          selectedItem={characterIndex}
+          showStatus={false}
+          showIndicators={false}
+          showThumbs={false}
+          showArrows={false}
+        >
+          {
+            templates.map((character, index) => (
+              <CharacterChooserItem key={index} character={character} isGeneratingAvatar={isGeneratingAvatar} />
+            ))
+          }
+        </Carousel>
+      </div>
+      <RightArrow onClick={handleRightClick} disabled={disabled}/>
+    </div>
+  );
+}
+
+function VoiceChooserItem({ character }: { character: CharacterTemplate }) {
   return (
     <div className="w-full">
       <Image
@@ -46,11 +123,11 @@ function CharacterChooserItem({ character }: { character: CharacterTemplate }) {
   );
 }
 
-function CharacterChooser({ onChoose }: { onChoose: (index: number) => void }) {
-  const [characterIndex, setCharacterIndex] = useState(0);
+function VoiceChooser({ onChoose, disabled }: { onChoose: (index: number) => void, disabled: boolean }) {
+  const [voiceIndex, setVoiceIndex] = useState(0);
 
   const handleLeftClick = () => {
-    setCharacterIndex((index) => {
+    setVoiceIndex((index) => {
       if (index == 0) {
         return characterTemplates.length - 1;
       } else {
@@ -59,30 +136,30 @@ function CharacterChooser({ onChoose }: { onChoose: (index: number) => void }) {
     });
   };
   const handleRightClick = () => {
-    setCharacterIndex((characterIndex + 1) % characterTemplates.length);
+    setVoiceIndex((voiceIndex + 1) % characterTemplates.length);
   };
 
   useEffect(() => {
-    onChoose(characterIndex);
-  }, [characterIndex, onChoose]);
+    onChoose(voiceIndex);
+  }, [voiceIndex, onChoose]);
 
   return (
     <div className="flex flex-row justify-between items-center w-full px-4">
-      <LeftArrow onClick={handleLeftClick} />
+      <LeftArrow onClick={handleLeftClick} disabled={disabled} />
       <div className="w-[100px]">
         <Carousel
-          selectedItem={characterIndex}
+          selectedItem={voiceIndex}
           showStatus={false}
           showIndicators={false}
           showThumbs={false}
           showArrows={false}
         >
           {characterTemplates.map((character, index) => (
-            <CharacterChooserItem key={index} character={character} />
+            <VoiceChooserItem key={index} character={character} />
           ))}
         </Carousel>
       </div>
-      <RightArrow onClick={handleRightClick} />
+      <RightArrow onClick={handleRightClick} disabled={disabled}/>
     </div>
   );
 }
@@ -99,10 +176,17 @@ export function CharacterBuilder() {
   const [greeting, setGreeting] = useState('');
   const [userSetGreeting, setUserSetGreeting] = useState(false);
   const [characterIndex, setCharacterIndex] = useState(0);
+  const [voiceIndex, setVoiceIndex] = useState(0);
+  const [customCharacter, setCustomCharacter] = useState<CharacterTemplate | null>(null);
+  const [isGeneratingAvatar, setIsGeneratingAvatar] = useState(false);
 
   const onChooseCharacter = (index: number) => {
     setCharacterIndex(index);
   };
+
+  const onChooseVoice = (index: number) => {
+    setVoiceIndex(index);
+  }
 
   useEffect(() => {
     if (!userSetName && !customCharactersEmptyBio) {
@@ -137,6 +221,47 @@ export function CharacterBuilder() {
       return;
     }
   }, [name, description, greeting]);
+
+  const onRegenerateAvatar = () => {
+    if (!description) {
+      setError('Please describe your character!');
+      return;
+    }
+    console.log("generating avatar");
+    setIsGeneratingAvatar(true);
+    fetch('/api/generateCharacterImage', {
+      method: 'POST', 
+      body: JSON.stringify({ characterDescription: description })
+    })
+    .then((res) => {
+      if (!res.ok) {
+        throw new Error(res.statusText);
+      }
+      return res.blob(); // Get the response as a Blob
+    })
+    .then((blob) => {
+      // Create a URL for the Blob
+      const imageURL = URL.createObjectURL(blob);
+      setCustomCharacter({
+        templateId: "custom",
+        names: ["name"],
+        bios: ["description"],
+        greetings: ["greeting"],
+        image: imageURL, // base64 encoded image
+        voiceId: "",
+        ringtone: "", 
+      });
+      console.log('Generated character image URL: ', imageURL);
+      console.log('generated character: ', customCharacter)
+      
+      setIsGeneratingAvatar(false);
+    })
+    .catch((error) => {
+      console.error('Error generating character image:', error);
+      setIsGeneratingAvatar(false);
+      setError('Error Generating Avatar');
+    });
+  }
 
   const onCreate = () => {
     const createRequest = {
@@ -178,7 +303,7 @@ export function CharacterBuilder() {
   return (
     <div className="bg-White-75 rounded-jumbo border-black border flex flex-col mx-auto md:mt-4 gap-2 w-[340px] h-[600px] justify-start overflow-y-auto hide-scrollbar">
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Choose an avatar</div>
-      <CharacterChooser onChoose={onChooseCharacter} />
+      <CharacterChooser onChoose={onChooseCharacter} customCharacter={customCharacter} disabled={isGeneratingAvatar} isGeneratingAvatar={isGeneratingAvatar}/>
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Name your character</div>
       <Input
         className="w-11/12 mx-auto font-[Inter-Regular]"
@@ -204,12 +329,14 @@ export function CharacterBuilder() {
             className="mx-auto font-[Inter-Regular] bg-white border border-[#1E293B] rounded-lg"
             placeholder='For example: "You are a friendly, outgoing person who loves to spread holiday cheer. You are a great listener and love to hear about holiday traditions."'
         />
-        <button className="hover:bg-blue-200 tracking-normal leading-tight w-2/3 h-1/5 px-3 mb-4 mt-1 mx-auto bg-white font-[Inter-Bold] text-sm font-thin rounded-xl text-center text-gray-800 overflow-hidden flex items-center justify-center gap-1">
+        <button className="hover:bg-blue-200 tracking-normal leading-tight w-2/3 h-1/5 px-3 mb-4 mt-1 mx-auto bg-white font-[Inter-Bold] text-sm font-thin rounded-xl text-center text-gray-800 overflow-hidden flex items-center justify-center gap-1"
+                onClick={onRegenerateAvatar}
+                disabled={isGeneratingAvatar}>
           Regenerate Avatar
         </button>
         
       </div>
-      <div className="mt-4 mx-auto text-base text-Holiday-Red">Set greeting</div>
+      <div className="mt-4 mx-auto text-base text-Holiday-Red">Customize greeting</div>
       <Input
         className="w-11/12 mx-auto font-[Inter-Regular]"
         placeholder='For example: "What up, dog? Merry Christmas!"'
@@ -219,10 +346,12 @@ export function CharacterBuilder() {
           setGreeting((e.target as HTMLInputElement).value);
         }}
       />
+      <div className="mt-4 mx-auto text-base text-Holiday-Red">Choose a voice</div>
+      <VoiceChooser onChoose={onChooseVoice} disabled={isGeneratingAvatar}></VoiceChooser>
       <div className="mt-auto" />
       <div className="font-[Inter-Regular] text-center text-red-500 italic">{error}</div>
       <div className="m-4">
-        <EpicButton disabled={error !== ''} type="primary" className="w-full" onClick={onCreate}>
+        <EpicButton disabled={error !== '' || isGeneratingAvatar} type="primary" className="w-full" onClick={onCreate}>
           Create character
         </EpicButton>
       </div>
