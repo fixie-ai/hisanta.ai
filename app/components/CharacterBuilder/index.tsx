@@ -393,7 +393,7 @@ export function CharacterBuilder() {
           placeholder='For example: "You are a friendly, outgoing person who loves to spread holiday cheer. You are a great listener and love to hear about holiday traditions."'
         />
         <button
-          className="hover:bg-blue-200 tracking-normal leading-tight w-2/3 h-1/6 px-3 mb-3 mt-2 mx-auto bg-white font-[Inter-Bold] text-xs font-thin rounded-xl text-center text-gray-800 overflow-hidden flex items-center justify-center gap-1"
+          className="hover:bg-blue-200 tracking-normal leading-tight w-2/3 h-1/6 px-3 mb-3 mt-1.5 mx-auto bg-white font-[Inter-Bold] text-xs font-thin rounded-xl text-center text-gray-800 overflow-hidden flex items-center justify-center gap-1"
           onClick={onRegenerateAvatar}
           disabled={isGeneratingAvatar}
         >
