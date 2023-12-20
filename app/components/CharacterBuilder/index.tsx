@@ -9,7 +9,7 @@ import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { ChevronLeftIcon, ChevronRightIcon, PlayIcon} from '@heroicons/react/24/outline';
 import { datadogRum } from '@datadog/browser-rum';
 import { useFlags } from 'launchdarkly-react-client-sdk';
 import { Skeleton } from '../ui/skeleton';
@@ -132,24 +132,17 @@ function CharacterChooser({
 
 function VoiceChooserItem({ voice, index }: { voice: CharacterVoiceType, index: number }) {
   return (
-    <div className="w-full h-full p-3 bg-gray-300 rounded-md flex flex-col items-center justify-center gap-2">
-  <div className="text-center text-blue-800 text-lg font-luckiest-guy leading-6 break-words">VOICE #{index+1}</div>
-  <div className="text-center text-blue-900 text-sm font-inter font-medium leading-6 break-words">{voice.descriptor}</div>
-  <div className="self-stretch h-6 px-3 py-1 bg-white rounded-md overflow-hidden flex items-center justify-center gap-1.5">
-    <div className="w-5 h-5 relative">
-      {/* Inline styles are needed here for non-standard sizes */}
-      <div style={{
-        width: '12.34px',
-        height: '14.79px',
-        position: 'absolute',
-        left: '4px',
-        top: '2.61px',
-        background: '#2F4665'
-      }}></div>
+    <div className="flex flex-col items-center justify-center h-2/3 bg-gray-200 rounded-2xl shadow-md max-w-md mx-auto mt-5 ">
+      <div className="font-bold text-sm font-[Luckiest Guy] mt-2">VOICE #{index+1}</div>
+      <div className="text-center text-xs mb-1 font-[Inter-SemiBold]">{voice.descriptor}</div>
+      <div className="w-3/4 h-full p-3 bg-white rounded-lg overflow-hidden inline-flex justify-center items-center mb-2">
+        <div className="w-5 h-5 relative">
+          <PlayIcon style={{ fill: "#2F4665" }}/>
+        </div>
+        <div className="text-center text-[#2F4665] text-xs font-[Inter-Bold] break-words">Play sample</div>
+      </div>    
     </div>
-    <div className="text-center text-blue-800 text-xs font-inter font-bold tracking-wider break-words">Play sample</div>
-  </div>
-</div>
+
 
   );
 }
@@ -177,7 +170,7 @@ function VoiceChooser({ onChoose, disabled }: { onChoose: (index: number) => voi
   return (
     <div className="flex flex-row justify-between items-center w-full px-4">
       <LeftArrow onClick={handleLeftClick} disabled={disabled} />
-      <div className="w-[100px]">
+      <div className="w-[170px]">
         <Carousel
           selectedItem={voiceIndex}
           showStatus={false}
@@ -360,7 +353,7 @@ export function CharacterBuilder() {
         isGeneratingAvatar={isGeneratingAvatar}
       />
       <VoiceChooser onChoose={onChooseVoice} disabled={isGeneratingAvatar}></VoiceChooser>
-      <div className="mt-4 mx-auto text-base text-Holiday-Red">Name your character</div>
+      <div className="mx-auto text-base text-Holiday-Red">Name your character</div>
       <Input
         className="w-11/12 mx-auto font-[Inter-Regular] border border-[#1E293B] rounded-lg"
         placeholder="Name your character"
