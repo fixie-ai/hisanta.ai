@@ -20,15 +20,15 @@ export async function saveCharacter(character: CharacterType): Promise<void> {
 
 /** Load the Character Data mapped to the given Agent ID from KV. */
 export async function loadCharacterByAgentId(agentId: string): Promise<AgentToCharacterData> {
-  console.log('loadCharacterByAgentId', agentId)
+  console.log('loadCharacterByAgentId', agentId);
   const characterData = await kv.json.get(`agent:${agentId}`);
-  console.log('loadCharacterjson', characterData)
+  console.log('loadCharacterjson', characterData);
   if (!characterData) {
     throw new Error(`Character data not found for Agent ${agentId}`);
   }
 
   try {
-    console.log('here', characterData)
+    console.log('here', characterData);
     return characterData as AgentToCharacterData;
   } catch (error: any) {
     // Handle JSON parsing errors
