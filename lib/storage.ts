@@ -1,5 +1,5 @@
 import { kv } from '@vercel/kv';
-import { put, head } from '@vercel/blob'; 
+import { put, head } from '@vercel/blob';
 import { CharacterType, AgentToCharacterData } from '@/lib/types';
 import { Uuid } from 'uuid-tool';
 import fs from 'fs';
@@ -25,7 +25,7 @@ export async function loadCharacterByAgentId(agentId: string): Promise<AgentToCh
     throw new Error(`Character data not found for Agent ${agentId}`);
   }
 
-  try { 
+  try {
     const characterData = JSON.parse(characterDataJson);
     return characterData;
   } catch (error: any) {
@@ -35,22 +35,26 @@ export async function loadCharacterByAgentId(agentId: string): Promise<AgentToCh
 }
 
 /** Store the mapping of Agent ID to Character Data to KV. */
-export async function saveAgentCharacterMapping(agentId: string, templateId: string, imageBlob: string | null): Promise<AgentToCharacterData> {
+export async function saveAgentCharacterMapping(
+  agentId: string,
+  templateId: string,
+  imageBlob: string | null
+): Promise<AgentToCharacterData> {
   const uuid = new Uuid().toString();
 
   let characterData = {
     templateId: templateId,
     generatedImageURL: '',
-  }
+  };
   if (imageBlob) {
     // Create an object with the templateId and generatedImage
     const imageBuffer = Buffer.from(imageBlob.split(',')[1], 'base64');
-    const { url } = await put(uuid, imageBuffer, { access: 'public'}); 
+    const { url } = await put(uuid, imageBuffer, { access: 'public' });
     characterData = {
       templateId: templateId,
-      generatedImageURL: url,  
+      generatedImageURL: url,
     };
-  } 
+  }
 
   // Save this object in your key-value store with the agent's ID as the key
   await kv.set(`agent:${agentId}`, characterData);

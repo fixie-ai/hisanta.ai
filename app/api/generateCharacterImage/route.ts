@@ -45,21 +45,21 @@ async function callOpenAI(prompt: string) {
   const endpoint = 'https://api.openai.com/v1/images/generations';
   const headers = {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${apiKey}`,
+    Authorization: `Bearer ${apiKey}`,
   };
 
   const body = JSON.stringify({
-    model: "dall-e-3",
+    model: 'dall-e-3',
     prompt: DALLE_BASE_PROMPT + prompt,
     n: 1,
-    size: "1024x1024" // Include size parameter as in your curl example
+    size: '1024x1024', // Include size parameter as in your curl example
   });
 
   try {
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: headers,
-      body: body
+      body: body,
     });
 
     if (!response.ok) {
@@ -71,9 +71,6 @@ async function callOpenAI(prompt: string) {
     throw new Error(`API request failed: ${error.message}`);
   }
 }
-
-
-
 
 async function callAzureOpenAI(prompt: string) {
   const endpoint = process.env.AZURE_OPENAI_ENDPOINT;

@@ -136,8 +136,8 @@ export async function POST(req: Request): Promise<Response> {
     if (typeof body !== 'object') {
       throw new Error('Invalid request body: expecting object');
     }
-    
-    let template = null; 
+
+    let template = null;
     if (body.templateId === 'custom') {
       template = {
         templateId: 'custom',
@@ -147,11 +147,11 @@ export async function POST(req: Request): Promise<Response> {
         bios: [],
         greetings: [],
         ringtone: body.ringtone,
-      }
+      };
     } else {
       template = getTemplate(body.templateId);
     }
-    
+
     if (!template) {
       throw new Error(`Invalid templateId: ${body.templateId}`);
     }
@@ -180,11 +180,11 @@ export async function POST(req: Request): Promise<Response> {
     });
     console.log(`Created agent ${agentId}`);
 
-    let character: CharacterType; 
+    let character: CharacterType;
     character = {
       characterId,
       agentId,
-      name: body.name, 
+      name: body.name,
       image: template.image,
       bio: body.bio,
       location: '',
@@ -193,27 +193,26 @@ export async function POST(req: Request): Promise<Response> {
       bad: false,
       generatedImage: false,
     };
-    if (body.templateId === 'custom'){
+    if (body.templateId === 'custom') {
       character.generatedImage = true;
-      character.image = ''
+      character.image = '';
       character.name = body.name;
       character.bio = body.bio;
       character.ringtone = body.ringtone;
       character.voiceId = body.voiceId;
-      character.generatedImage = true; 
+      character.generatedImage = true;
     }
-    
+
     if (character.generatedImage) {
       if (!body.customImage) {
         throw new Error('Missing customImage');
       }
-      const characterData = await saveAgentCharacterMapping(character.agentId, 'custom', body.customImage)
+      const characterData = await saveAgentCharacterMapping(character.agentId, 'custom', body.customImage);
       character.image = characterData.generatedImageURL;
     } else {
       await saveAgentCharacterMapping(character.agentId, template.templateId, null);
     }
     await saveCharacter(character);
-
 
     return new Response(JSON.stringify(character), {
       headers: { 'content-type': 'application/json' },
@@ -223,5 +222,3 @@ export async function POST(req: Request): Promise<Response> {
     return new Response(JSON.stringify({ error: e.message }), { status: 400 });
   }
 }
-
-

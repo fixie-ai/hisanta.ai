@@ -34,7 +34,7 @@ const EgressTemplate = () => {
 
   function getCharacterByAgentIdLocal(agentId: string): CharacterType | null {
     const character_raw = config.availableCharacters.find((character) => character.agentId === agentId);
-    if (character_raw) { 
+    if (character_raw) {
       return character_raw;
     } else {
       return null;
@@ -50,11 +50,11 @@ const EgressTemplate = () => {
         } else {
           const character: AgentToCharacterData = await fetchCharacterIdFromAgentId(agentId);
           if (character.templateId === 'custom') {
-            setImage(character.generatedImageURL)
+            setImage(character.generatedImageURL);
           } else {
             const fetchedCharacter = getTemplate(character.templateId);
             if (fetchedCharacter) {
-              setImage("/images/"+fetchedCharacter.image);
+              setImage('/images/' + fetchedCharacter.image);
             }
           }
         }

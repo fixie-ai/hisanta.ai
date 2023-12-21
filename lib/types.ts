@@ -8,7 +8,7 @@ export type CharacterType = {
   agentId: string;
   voiceId: string;
   bad?: boolean;
-  generatedImage: boolean; 
+  generatedImage: boolean;
 };
 export interface ActiveCallProps {
   currentCharacter: CharacterType;
@@ -61,9 +61,8 @@ export type CreateCharacterRequest = {
   voiceId: string;
 
   ringtone: string;
-  
-  customImage: string | null;
 
+  customImage: string | null;
 };
 
 export type GenerateCharacterImageRequest = {
