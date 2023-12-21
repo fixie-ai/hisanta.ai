@@ -13,6 +13,7 @@ import { ChevronLeftIcon, ChevronRightIcon, PlayIcon } from '@heroicons/react/24
 import { datadogRum } from '@datadog/browser-rum';
 import { useFlags } from 'launchdarkly-react-client-sdk';
 import { Skeleton } from '../ui/skeleton';
+import { set } from 'lodash';
 
 function LeftArrow({ onClick, disabled }: { onClick: () => void; disabled: boolean }) {
   const handleClick = () => {
@@ -238,6 +239,7 @@ export function CharacterBuilder() {
   const [isGeneratingAvatar, setIsGeneratingAvatar] = useState(false);
   const [templates, setTemplates] = useState(characterTemplates);
   const [customImageBlob, setCustomImageBlob] = useState<string | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
 
   useEffect(() => {
     const newTemplates = customCharacter ? [...characterTemplates, customCharacter] : characterTemplates;
@@ -337,6 +339,7 @@ export function CharacterBuilder() {
   }
 
   const onCreate = () => {
+    setIsCreating(true);
     const createRequest = {
       templateId: templates[characterIndex].templateId,
       name: name,
@@ -353,6 +356,7 @@ export function CharacterBuilder() {
       body: JSON.stringify(createRequest),
     })
       .then((res) => {
+        setIsCreating(false);
         if (!res.ok) {
           throw new Error(res.statusText);
         }
@@ -399,7 +403,7 @@ export function CharacterBuilder() {
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Customize greeting</div>
       <Input
         className="w-11/12 mx-auto font-[Inter-Regular] border border-[#1E293B] rounded-lg"
-        placeholder='For example: "What up, dog? Merry Christmas!"'
+        placeholder='Example: "What up, dog? Merry Christmas!"'
         value={greeting.replace('{name}', name)}
         onInput={(e) => {
           setUserSetGreeting(true);
@@ -449,8 +453,8 @@ export function CharacterBuilder() {
 
       <div className="font-[Inter-Regular] text-center text-red-500 italic">{error}</div>
       <div className="m-4">
-        <EpicButton disabled={error !== '' || isGeneratingAvatar} type="primary" className="w-full" onClick={onCreate}>
-          Create character
+        <EpicButton disabled={error !== '' || isCreating} type="primary" className="w-full" onClick={onCreate} isLoading={isCreating}>
+          Create Character
         </EpicButton>
       </div>
     </div>

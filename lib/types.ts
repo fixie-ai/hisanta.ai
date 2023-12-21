@@ -30,6 +30,7 @@ export interface EpicButtonProps {
   className?: string;
   onClick?: () => void;
   disabled?: boolean;
+  isLoading: boolean;
 }
 
 /** Template for new characters. */
