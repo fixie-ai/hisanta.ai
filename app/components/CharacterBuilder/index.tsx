@@ -9,7 +9,7 @@ import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
-import { ChevronLeftIcon, ChevronRightIcon, PlayIcon, SpeakerWaveIcon } from '@heroicons/react/24/outline';
+import { ChevronLeftIcon, ChevronRightIcon, PlayIcon } from '@heroicons/react/24/outline';
 import { datadogRum } from '@datadog/browser-rum';
 import { useFlags } from 'launchdarkly-react-client-sdk';
 import { Skeleton } from '../ui/skeleton';
@@ -142,6 +142,7 @@ function VoiceChooserItem({ voice, index }: { voice: CharacterVoiceType; index: 
   }, [audio]);
 
   const playSample = (voice: CharacterVoiceType) => () => {
+    if (isPlaying) return;
     const audio = new Audio(`https://wsapi.fixie.ai/voice/preview/${voice.voiceId}`);
     audio.play();
     setIsPlaying(true);
@@ -149,11 +150,11 @@ function VoiceChooserItem({ voice, index }: { voice: CharacterVoiceType; index: 
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-2/3 bg-[#D1D5DB] rounded-2xl max-w-md mx-auto mt-5">
+    <div className="flex flex-col items-center justify-center h-2/3 bg-[#D1D5DB] rounded-2xl max-w-md mx-1 mt-5">
       <div className="font-bold text-sm font-[Luckiest Guy] mt-2">VOICE #{index + 1}</div>
       <div
         onClick={playSample(voice)}
-        className="w-3/4 h-full p-3 bg-white rounded-full border-2 border-white hover:border-Holiday-Blue overflow-hidden inline-flex justify-center items-center mb-2 cursor-pointer"
+        className="w-11/12 h-full p-3 bg-white rounded-full border-2 border-white hover:border-Holiday-Blue overflow-hidden inline-flex justify-center items-center mb-2 cursor-pointer"
       >
         <div className="relative">
           {isPlaying ? (
@@ -442,7 +443,7 @@ export function CharacterBuilder() {
               ></path>
             </svg>
           )}
-          {isGeneratingAvatar ? 'Generating Avatar' : 'Generate Avatar'}
+          {!isGeneratingAvatar && 'Generate Avatar'}
         </button>
       </div>
 
