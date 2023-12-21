@@ -32,7 +32,7 @@ const EpicButton = ({ children, type, className, disabled, onClick, isLoading }:
   let shadowClass = disabled ? mappings.disabled.shadow : mappings[buttonType].shadow;
 
   return (
-    <button disabled={disabled || isLoading} onClick={onClick} className={`pushable ${className}`}>
+    <button disabled={disabled} onClick={onClick} className={`pushable ${className}`}>
       <span className={`shadow ${shadowClass}`}></span>
       <span className={`edge ${edgeClass}`}></span>
       <span className={`front ${frontClass}`} style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>

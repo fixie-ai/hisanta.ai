@@ -356,7 +356,6 @@ export function CharacterBuilder() {
       body: JSON.stringify(createRequest),
     })
       .then((res) => {
-        setIsCreating(false);
         if (!res.ok) {
           throw new Error(res.statusText);
         }
@@ -365,6 +364,7 @@ export function CharacterBuilder() {
       .then((data) => {
         if (data.characterId) {
           router.push(`/c/${data.characterId}?share=true`);
+          setIsCreating(false);
         } else {
           setError('Error creating character: ' + data);
         }
