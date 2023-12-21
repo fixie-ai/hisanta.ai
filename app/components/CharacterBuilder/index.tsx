@@ -9,7 +9,7 @@ import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { Carousel } from 'react-responsive-carousel';
-import { ChevronLeftIcon, ChevronRightIcon, PlayIcon} from '@heroicons/react/24/outline';
+import { ChevronLeftIcon, ChevronRightIcon, PlayIcon } from '@heroicons/react/24/outline';
 import { datadogRum } from '@datadog/browser-rum';
 import { useFlags } from 'launchdarkly-react-client-sdk';
 import { Skeleton } from '../ui/skeleton';
@@ -58,7 +58,7 @@ function CharacterChooserItem({
         <Skeleton className="w-[100px] h-[100px] rounded-full bg-primary/10" />
       ) : (
         <Image
-          className="drop-shadow-md"
+          className="drop-shadow-md rounded-full"
           src={character.templateId === 'custom' ? character.image : `/images/${character.image}`}
           alt={`${character.templateId} image`}
           width={300}
@@ -130,20 +130,40 @@ function CharacterChooser({
   );
 }
 
-function VoiceChooserItem({ voice, index }: { voice: CharacterVoiceType, index: number }) {
+function VoiceChooserItem({ voice, index }: { voice: CharacterVoiceType; index: number }) {
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    if (audio) {
+      audio.addEventListener('ended', () => {
+        setIsPlaying(false);
+      });
+    }
+  }, [audio]);
+
+  const playSample = (voice: CharacterVoiceType) => () => {
+    const audio = new Audio(`https://wsapi.fixie.ai/voice/preview/${voice.voiceId}`);
+    audio.play();
+    setIsPlaying(true);
+    setAudio(audio);
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center h-2/3 bg-gray-200 rounded-2xl shadow-md max-w-md mx-auto mt-5 ">
-      <div className="font-bold text-sm font-[Luckiest Guy] mt-2">VOICE #{index+1}</div>
-      <div className="text-center text-xs mb-1 font-[Inter-SemiBold]">{voice.descriptor}</div>
-      <div className="w-3/4 h-full p-3 bg-white rounded-lg overflow-hidden inline-flex justify-center items-center mb-2">
+    <div className="flex flex-col items-center justify-center h-2/3 bg-[#D1D5DB] rounded-2xl max-w-md mx-auto mt-5">
+      <div className="font-bold text-sm font-[Luckiest Guy] mt-2">VOICE #{index + 1}</div>
+      <div
+        onClick={playSample(voice)}
+        className="w-3/4 h-full p-3 bg-white rounded-full border-2 border-white hover:border-Holiday-Blue overflow-hidden inline-flex justify-center items-center mb-2 cursor-pointer"
+      >
         <div className="w-5 h-5 relative">
-          <PlayIcon style={{ fill: "#2F4665" }}/>
+          <PlayIcon style={{ fill: '#2F4665' }} />
         </div>
-        <div className="text-center text-[#2F4665] text-xs font-[Inter-Bold] break-words">Play sample</div>
-      </div>    
+        <div className="text-center text-[#2F4665] text-xs font-[Inter-Bold] break-words">
+          {isPlaying ? 'Playing' : 'Play sample'}
+        </div>
+      </div>
     </div>
-
-
   );
 }
 
@@ -179,7 +199,7 @@ function VoiceChooser({ onChoose, disabled }: { onChoose: (index: number) => voi
           showArrows={false}
         >
           {characterVoices.map((voice, index) => (
-            <VoiceChooserItem key={index} voice={voice} index={index}/>
+            <VoiceChooserItem key={index} voice={voice} index={index} />
           ))}
         </Carousel>
       </div>
@@ -280,7 +300,7 @@ export function CharacterBuilder() {
           names: ['name'],
           bios: ['description'],
           greetings: ['greeting'],
-          image: imageURL, 
+          image: imageURL,
           voiceId: '',
           ringtone: '',
         });
@@ -304,7 +324,6 @@ export function CharacterBuilder() {
   }
 
   const onCreate = () => {
-
     const createRequest = {
       templateId: templates[characterIndex].templateId,
       name: name,
@@ -344,7 +363,7 @@ export function CharacterBuilder() {
   };
 
   return (
-    <div className="bg-White-75 rounded-jumbo border-black border flex flex-col mx-auto md:mt-4 gap-2 w-[340px] h-[870px] justify-start">
+    <div className="bg-White-75 rounded-jumbo border-black border flex flex-col mx-auto md:mt-4 gap-2 w-[340px] justify-start">
       <div className="mt-4 mx-auto text-base text-Holiday-Red">Choose an avatar</div>
       <CharacterChooser
         onChoose={onChooseCharacter}
@@ -383,7 +402,6 @@ export function CharacterBuilder() {
 
       <div className="bg-gray-200 rounded-xl p-1 flex-col justify-center items-center ml-4 mr-4">
         <Textarea
-          value={description}
           maxLength={4000}
           onInput={(e) => {
             setUserSetDescription(true);
@@ -393,14 +411,29 @@ export function CharacterBuilder() {
           placeholder='For example: "You are a friendly, outgoing person who loves to spread holiday cheer. You are a great listener and love to hear about holiday traditions."'
         />
         <button
-          className="hover:bg-blue-200 tracking-normal leading-tight w-2/3 h-1/6 px-3 mb-3 mt-1.5 mx-auto bg-white font-[Inter-Bold] text-xs font-thin rounded-xl text-center text-gray-800 overflow-hidden flex items-center justify-center gap-1"
+          className="tracking-normal leading-tight w-2/3 h-1/6 px-3 py-2 mb-1 mt-1.5 mx-auto border-2 border-white bg-white font-[Inter-Bold] text-xs font-thin rounded-full text-center text-gray-800 overflow-hidden flex items-center justify-center gap-1 hover:border-Holiday-Blue"
           onClick={onRegenerateAvatar}
           disabled={isGeneratingAvatar}
         >
-          Regenerate Avatar
+          {isGeneratingAvatar && (
+            <svg
+              className="animate-spin -ml-1 mr-3 h-5 w-5 text-Holiday-Blue"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+          )}
+          {isGeneratingAvatar ? 'Generating Avatar' : 'Generate Avatar'}
         </button>
       </div>
-      
+
       <div className="font-[Inter-Regular] text-center text-red-500 italic">{error}</div>
       <div className="m-4">
         <EpicButton disabled={error !== '' || isGeneratingAvatar} type="primary" className="w-full" onClick={onCreate}>
