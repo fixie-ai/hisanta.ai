@@ -62,7 +62,7 @@ export default function CharacterPicker() {
               alt="Question mark"
               width={125}
               height={125}
-              className="drop-shadow-avatar"
+              className="drop-shadow-avatar rounded-full"
             />
           ) : (
             <Image
