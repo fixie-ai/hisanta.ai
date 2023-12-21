@@ -43,21 +43,25 @@ const EgressTemplate = () => {
 
   useEffect(() => {
     const loadCharacterData = async () => {
-      if (agentId) {
-        const localCharacter = getCharacterByAgentIdLocal(agentId);
-        if (localCharacter) {
-          setImage(localCharacter.image);
-        } else {
-          const character: AgentToCharacterData = await fetchCharacterIdFromAgentId(agentId);
-          if (character.templateId === 'custom') {
-            setImage(character.generatedImageURL);
+      try {
+        if (agentId) {
+          const localCharacter = getCharacterByAgentIdLocal(agentId);
+          if (localCharacter) {
+            setImage(localCharacter.image);
           } else {
-            const fetchedCharacter = getTemplate(character.templateId);
-            if (fetchedCharacter) {
-              setImage('/images/' + fetchedCharacter.image);
+            const character: AgentToCharacterData = await fetchCharacterIdFromAgentId(agentId);
+            if (character.templateId === 'custom') {
+              setImage(character.generatedImageURL);
+            } else {
+              const fetchedCharacter = getTemplate(character.templateId);
+              if (fetchedCharacter) {
+                setImage('/images/' + fetchedCharacter.image);
+              }
             }
           }
         }
+      } catch (error) {
+        setImage('/images/' + default_image);
       }
       setIsLoadingCharacter(false);
     };

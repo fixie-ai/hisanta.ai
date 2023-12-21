@@ -20,14 +20,16 @@ export async function saveCharacter(character: CharacterType): Promise<void> {
 
 /** Load the Character Data mapped to the given Agent ID from KV. */
 export async function loadCharacterByAgentId(agentId: string): Promise<AgentToCharacterData> {
-  const characterDataJson = await kv.json.get(`agent:${agentId}`);
-  if (!characterDataJson) {
+  console.log('loadCharacterByAgentId', agentId)
+  const characterData = await kv.json.get(`agent:${agentId}`);
+  console.log('loadCharacterjson', characterData)
+  if (!characterData) {
     throw new Error(`Character data not found for Agent ${agentId}`);
   }
 
   try {
-    const characterData = JSON.parse(characterDataJson);
-    return characterData;
+    console.log('here', characterData)
+    return characterData as AgentToCharacterData;
   } catch (error: any) {
     // Handle JSON parsing errors
     throw new Error(`Error parsing character data for Agent ${agentId}: ${error.message}`);
@@ -57,6 +59,6 @@ export async function saveAgentCharacterMapping(
   }
 
   // Save this object in your key-value store with the agent's ID as the key
-  await kv.set(`agent:${agentId}`, characterData);
+  await kv.json.set(`agent:${agentId}`, '$', characterData);
   return characterData;
 }
