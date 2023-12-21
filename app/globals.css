@@ -42,7 +42,7 @@ body::before {
   position: absolute;
   top: 0;
   right: 0;
-  bottom: 0;
+  bottom: -300px;
   left: 0;
   backdrop-filter: blur(6px);
   background-image: linear-gradient(to bottom, rgba(53, 128, 232, 0.759), rgba(255, 255, 255, 0)),
