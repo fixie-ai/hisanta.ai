@@ -8,6 +8,7 @@ export type CharacterType = {
   agentId: string;
   voiceId: string;
   bad?: boolean;
+  generatedImage: boolean;
 };
 export interface ActiveCallProps {
   currentCharacter: CharacterType;
@@ -29,6 +30,7 @@ export interface EpicButtonProps {
   className?: string;
   onClick?: () => void;
   disabled?: boolean;
+  isLoading?: boolean;
 }
 
 /** Template for new characters. */
@@ -56,4 +58,25 @@ export type CreateCharacterRequest = {
   bio: string;
   // The character's greeting.
   greeting: string;
+
+  voiceId: string;
+
+  ringtone: string;
+
+  customImage: string | null;
+};
+
+export type GenerateCharacterImageRequest = {
+  characterDescription: string;
+};
+
+export type AgentToCharacterData = {
+  templateId: string;
+  generatedImageURL: string;
+};
+
+export type CharacterVoiceType = {
+  voiceId: string;
+  descriptor: string;
+  character: string;
 };

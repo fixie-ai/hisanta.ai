@@ -52,7 +52,7 @@ const StartNewCall = ({
       <div className="mx-auto mt-4">
         <Image
           className="drop-shadow-md"
-          src={`/images/${character.image}`}
+          src={character.generatedImage ? character.image : `/images/${character.image}`}
           alt={`${character.name} image`}
           width={200}
           height={2000}

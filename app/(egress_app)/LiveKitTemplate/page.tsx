@@ -1,33 +1,17 @@
 'use client';
 import React, { useEffect, useState, ReactElement } from 'react';
 import Image from 'next/image';
-import { CharacterType, CharacterTemplate } from '@/lib/types';
+import { CharacterType, CharacterTemplate, AgentToCharacterData } from '@/lib/types';
 import config from '@/lib/config';
 import { getTemplate } from '@/lib/config';
 import EgressHelper from '@livekit/egress-sdk';
-import {
-  Room,
-  RoomEvent,
-  RemoteTrack,
-  RemoteTrackPublication,
-  RemoteParticipant,
-  Track,
-} from 'livekit-client';
+import { Room, RoomEvent, RemoteTrack, RemoteTrackPublication, RemoteParticipant, Track } from 'livekit-client';
 import { useSearchParams } from 'next/navigation';
 
-const default_character: CharacterType = {
-  characterId: 'santa',
-  name: 'Santa',
-  image: 'santa-hdpi.png',
-  bio: "It's Santa.",
-  location: 'The North Pole',
-  ringtone: '/sounds/jinglebells.mp3',
-  agentId: '5d37e2c5-1e96-4c48-b3f1-98ac08d40b9a',
-  voiceId: 'Kp00queBTLslXxHCu1jq',
-};
+const default_image: string = 'santa-hdpi.png';
 
 const EgressTemplate = () => {
-  const [character, setCharacter] = useState<CharacterType | CharacterTemplate>(default_character);
+  const [image, setImage] = useState<string>(default_image);
   const [isLoadingCharacter, setIsLoadingCharacter] = useState(true);
   const [isConnectingRoom, setIsConnectingRoom] = useState(true);
   const searchParams = useSearchParams();
@@ -44,7 +28,7 @@ const EgressTemplate = () => {
       return await res.json();
     } catch (error) {
       console.error(error);
-      return null;  // Return null in case of an error
+      return null; // Return null in case of an error
     }
   };
 
@@ -59,19 +43,25 @@ const EgressTemplate = () => {
 
   useEffect(() => {
     const loadCharacterData = async () => {
-      if (agentId) {
-        const localCharacter = getCharacterByAgentIdLocal(agentId);
-        if (localCharacter) {
-          setCharacter(localCharacter);
-        } else {
-          const characterId = await fetchCharacterIdFromAgentId(agentId);
-          if (characterId) {
-            const fetchedCharacter = getTemplate(characterId);
-            if (fetchedCharacter) {
-              setCharacter(fetchedCharacter);
+      try {
+        if (agentId) {
+          const localCharacter = getCharacterByAgentIdLocal(agentId);
+          if (localCharacter) {
+            setImage(localCharacter.image);
+          } else {
+            const character: AgentToCharacterData = await fetchCharacterIdFromAgentId(agentId);
+            if (character.templateId === 'custom') {
+              setImage(character.generatedImageURL);
+            } else {
+              const fetchedCharacter = getTemplate(character.templateId);
+              if (fetchedCharacter) {
+                setImage('/images/' + fetchedCharacter.image);
+              }
             }
           }
         }
+      } catch (error) {
+        setImage('/images/' + default_image);
       }
       setIsLoadingCharacter(false);
     };
@@ -99,7 +89,7 @@ const EgressTemplate = () => {
       }
     };
     connectRoom();
-  }, []); 
+  }, []);
 
   useEffect(() => {
     if (!isLoadingCharacter && !isConnectingRoom) {
@@ -113,12 +103,14 @@ const EgressTemplate = () => {
 
   const backgroundImageUrl = `/images/recording-background.png`;
   return (
-    <div className="bg-gray-300 flex justify-center items-center w-screen h-screen"
-         style={{ backgroundImage: `url(${backgroundImageUrl})`, backgroundSize: 'cover' }}>
+    <div
+      className="bg-gray-300 flex justify-center items-center w-screen h-screen"
+      style={{ backgroundImage: `url(${backgroundImageUrl})`, backgroundSize: 'cover' }}
+    >
       <div className="flex justify-center items-center w-2/3 h-2/3 mt-[-10%]">
         <Image
           className="object-contain max-w-full max-h-full"
-          src={`/images/${character.image}`}
+          src={image}
           alt={`image`}
           width={400}
           height={400}

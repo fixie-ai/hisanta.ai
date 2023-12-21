@@ -1,4 +1,4 @@
-import { CharacterType, CharacterTemplate } from './types';
+import { CharacterType, CharacterTemplate, CharacterVoiceType } from './types';
 
 /** Defines the top-level application config. */
 const config = {
@@ -18,6 +18,7 @@ const config = {
       ringtone: '/sounds/jinglebells.mp3',
       agentId: '5d37e2c5-1e96-4c48-b3f1-98ac08d40b9a',
       voiceId: 'Kp00queBTLslXxHCu1jq',
+      generatedImage: false,
     },
     {
       characterId: 'mrs-claus',
@@ -28,6 +29,7 @@ const config = {
       ringtone: '/sounds/deckthehalls.mp3',
       agentId: '339f7e31-4d7e-461b-8d75-6afad87224de',
       voiceId: 'ePzPl7sij9imLmib0Hvd',
+      generatedImage: false,
     },
     {
       characterId: 'rudolf',
@@ -38,6 +40,7 @@ const config = {
       agentId: '7fbf92b7-7348-4025-8eaf-0c3207fe089f',
       voiceId: 'e9qncEcV5lKJHWC16xAR',
       ringtone: '/sounds/grandma.mp3',
+      generatedImage: false,
     },
     {
       characterId: 'elfie',
@@ -48,6 +51,7 @@ const config = {
       ringtone: '/sounds/twelvedays.mp3',
       agentId: 'ab882fa5-286f-41fc-85d9-2b3f5ebbc023',
       voiceId: '3zdD5uMcIVtKzAQocDHU',
+      generatedImage: false,
     },
     {
       characterId: 'badsanta',
@@ -59,6 +63,7 @@ const config = {
       agentId: 'e6ef8ebe-85ba-4b6e-b1a6-1a79849325f7',
       voiceId: 'tb9Rgoz1ryYKpuUG7mlL',
       bad: true,
+      generatedImage: false,
     },
     {
       characterId: 'grouch',
@@ -70,6 +75,7 @@ const config = {
       agentId: '1e6b4faa-ba1d-444f-b23e-cf64ef680e32',
       voiceId: '9hxup5dlD3lL0Wrr9zXK',
       bad: true,
+      generatedImage: false,
     },
     {
       characterId: 'karen',
@@ -81,6 +87,7 @@ const config = {
       agentId: '7e11f5fa-6779-416c-b688-3478ccb5e142',
       voiceId: 'joL5nBmTAhATqjDe5Upd',
       bad: true,
+      generatedImage: false,
     },
     {
       characterId: 'badelfie',
@@ -92,6 +99,7 @@ const config = {
       agentId: '0829fcb7-07ac-42a5-9b84-05294402ff63',
       voiceId: '3zdD5uMcIVtKzAQocDHU',
       bad: true,
+      generatedImage: false,
     },
   ],
 };
@@ -218,3 +226,61 @@ export const characterTemplates: CharacterTemplate[] = [
 export function getTemplate(templateId: string): CharacterTemplate | null {
   return characterTemplates.find((obj) => obj.templateId === templateId) ?? null;
 }
+
+export const DALLE_BASE_PROMPT = `Your job is to create festive avatars of North Pole characters, automatically rendering them in a cheerful, retro pixelated art style reminiscent of Super Nintendo 16-bit graphics. The GPT, with its concise and festive personality, focuses on the traditional holiday theme. It uses its creative judgment to fill in details, ensuring all avatars are in a pixelated style without requiring users to specify this. The goal is to provide users with delightful avatars that capture the essence of each character in a nostalgic, festive spirit.
+    The avatar should have a plain background, and the image should feature the character's head only, never their shoulders or neck, or body. Feel free to include things like Santa hats, Poinsetta flowers, or other christmas and holiday accents. Also ensure the avatars use a 16-bit level of detail.
+    Never respond with a question, always respond with an image. Now, generate an image with the following description: \n`;
+export const DALLE_MODEL = 'dall-e-3';
+
+export const characterVoices: CharacterVoiceType[] = [
+  {
+    voiceId: 'LMY7ePnSpVvVRoLcu1gX',
+    descriptor: 'child',
+    character: 'penguino the penguin',
+  },
+  {
+    voiceId: 'cDGeRSRqP9z6rnmaCvpU',
+    descriptor: 'male',
+    character: 'borealis the polar bear',
+  },
+  {
+    voiceId: '9jqPwHo7pXLmRLdvoU49',
+    descriptor: 'female',
+    character: 'foxie the snow fox elf',
+  },
+  {
+    voiceId: 'diKjq2Yspwgg6q64ynH4',
+    descriptor: 'female',
+    character: 'owly the snow owl',
+  },
+  {
+    voiceId: 'eKKpObCl4AmBDDbcjKQ0',
+    descriptor: 'male',
+    character: 'frostwick the snowman',
+  },
+  {
+    voiceId: 'K0x67p8OyNiJj8zFgtEx',
+    descriptor: 'old male',
+    character: 'captain-walrus',
+  },
+  {
+    voiceId: 'FfXGdYVQSasF74w0J85E',
+    descriptor: 'young male',
+    character: 'elfo the elf',
+  },
+  {
+    voiceId: 'cdElCEnJKCnFlocnOIjJ',
+    descriptor: 'young female',
+    character: 'elfsa the elf',
+  },
+  {
+    voiceId: 'crgPOqIHzeGhJhIs1cdl',
+    descriptor: 'american male',
+    character: 'yonder the yeti',
+  },
+  {
+    voiceId: 'Kw6bwhvTaOuAcf6oyXJL',
+    descriptor: 'indian male',
+    character: 'kringle the krampus',
+  },
+];

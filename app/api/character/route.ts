@@ -136,7 +136,22 @@ export async function POST(req: Request): Promise<Response> {
     if (typeof body !== 'object') {
       throw new Error('Invalid request body: expecting object');
     }
-    const template = getTemplate(body.templateId);
+
+    let template = null;
+    if (body.templateId === 'custom') {
+      template = {
+        templateId: 'custom',
+        image: '',
+        voiceId: body.voiceId,
+        names: [],
+        bios: [],
+        greetings: [],
+        ringtone: body.ringtone,
+      };
+    } else {
+      template = getTemplate(body.templateId);
+    }
+
     if (!template) {
       throw new Error(`Invalid templateId: ${body.templateId}`);
     }
@@ -165,7 +180,8 @@ export async function POST(req: Request): Promise<Response> {
     });
     console.log(`Created agent ${agentId}`);
 
-    const character: CharacterType = {
+    let character: CharacterType;
+    character = {
       characterId,
       agentId,
       name: body.name,
@@ -175,11 +191,29 @@ export async function POST(req: Request): Promise<Response> {
       ringtone: template.ringtone,
       voiceId: template.voiceId,
       bad: false,
+      generatedImage: false,
     };
+    if (body.templateId === 'custom') {
+      character.generatedImage = true;
+      character.image = '';
+      character.name = body.name;
+      character.bio = body.bio;
+      character.ringtone = body.ringtone;
+      character.voiceId = body.voiceId;
+      character.generatedImage = true;
+    }
 
+    if (character.generatedImage) {
+      if (!body.customImage) {
+        throw new Error('Missing customImage');
+      }
+      const characterData = await saveAgentCharacterMapping(character.agentId, 'custom', body.customImage);
+      character.image = characterData.generatedImageURL;
+    } else {
+      await saveAgentCharacterMapping(character.agentId, template.templateId, null);
+    }
     await saveCharacter(character);
-    await saveAgentCharacterMapping(character.agentId, template.templateId);
-    console.log(`Creating character ${characterId}: ${JSON.stringify(character)}`);
+
     return new Response(JSON.stringify(character), {
       headers: { 'content-type': 'application/json' },
     });
