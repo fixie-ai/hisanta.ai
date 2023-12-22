@@ -16,7 +16,7 @@ export const revalidate = 60;
 /** Build character page. */
 export default async function Page({ params }: { params: { character: string } }) {
   return (
-    <div className="mx-auto flex flex-col w-full mt-4">
+    <div className="mx-auto flex flex-col w-full mt-4 build-character-background">
       <div className="text-center mx-auto text-2xl">Build your own holiday character</div>
       <CharacterBuilder />
     </div>
