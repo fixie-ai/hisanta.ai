@@ -129,31 +129,21 @@ function CharacterChooser({
   );
 }
 
-function VoiceChooserItem({ voice, index }: { voice: CharacterVoiceType; index: number }) {
-  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  useEffect(() => {
-    if (audio) {
-      audio.addEventListener('ended', () => {
-        setIsPlaying(false);
-      });
-    }
-  }, [audio]);
-
-  const playSample = (voice: CharacterVoiceType) => () => {
-    if (isPlaying) return;
-    const audio = new Audio(`https://wsapi.fixie.ai/voice/preview/${voice.voiceId}`);
-    audio.play();
-    setIsPlaying(true);
-    setAudio(audio);
-  };
+function VoiceChooserItem({
+  isPlaying,
+  playSample,
+  index,
+}: {
+  isPlaying: boolean;
+  playSample: () => void;
+  index: number;
+}) {
 
   return (
     <div className="flex flex-col items-center justify-center h-2/3 bg-[#D1D5DB] rounded-2xl max-w-md mx-1 mt-5">
       <div className="font-bold text-sm font-[Luckiest Guy] mt-2">VOICE #{index + 1}</div>
       <div
-        onClick={playSample(voice)}
+        onClick={playSample}
         className="w-11/12 h-full p-3 bg-white rounded-full border-2 border-white hover:border-Holiday-Blue overflow-hidden inline-flex justify-center items-center mb-2 cursor-pointer"
       >
         <div className="relative">
@@ -180,7 +170,17 @@ function VoiceChooserItem({ voice, index }: { voice: CharacterVoiceType; index: 
   );
 }
 
-function VoiceChooser({ onChoose, disabled }: { onChoose: (index: number) => void; disabled: boolean }) {
+function VoiceChooser({
+  onChoose,
+  disabled,
+  currentAudio,
+  playSample,
+}: {
+  onChoose: (index: number) => void;
+  disabled: boolean;
+  currentAudio: { audio: HTMLAudioElement | null; index: number | null };
+  playSample: (voice: CharacterVoiceType, index: number) => void;
+}) {
   const [voiceIndex, setVoiceIndex] = useState(0);
 
   const handleLeftClick = () => {
@@ -212,7 +212,12 @@ function VoiceChooser({ onChoose, disabled }: { onChoose: (index: number) => voi
           showArrows={false}
         >
           {characterVoices.map((voice, index) => (
-            <VoiceChooserItem key={index} voice={voice} index={index} />
+            <VoiceChooserItem
+              key={index}
+              isPlaying={index == currentAudio.index}
+              playSample={()=>playSample(voice, index)}
+              index={index}
+            />
           ))}
         </Carousel>
       </div>
@@ -239,6 +244,27 @@ export function CharacterBuilder() {
   const [templates, setTemplates] = useState(characterTemplates);
   const [customImageBlob, setCustomImageBlob] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [currentAudio, setCurrentAudio] = useState<{ audio: HTMLAudioElement | null; index: number | null }>({
+    audio: null,
+    index: null,
+  });
+
+  const playSample = (voice: CharacterVoiceType, index: number) => {
+    if (currentAudio.audio) {
+      currentAudio.audio.pause();
+      currentAudio.audio.currentTime = 0;
+    }
+
+    // Play the new audio
+    const newAudio = new Audio(`https://wsapi.fixie.ai/voice/preview/${voice.voiceId}`);
+    newAudio.play();
+    setCurrentAudio({ audio: newAudio, index });
+
+    // Handle audio end
+    newAudio.addEventListener('ended', () => {
+      setCurrentAudio({ audio: null, index: null });
+    });
+  };
 
   useEffect(() => {
     const newTemplates = customCharacter ? [...characterTemplates, customCharacter] : characterTemplates;
@@ -387,7 +413,12 @@ export function CharacterBuilder() {
         disabled={isGeneratingAvatar}
         isGeneratingAvatar={isGeneratingAvatar}
       />
-      <VoiceChooser onChoose={onChooseVoice} disabled={isGeneratingAvatar}></VoiceChooser>
+      <VoiceChooser
+        onChoose={onChooseVoice}
+        disabled={isGeneratingAvatar}
+        currentAudio={currentAudio}
+        playSample={playSample}
+      ></VoiceChooser>
       <div className="mx-auto text-base text-Holiday-Red">Name your character</div>
       <Input
         className="w-11/12 mx-auto font-[Inter-Regular] border border-[#1E293B] rounded-lg"
@@ -452,7 +483,13 @@ export function CharacterBuilder() {
 
       <div className="font-[Inter-Regular] text-center text-red-500 italic">{error}</div>
       <div className="m-4">
-        <EpicButton disabled={error !== '' || isCreating} type="primary" className="w-full" onClick={onCreate} isLoading={isCreating}>
+        <EpicButton
+          disabled={error !== '' || isCreating}
+          type="primary"
+          className="w-full"
+          onClick={onCreate}
+          isLoading={isCreating}
+        >
           Create Character
         </EpicButton>
       </div>
