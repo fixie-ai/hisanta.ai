@@ -13,7 +13,6 @@ import { ChevronLeftIcon, ChevronRightIcon, PlayIcon } from '@heroicons/react/24
 import { datadogRum } from '@datadog/browser-rum';
 import { useFlags } from 'launchdarkly-react-client-sdk';
 import { Skeleton } from '../ui/skeleton';
-import { set } from 'lodash';
 
 function LeftArrow({ onClick, disabled }: { onClick: () => void; disabled: boolean }) {
   const handleClick = () => {
