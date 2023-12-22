@@ -9,7 +9,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       domain="llamalabs.us.auth0.com"
       clientId={clientId}
       authorizationParams={{
-        redirect_uri: "http://localhost:3000",
+        //redirect_uri: "http://localhost:3000",
+        redirect_uri: window.location.origin,
       }}
     >
       {children}
