@@ -1,5 +1,3 @@
-import { kv } from '@vercel/kv';
-import axios from 'axios';
 import { GenerateCharacterImageRequest } from '@/lib/types';
 import { DALLE_BASE_PROMPT, DALLE_MODEL } from '@/lib/config';
 

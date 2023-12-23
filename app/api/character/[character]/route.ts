@@ -1,5 +1,3 @@
-export const runtime = 'edge';
-
 import { loadCharacter } from '@/lib/storage';
 
 type RouteSegment = { params: { character: string } };

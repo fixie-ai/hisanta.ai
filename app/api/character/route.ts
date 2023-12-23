@@ -1,11 +1,11 @@
-export const runtime = 'edge';
-
 import { CharacterType, CreateCharacterRequest } from '@/lib/types';
 import { getTemplate } from '@/lib/config';
 import { FixieClient } from 'fixie';
 import ShortUniqueId from 'short-unique-id';
 import { gql } from '@apollo/client/core/index.js';
-import { saveCharacter, saveAgentCharacterMapping } from '@/lib/storage';
+import { saveCharacter, saveAgentCharacterMapping, listCharacterIds } from '@/lib/storage';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/options';
 
 // The default model used by new agents.
 const DEFAULT_MODEL = 'gpt-4-1106-preview';
@@ -127,6 +127,8 @@ async function createAgent({
 
 /** Create a new Character. */
 export async function POST(req: Request): Promise<Response> {
+  const session = await getServerSession(authOptions);
+
   const uid = new ShortUniqueId({ length: 10 });
   const characterId = uid.rnd();
   console.log(`Generating characterId: ${characterId}`);
@@ -212,7 +214,7 @@ export async function POST(req: Request): Promise<Response> {
     } else {
       await saveAgentCharacterMapping(character.agentId, template.templateId, null);
     }
-    await saveCharacter(character);
+    await saveCharacter(character, session?.user?.email || undefined);
 
     return new Response(JSON.stringify(character), {
       headers: { 'content-type': 'application/json' },
@@ -221,4 +223,16 @@ export async function POST(req: Request): Promise<Response> {
     console.log(e);
     return new Response(JSON.stringify({ error: e.message }), { status: 400 });
   }
+}
+
+/** List character IDs owned by the current user. */
+export async function GET(req: Request): Promise<Response> {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email) {
+    return new Response(JSON.stringify({ error: 'Not logged in' }), { status: 403 });
+  }
+  const characterIds = await listCharacterIds(session.user.email);
+  return new Response(JSON.stringify(characterIds), {
+    headers: { 'content-type': 'application/json' },
+  });
 }

@@ -3,7 +3,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['swwg76pclnunii9p.public.blob.vercel-storage.com'], // Add your image domains here
+    remotePatterns: [
+      {
+        protocol: 'https',
+        //hostname: 'swwg76pclnunii9p.public.blob.vercel-storage.com',
+        hostname: '*.public.blob.vercel-storage.com',
+      },
+    ],
   },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }) => {
     config.module.rules.push({
