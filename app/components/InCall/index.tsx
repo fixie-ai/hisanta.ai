@@ -31,7 +31,7 @@ const InCall = ({ currentCharacter }: ActiveCallProps) => {
             alt={`${currentCharacter.name} Image.`}
             width={175}
             height={175}
-            className="aspect-[0.85] object-contain object-center w-[170px] overflow-hidden max-w-full mt-7"
+            className="aspect-[0.85] object-contain object-center w-[170px] overflow-hidden max-w-full mt-7 rounded-full"
           />
           <NameInput inputValue={name} onChange={handleNameChange} />
           <StartCallButton currentCharacter={currentCharacter} />

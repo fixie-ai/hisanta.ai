@@ -188,7 +188,7 @@ function Visualizer({
         />
         <div className="absolute top-[60px] left-0 w-full h-full z-30">
           <Image
-            className="mx-auto my-auto drop-shadow-md"
+            className="mx-auto my-auto drop-shadow-md rounded-full"
             src={character.generatedImage ? character.image : `/images/${character.image}`}
             alt={`${character.name} image`}
             width={200}
