@@ -47,7 +47,7 @@ const EgressTemplate = () => {
         if (agentId) {
           const localCharacter = getCharacterByAgentIdLocal(agentId);
           if (localCharacter) {
-            setImage(localCharacter.image);
+            setImage('/images/'+localCharacter.image);
           } else {
             const character: AgentToCharacterData = await fetchCharacterIdFromAgentId(agentId);
             if (character.templateId === 'custom') {
