@@ -138,7 +138,6 @@ function VoiceChooserItem({
   playSample: () => void;
   index: number;
 }) {
-
   return (
     <div className="flex flex-col items-center justify-center h-2/3 bg-[#D1D5DB] rounded-2xl max-w-md mx-1 mt-5">
       <div className="font-bold text-sm font-[Luckiest Guy] mt-2">VOICE #{index + 1}</div>
@@ -215,7 +214,7 @@ function VoiceChooser({
             <VoiceChooserItem
               key={index}
               isPlaying={index == currentAudio.index}
-              playSample={()=>playSample(voice, index)}
+              playSample={() => playSample(voice, index)}
               index={index}
             />
           ))}

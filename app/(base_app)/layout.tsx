@@ -8,9 +8,8 @@ import { LaunchDarklyProvider } from '../components/LaunchDarkly';
 import { Datadog } from '../components/Datadog';
 import { Toaster } from '../components/ui/toaster';
 import Script from 'next/script';
-import { getServerSession } from "next-auth";
-import SessionProvider from "../components/SessionProvider";
-
+import { getServerSession } from 'next-auth';
+import SessionProvider from '../components/SessionProvider';
 
 export const metadata: Metadata = {
   title: config.siteName,
@@ -36,13 +35,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </Script>
       </head>
       <body>
-      <SessionProvider session={session}>
-        <LaunchDarklyProvider>
-          <Header />
-          <main>{children}</main>
-          <Footer />
-          <Toaster />
-        </LaunchDarklyProvider>
+        <SessionProvider session={session}>
+          <LaunchDarklyProvider>
+            <Header />
+            <main>{children}</main>
+            <Footer />
+            <Toaster />
+          </LaunchDarklyProvider>
         </SessionProvider>
         <Datadog />
         <Analytics />

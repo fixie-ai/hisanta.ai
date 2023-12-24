@@ -6,7 +6,6 @@ import Badges from '../components/Badges';
 import { CheckTooBusy } from '../components/CheckTooBusy';
 import CallSantaButton from '../components/Button-CallSanta';
 
-
 export default function Home() {
   return (
     <CheckTooBusy>
