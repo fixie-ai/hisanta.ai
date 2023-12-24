@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { Button } from '../ui/button';
 import { CharacterType } from '@/lib/types';
 import { datadogRum } from '@datadog/browser-rum';
+import { PhoneIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { Dialog, DialogTrigger, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../ui/dialog';
 
 export function AuthButton() {
   const { data: session } = useSession();
@@ -34,7 +36,7 @@ export function LoginButton() {
 
   const onClick = () => {
     datadogRum.addAction('login-button-clicked');
-    signIn("auth0");
+    signIn('auth0');
   };
 
   return (
@@ -62,10 +64,67 @@ export function LogoutButton() {
   );
 }
 
-function CharacterCard({ characterId }: { characterId: string }) {
+function DeleteCharacterDialog({
+  character,
+  open,
+  onOpenChange,
+  doRefresh,
+}: {
+  character: CharacterType;
+  open: boolean;
+  onOpenChange: (val: boolean) => void;
+  doRefresh: () => void;
+}) {
+  const onDelete = async () => {
+    datadogRum.addAction('character-deleted', { characterId: character.characterId });
+    const res = await fetch(`/api/character/${character.characterId}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) {
+      console.log(`Got error deleting character ${character.characterId}: ${res.status} ${res.statusText}`);
+    }
+    doRefresh();
+    onOpenChange(false);
+  };
+  const onCancel = () => {
+    datadogRum.addAction('character-delete-canceled', { characterId: character.characterId });
+    onOpenChange(false);
+  };
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="text-Holiday-Green text-4xl text-center">
+            <div className="overflow-hidden text-nowrap overflow-ellipsis">
+              Delete <span className="text-Holiday-Red">{character.name}</span> ?
+            </div>
+          </DialogTitle>
+        </DialogHeader>
+        <DialogDescription>
+          <div className="mx-auto w-full flex flex-col gap-4 mb-4">
+            <div className="text-center flex flex-col w-full bg-slate-100 rounded-3xl font-[Inter-Regular] p-4 mb-4">
+              <div className="text-base">Are you sure you want to delete this character?</div>
+            </div>
+            <div className="flex flex-row gap-4 justify-center">
+              <Button className="bg-Holiday-Red rounded-full" onClick={onDelete}>
+                <div className="text-sm">Delete</div>
+              </Button>
+              <Button className="bg-Holiday-Green rounded-full" onClick={onCancel}>
+                <div className="text-sm">Cancel</div>
+              </Button>
+            </div>
+          </div>
+        </DialogDescription>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function CharacterCard({ characterId, doRefresh }: { characterId: string; doRefresh: () => void }) {
   console.log('characterId', characterId);
 
   const [characterObj, setCharacterObj] = useState<null | CharacterType>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   useEffect(() => {
     const fetchCharacter = async () => {
@@ -89,28 +148,41 @@ function CharacterCard({ characterId }: { characterId: string }) {
   console.log(`CharacterObj generated is: ${characterObj.generatedImage}`);
 
   return (
-    <div className="mx-2 rounded-2xl bg-slate-200 flex flex-row p-2 gap-4 justify-between items-center">
-      <div className="rounded-full">
-        <img
-          src={characterObj.generatedImage ? characterObj.image : `/images/${characterObj.image}`}
-          width={40}
-          height={40}
-          alt={characterObj.name}
-        />
+    <>
+      <div className="mx-2 rounded-2xl bg-slate-200 flex flex-row p-2 gap-4 justify-start items-center">
+        <div className="rounded-full">
+          <img
+            src={characterObj.generatedImage ? characterObj.image : `/images/${characterObj.image}`}
+            width={40}
+            height={40}
+            alt={characterObj.name}
+          />
+        </div>
+        <div className="text-lg line-clamp-1 text-ellipsis">{characterObj.name}</div>
+        <div className="ml-auto flex flex-row gap-1">
+          <Link href={`/c/${characterId}`}>
+            <Button className="bg-Holiday-Green rounded-full">
+              <PhoneIcon className="h-4 w-4" />
+            </Button>
+          </Link>
+          <div>
+            <Button className="bg-Holiday-Red rounded-full" onClick={() => setDeleteDialogOpen(true)}>
+              <TrashIcon className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
       </div>
-      <div className="text-lg">{characterObj.name}</div>
-      <div>
-        <Link href={`/c/${characterId}`}>
-          <Button className="bg-Holiday-Red rounded-full">
-            <div className="text-sm">Call</div>
-          </Button>
-        </Link>
-      </div>
-    </div>
+      <DeleteCharacterDialog
+        character={characterObj}
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        doRefresh={doRefresh}
+      />
+    </>
   );
 }
 
-function SavedCharacters({ characterIds }: { characterIds: string[] }) {
+function SavedCharacters({ characterIds, doRefresh }: { characterIds: string[]; doRefresh: () => void }) {
   const { data: session } = useSession();
   datadogRum.addAction('saved-characters-viewed', { user: session?.user?.email });
 
@@ -120,7 +192,7 @@ function SavedCharacters({ characterIds }: { characterIds: string[] }) {
       <div className="overflow-y-auto">
         <div className="flex flex-col gap-2 w-full">
           {characterIds.map((id, index) => (
-            <CharacterCard key={index} characterId={id} />
+            <CharacterCard key={index} characterId={id} doRefresh={doRefresh} />
           ))}
         </div>
       </div>
@@ -153,6 +225,11 @@ export function Profile() {
   const { data: session } = useSession();
   const [characterIds, setCharacterIds] = useState([]);
   datadogRum.addAction('profile-page-viewed', { user: session?.user?.email });
+  const [refresh, setRefresh] = useState(false);
+
+  const doRefresh = () => {
+    setRefresh((prev) => !prev);
+  };
 
   useEffect(() => {
     const getCharIds = async () => {
@@ -167,11 +244,11 @@ export function Profile() {
       setCharacterIds(data);
     };
     getCharIds();
-  }, []);
+  }, [refresh]);
 
   return (
     <div className="bg-slate-100 rounded-jumbo border border-black flex flex-col mx-auto md:mt-4 gap-4 w-[340px] h-[600px] justify-between">
-      {session ? <SavedCharacters characterIds={characterIds} /> : <InvitationToJoin />}
+      {session ? <SavedCharacters characterIds={characterIds} doRefresh={doRefresh} /> : <InvitationToJoin />}
     </div>
   );
 }

@@ -38,18 +38,18 @@ export async function loadCharacterByAgentId(agentId: string): Promise<AgentToCh
 
 /** Return the list of characterIds owned by the given user. */
 export async function listCharacterIds(owner: string): Promise<string[]> {
-	let characterIds: string[] = [];
-	let cursor = 0;
-	do {
-		const chars = await kv.scan(cursor, { match: `user:${owner}:*` });
-		cursor = chars[0];
-		const keys = chars[1];
-		keys.map((key: string) => {
-			// Strip the "user:owner:" prefix.
-			key = key.substring(5 + owner.length + 1);
-			characterIds.push(key);
-		});
-	} while (cursor !== 0);
+  let characterIds: string[] = [];
+  let cursor = 0;
+  do {
+    const chars = await kv.scan(cursor, { match: `user:${owner}:*` });
+    cursor = chars[0];
+    const keys = chars[1];
+    keys.map((key: string) => {
+      // Strip the "user:owner:" prefix.
+      key = key.substring(5 + owner.length + 1);
+      characterIds.push(key);
+    });
+  } while (cursor !== 0);
 
   return characterIds;
 }

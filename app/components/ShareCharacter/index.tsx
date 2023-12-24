@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { CharacterType } from '@/lib/types';
 import { Dialog, DialogTrigger, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../ui/dialog';
 import EpicButton from '../Buttons';
@@ -15,6 +16,22 @@ export function ShareCharacter({ character }: { character: CharacterType }) {
   const { data: session } = useSession();
   const shareUrl = `hisanta.ai/c/${character.characterId}`;
   const hasNativeShare = 'share' in navigator;
+
+  useEffect(() => {
+    // Save character to user profile, in case it hasn't been saved yet.
+    const saveCharacter = async () => {
+      const res = await fetch(`/api/character/${character.characterId}`, {
+        method: 'POST',
+      });
+      if (!res.ok) {
+        console.log(`Got error saving character ${character.characterId}: ${res.status} ${res.statusText}`);
+      }
+    };
+    if (session && allowSignIn) {
+      datadogRum.addAction('share-char-viewed', { user: session.user?.email });
+      saveCharacter();
+    }
+  }, [character.characterId, session, allowSignIn]);
 
   return (
     <Dialog>

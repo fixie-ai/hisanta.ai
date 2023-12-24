@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import Link from 'next/link';
 import { AuthButton } from '../Profile';
 import { usePathname } from 'next/navigation';
