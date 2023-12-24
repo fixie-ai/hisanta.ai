@@ -50,7 +50,11 @@ const StartNewCall = ({
         </div>
       )}
       <div className="mx-auto mt-4">
-        <Image
+        {/* MDW: I don't understand why use of next-auth seems to prevent us from using <Image> here.
+         * For some reason, <Image> complains that the Vercel blob URL is not configured in next.config.js,
+         * when it is.
+         */}
+        <img
           className="drop-shadow-md"
           src={character.generatedImage ? character.image : `/images/${character.image}`}
           alt={`${character.name} image`}

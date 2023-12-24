@@ -31,8 +31,13 @@ export function LoginButton() {
   if (session) {
     return null;
   }
+
+  const onClick = () => {
+    signIn('auth0', { callbackUrl: 'http://localhost:3000/' });
+  };
+
   return (
-    <Button className="bg-Holiday-Green w-full rounded-full text-lg" onClick={() => signIn()}>
+    <Button className="bg-Holiday-Green w-full rounded-full text-lg" onClick={onClick}>
       Sign in now
     </Button>
   );
@@ -79,7 +84,7 @@ function CharacterCard({ characterId }: { characterId: string }) {
   return (
     <div className="mx-2 rounded-2xl bg-slate-200 flex flex-row p-2 gap-4 justify-between items-center">
       <div className="rounded-full">
-        <Image
+        <img
           src={characterObj.generatedImage ? characterObj.image : `/images/${characterObj.image}`}
           width={40}
           height={40}
@@ -102,12 +107,14 @@ function SavedCharacters({ characterIds }: { characterIds: string[] }) {
   return (
     <>
       <div className="mt-4 mx-auto text-xl text-Holiday-Red text-center">Your Saved Characters</div>
-      <div className="flex flex-col gap-2 w-full">
-        {characterIds.map((id, index) => (
-          <CharacterCard key={index} characterId={id} />
-        ))}
+      <div className="overflow-y-auto">
+        <div className="flex flex-col gap-2 w-full">
+          {characterIds.map((id, index) => (
+            <CharacterCard key={index} characterId={id} />
+          ))}
+        </div>
       </div>
-      <div className="my-auto h-full" />
+      {/* <div className="my-auto h-full" /> */}
       <div className="my-4 mx-auto w-11/12">
         <LogoutButton />
       </div>
