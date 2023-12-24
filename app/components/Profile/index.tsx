@@ -34,7 +34,7 @@ export function LoginButton() {
 
   const onClick = () => {
     datadogRum.addAction('login-button-clicked');
-    signIn('auth0', { callbackUrl: 'http://localhost:3000/' });
+    signIn();
   };
 
   return (

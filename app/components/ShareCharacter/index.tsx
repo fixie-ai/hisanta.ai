@@ -8,8 +8,10 @@ import { datadogRum } from '@datadog/browser-rum';
 import { ShareIcon } from '@heroicons/react/24/outline';
 import { useSession } from 'next-auth/react';
 import { LoginButton } from '../Profile';
+import { useFlags } from 'launchdarkly-react-client-sdk';
 
 export function ShareCharacter({ character }: { character: CharacterType }) {
+  const { allowSignIn } = useFlags();
   const { data: session } = useSession();
   const shareUrl = `hisanta.ai/c/${character.characterId}`;
   const hasNativeShare = 'share' in navigator;
@@ -30,7 +32,7 @@ export function ShareCharacter({ character }: { character: CharacterType }) {
               Share <span className="text-Holiday-Red">{character.name}</span>
             </div>
           </DialogTitle>
-          {session ? (
+          {session || !allowSignIn ? (
             <DialogDescription>
               <div className="mx-auto w-full flex flex-col gap-4 mb-4">
                 <div className="text-center flex flex-col w-full bg-slate-100 rounded-3xl font-[Inter-Regular] p-4 mb-4">
@@ -111,7 +113,9 @@ export function ShareCharacter({ character }: { character: CharacterType }) {
           ) : (
             <DialogDescription>
               <div className="mx-auto w-full flex flex-col gap-4 mb-4">
-                <div className="text-base font-[Inter-Regular]">Please sign up or log in to save and share this character!</div>
+                <div className="text-base font-[Inter-Regular]">
+                  Please sign up or log in to save and share this character!
+                </div>
                 <LoginButton />
               </div>
             </DialogDescription>
