@@ -8,6 +8,9 @@ import { LaunchDarklyProvider } from '../components/LaunchDarkly';
 import { Datadog } from '../components/Datadog';
 import { Toaster } from '../components/ui/toaster';
 import Script from 'next/script';
+import { getServerSession } from "next-auth";
+import SessionProvider from "../components/SessionProvider";
+
 
 export const metadata: Metadata = {
   title: config.siteName,
@@ -15,7 +18,9 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://hisanta.ai'),
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await getServerSession();
+
   return (
     <html lang="en" className="">
       <head>
@@ -31,12 +36,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </Script>
       </head>
       <body>
+      <SessionProvider session={session}>
         <LaunchDarklyProvider>
           <Header />
           <main>{children}</main>
           <Footer />
           <Toaster />
         </LaunchDarklyProvider>
+        </SessionProvider>
         <Datadog />
         <Analytics />
       </body>

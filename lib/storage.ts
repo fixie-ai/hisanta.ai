@@ -14,26 +14,44 @@ export async function loadCharacter(characterId: string): Promise<CharacterType>
 }
 
 /** Store the given Character to KV. */
-export async function saveCharacter(character: CharacterType): Promise<void> {
+export async function saveCharacter(character: CharacterType, owner?: string): Promise<void> {
   await kv.json.set(`character:${character.characterId}`, '$', character);
+  if (owner) {
+    await kv.json.set(`user:${owner}:${character.characterId}`, '$', character);
+  }
 }
 
 /** Load the Character Data mapped to the given Agent ID from KV. */
 export async function loadCharacterByAgentId(agentId: string): Promise<AgentToCharacterData> {
-  console.log('loadCharacterByAgentId', agentId);
   const characterData = await kv.json.get(`agent:${agentId}`);
-  console.log('loadCharacterjson', characterData);
   if (!characterData) {
     throw new Error(`Character data not found for Agent ${agentId}`);
   }
 
   try {
-    console.log('here', characterData);
     return characterData as AgentToCharacterData;
   } catch (error: any) {
     // Handle JSON parsing errors
     throw new Error(`Error parsing character data for Agent ${agentId}: ${error.message}`);
   }
+}
+
+/** Return the list of characterIds owned by the given user. */
+export async function listCharacterIds(owner: string): Promise<string[]> {
+	let characterIds: string[] = [];
+	let cursor = 0;
+	do {
+		const chars = await kv.scan(cursor, { match: `user:${owner}:*` });
+		cursor = chars[0];
+		const keys = chars[1];
+		keys.map((key: string) => {
+			// Strip the "user:owner:" prefix.
+			key = key.substring(5 + owner.length + 1);
+			characterIds.push(key);
+		});
+	} while (cursor !== 0);
+
+  return characterIds;
 }
 
 /** Store the mapping of Agent ID to Character Data to KV. */

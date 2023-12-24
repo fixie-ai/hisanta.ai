@@ -1,5 +1,3 @@
-export const runtime = 'edge';
-
 import { loadCharacterByAgentId } from '@/lib/storage';
 
 type RouteSegment = { params: { agentId: string } };

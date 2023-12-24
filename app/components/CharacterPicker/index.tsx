@@ -8,14 +8,22 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import EpicButton from '../Buttons';
 import { useFlags } from 'launchdarkly-react-client-sdk';
+import { useSession } from 'next-auth/react';
+import { datadogRum } from '@datadog/browser-rum';
 
 export default function CharacterPicker() {
   const searchParams = useSearchParams();
   const [buildOwn, setBuildOwn] = useState(false);
   const { customCharactersEnabled } = useFlags();
+  const { data: session } = useSession();
 
   let characters = config.availableCharacters;
   const showBad = searchParams.get('nice') == '0' || false;
+
+  datadogRum.addAction('character-picker-viewed', {
+    bad: showBad,
+    user: session?.user?.email,
+  });
 
   if (showBad) {
     characters = characters.filter((c) => c.bad === true);
