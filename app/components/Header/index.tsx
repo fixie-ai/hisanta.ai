@@ -1,6 +1,5 @@
 "use client";
 import Link from 'next/link';
-import { NaughtyNiceSwitch } from '../NaughtyNiceSwitch';
 import { AuthButton } from '../Profile';
 import { usePathname } from 'next/navigation';
 import { useFlags } from 'launchdarkly-react-client-sdk';
@@ -19,9 +18,6 @@ export default function Header() {
         </Link>
       </div>
       <div className="ml-auto" />
-      <div className="mx-2">
-        <NaughtyNiceSwitch />
-      </div>
       {pathname != '/profile' && allowSignIn && (
         <div className="mx-2">
           <AuthButton />
