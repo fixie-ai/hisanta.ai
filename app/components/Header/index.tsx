@@ -3,9 +3,11 @@ import Link from 'next/link';
 import { NaughtyNiceSwitch } from '../NaughtyNiceSwitch';
 import { AuthButton } from '../Profile';
 import { usePathname } from 'next/navigation';
+import { useFlags } from 'launchdarkly-react-client-sdk';
 
 export default function Header() {
   const pathname = usePathname();
+  const { allowSignIn } = useFlags();
 
   return (
     <header className="flex flex-row justify-between items-center top-0 mt-4">
@@ -20,7 +22,7 @@ export default function Header() {
       <div className="mx-2">
         <NaughtyNiceSwitch />
       </div>
-      {pathname != '/profile' && (
+      {pathname != '/profile' && allowSignIn && (
         <div className="mx-2">
           <AuthButton />
         </div>
