@@ -34,7 +34,7 @@ export function LoginButton() {
 
   const onClick = () => {
     datadogRum.addAction('login-button-clicked');
-    signIn();
+    signIn("auth0");
   };
 
   return (
