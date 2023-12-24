@@ -27,6 +27,16 @@
   src: url('/fonts/Inter-Light.ttf') format('truetype');
 }
 
+@font-face {
+  font-family: 'Silkscreen-Regular';
+  src: url('/fonts/Silkscreen-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Silkscreen-Bold';
+  src: url('/fonts/Silkscreen-Bold.ttf') format('truetype');
+}
+
 :root {
   --foreground-rgb: 47, 70, 101; /*  #2F4665; */
   --background-start-rgb: 234, 233, 223;
