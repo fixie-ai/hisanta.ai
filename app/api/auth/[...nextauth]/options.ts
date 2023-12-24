@@ -5,7 +5,7 @@ export const authOptions = {
       Auth0Provider({
           clientId: process.env.AUTH0_ID || '',
           clientSecret: process.env.AUTH0_SECRET || '',
-          issuer: 'https://llamalabs.us.auth0.com',
+          issuer: 'https://aitown.us.auth0.com',
         }),
     ],
   };
