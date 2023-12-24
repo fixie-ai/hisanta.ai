@@ -4,7 +4,7 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Button } from '../ui/button';
 import { CharacterType } from '@/lib/types';
-import Image from 'next/image';
+import { datadogRum } from '@datadog/browser-rum';
 
 export function AuthButton() {
   const { data: session } = useSession();
@@ -33,6 +33,7 @@ export function LoginButton() {
   }
 
   const onClick = () => {
+    datadogRum.addAction('login-button-clicked');
     signIn('auth0', { callbackUrl: 'http://localhost:3000/' });
   };
 
@@ -48,8 +49,14 @@ export function LogoutButton() {
   if (!session) {
     return null;
   }
+
+  const onClick = () => {
+    datadogRum.addAction('logout-button-clicked', { user: session.user?.email });
+    signOut();
+  };
+
   return (
-    <Button className="bg-Holiday-Blue w-full rounded-full" onClick={() => signOut()}>
+    <Button className="bg-Holiday-Blue w-full rounded-full" onClick={onClick}>
       Sign out
     </Button>
   );
@@ -104,6 +111,9 @@ function CharacterCard({ characterId }: { characterId: string }) {
 }
 
 function SavedCharacters({ characterIds }: { characterIds: string[] }) {
+  const { data: session } = useSession();
+  datadogRum.addAction('saved-characters-viewed', { user: session?.user?.email });
+
   return (
     <>
       <div className="mt-4 mx-auto text-xl text-Holiday-Red text-center">Your Saved Characters</div>
@@ -123,6 +133,8 @@ function SavedCharacters({ characterIds }: { characterIds: string[] }) {
 }
 
 function InvitationToJoin() {
+  datadogRum.addAction('join-invitation-viewed');
+
   return (
     <>
       <div className="mt-4 mx-auto text-xl text-Holiday-Red text-center">Sign up or Login</div>
@@ -140,6 +152,7 @@ function InvitationToJoin() {
 export function Profile() {
   const { data: session } = useSession();
   const [characterIds, setCharacterIds] = useState([]);
+  datadogRum.addAction('profile-page-viewed', { user: session?.user?.email });
 
   useEffect(() => {
     const getCharIds = async () => {
