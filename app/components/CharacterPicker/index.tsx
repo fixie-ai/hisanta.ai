@@ -10,6 +10,7 @@ import EpicButton from '../Buttons';
 import { useFlags } from 'launchdarkly-react-client-sdk';
 import { useSession } from 'next-auth/react';
 import { datadogRum } from '@datadog/browser-rum';
+import { NaughtyNiceSwitch } from '../NaughtyNiceSwitch';
 
 export default function CharacterPicker() {
   const searchParams = useSearchParams();
@@ -140,6 +141,9 @@ export default function CharacterPicker() {
             </Link>
           </div>
         )}
+      </div>
+      <div className="w-fit mx-auto mt-2">
+        <NaughtyNiceSwitch />
       </div>
     </div>
   );
