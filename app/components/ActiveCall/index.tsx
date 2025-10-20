@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { CharacterType } from '@/lib/types';
 import { MicrophoneIcon } from '@heroicons/react/24/outline';
-import { VoiceSession, VoiceSessionState } from 'fixie/src/voice';
+import { GeminiVoiceSession, VoiceSessionState } from '@/lib/gemini-voice';
 import EpicButton from '../Buttons';
 import Image from 'next/image';
 
@@ -14,20 +14,18 @@ function Conversation({
 }: {
   character: CharacterType;
   onCallEnd: () => void;
-  voiceSession: VoiceSession;
+  voiceSession: GeminiVoiceSession;
   onDebugOpen: () => void;
 }) {
   // Handle end call event.
   const handleStop = async () => {
-    await voiceSession.stop();
+    voiceSession.stop();
     onCallEnd();
   };
 
-  // Handle interrupt click.
+  // Handle interrupt click - not implemented in Gemini version yet
   const onInterruptClick = () => {
-    if (voiceSession.state != VoiceSessionState.IDLE) {
-      voiceSession.interrupt();
-    }
+    // TODO: Implement interrupt functionality
   };
 
   return (
@@ -48,7 +46,7 @@ function Visualizer({
   onDebugOpen,
 }: {
   character: CharacterType;
-  voiceSession: VoiceSession;
+  voiceSession: GeminiVoiceSession;
   onDebugOpen: () => void;
 }) {
   const inputCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -62,48 +60,14 @@ function Visualizer({
   const [inputFreqData, setInputFreqData] = useState<number[]>([]);
   const [outputFreqData, setOutputFreqData] = useState<number[]>([]);
 
-  // This polling is a little silly, but we don't know when the VoiceSession's
-  // input or output analyzers will change (it really should emit signals for us).
+  // Note: Audio analyzers are not yet implemented in Gemini version
+  // This is a simplified version that doesn't show real-time audio visualization
+  // TODO: Implement audio analyzers using Web Audio API
 
   useEffect(() => {
-    console.log(`Visualizer: Setting up input analyzer polling`);
-    const inputPollInterval = setInterval(() => {
-      if (!voiceSession.inputAnalyzer) return;
-      if (!initializedInputAnalyzer) {
-        voiceSession.inputAnalyzer.fftSize = 64;
-        voiceSession.inputAnalyzer.maxDecibels = 0;
-        voiceSession.inputAnalyzer.minDecibels = -70;
-        setInitializedInputAnalyzer(true);
-      }
-      let inputData = new Uint8Array(voiceSession.inputAnalyzer.frequencyBinCount);
-      voiceSession.inputAnalyzer.getByteFrequencyData(inputData);
-      inputData = inputData.slice(0, 16);
-      setInputFreqData([...inputData]);
-    }, 20);
-    return () => {
-      clearInterval(inputPollInterval);
-    };
-  }, [voiceSession, initializedInputAnalyzer]);
-
-  useEffect(() => {
-    console.log(`Visualizer: Setting up output analyzer polling`);
-    const outputPollInterval = setInterval(() => {
-      if (!voiceSession.outputAnalyzer) return;
-      if (!initializedOutputAnalyzer) {
-        voiceSession.outputAnalyzer.fftSize = 256;
-        voiceSession.outputAnalyzer.maxDecibels = 0;
-        voiceSession.outputAnalyzer.minDecibels = -70;
-        setInitializedOutputAnalyzer(true);
-      }
-      let outputData = new Uint8Array(voiceSession.outputAnalyzer.frequencyBinCount);
-      voiceSession.outputAnalyzer.getByteFrequencyData(outputData);
-      outputData = outputData.slice(0, 16);
-      setOutputFreqData([...outputData]);
-    }, 20);
-    return () => {
-      clearInterval(outputPollInterval);
-    };
-  }, [voiceSession, initializedOutputAnalyzer]);
+    console.log(`Visualizer: Audio analyzers not yet implemented for Gemini`);
+    // Placeholder for future audio analyzer implementation
+  }, [voiceSession, initializedInputAnalyzer, initializedOutputAnalyzer]);
 
   // Visualize output data on its canvas.
   const visualizeOutput = (freqData?: number[]) => {
@@ -138,7 +102,8 @@ function Visualizer({
     const canvas = inputCanvasRef.current;
     const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (voiceSessionRef.current.state !== VoiceSessionState.LISTENING) {
+    const currentState = voiceSession.getState();
+    if (currentState !== VoiceSessionState.LISTENING) {
       // Don't show anything when not listening.
       return;
     }
@@ -159,10 +124,13 @@ function Visualizer({
   }, [inputFreqData]);
 
   const showState = () => {
-    if (voiceSessionRef.current.state === VoiceSessionState.IDLE) {
+    const currentState = voiceSession.getState();
+    if (currentState === VoiceSessionState.IDLE) {
       return 'Calling...';
-    } else if (voiceSessionRef.current.state === VoiceSessionState.LISTENING) {
+    } else if (currentState === VoiceSessionState.LISTENING) {
       return 'Listening...';
+    } else if (currentState === VoiceSessionState.THINKING) {
+      return 'Thinking...';
     } else {
       return 'Speaking...';
     }
@@ -226,7 +194,7 @@ export default function ActiveCall({
   character: CharacterType;
   onCallEnd: () => void;
   onDebugOpen: () => void;
-  voiceSession: VoiceSession;
+  voiceSession: GeminiVoiceSession;
 }) {
   return (
     <>

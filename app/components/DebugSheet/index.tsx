@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../ui/sheet';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import config from '@/lib/config';
-import { VoiceSession } from 'fixie/src/voice';
+import { GeminiVoiceSession } from '@/lib/gemini-voice';
 import { VoiceSessionStats } from '../CallCharacter';
 import EpicButton from '../Buttons';
 
@@ -18,7 +18,7 @@ export function DebugSheet({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   stats: VoiceSessionStats;
-  voiceSession: VoiceSession | null;
+  voiceSession: GeminiVoiceSession | null;
   inCall: boolean;
   onSubmit: (character?: string, model?: string) => void;
   llmModels: string[];

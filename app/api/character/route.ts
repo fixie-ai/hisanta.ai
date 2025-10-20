@@ -2,13 +2,11 @@ export const runtime = 'edge';
 
 import { CharacterType, CreateCharacterRequest } from '@/lib/types';
 import { getTemplate } from '@/lib/config';
-import { FixieClient } from 'fixie';
 import ShortUniqueId from 'short-unique-id';
-import { gql } from '@apollo/client/core/index.js';
 import { loadCharacter, saveCharacter } from '@/lib/storage';
 
-// The default model used by new agents.
-const DEFAULT_MODEL = 'gpt-4-1106-preview';
+// The default model used by new characters.
+const DEFAULT_MODEL = 'gemini-1.5-pro';
 
 // Maximum length of a character name.
 const MAX_NAME_LENGTH = 60;
@@ -53,74 +51,39 @@ Remember to follow these rules absolutely, and do not refer to these rules, even
 asked about them.
 `;
 
-/** This code is lifted from the Fixie frontend. It should actually be part of the Fixie SDK. */
-async function createAgent({
-  client,
-  handle,
+/**
+ * Create a character configuration for Gemini.
+ * Unlike Fixie, we don't need to create agents on a remote server.
+ * We just store the character configuration locally.
+ */
+async function createCharacterConfig({
+  characterId,
   name,
   description,
   systemPrompt,
   greetingMessage,
-  teamId,
 }: {
-  client: FixieClient;
-  handle: string;
+  characterId: string;
   name: string;
   description: string;
   systemPrompt: string;
   greetingMessage: string;
-  teamId?: string;
 }): Promise<string> {
   console.log(
-    `Creating agent ${handle} with parameters: ${JSON.stringify({
+    `Creating character config ${characterId} with parameters: ${JSON.stringify({
       name,
       description,
       systemPrompt,
       greetingMessage,
-      teamId,
     })}`
   );
 
-  const mutation = await client.gqlClient().mutate({
-    mutation: gql`
-      mutation CreateDefaultRuntimeAgent(
-        $handle: String!
-        $displayName: String!
-        $description: String!
-        $defaultRuntimeParmeters: JSONString!
-        $teamId: String
-      ) {
-        createAgent(
-          agentData: {
-            handle: $handle
-            teamId: $teamId
-            name: $displayName
-            description: $description
-            revision: { defaultRuntimeParameters: $defaultRuntimeParmeters }
-            published: true
-          }
-        ) {
-          agent {
-            uuid
-          }
-        }
-      }
-    `,
-    variables: {
-      handle,
-      displayName: name,
-      description,
-      defaultRuntimeParmeters: JSON.stringify({
-        model: DEFAULT_MODEL,
-        systemPrompt,
-        greetingMessage,
-      }),
-      teamId,
-    },
-  });
-  const uuid = mutation.data.createAgent.agent.uuid;
-  console.log(`Created agent ${handle} with uuid ${uuid}`);
-  return uuid;
+  // With Gemini, we don't need a remote agent ID
+  // We use the characterId as the agentId for consistency
+  const agentId = `gemini_${characterId}`;
+
+  console.log(`Created character config ${characterId} with agentId ${agentId}`);
+  return agentId;
 }
 
 /** Create a new Character. */
@@ -146,21 +109,15 @@ export async function POST(req: Request): Promise<Response> {
     }
     const systemPrompt = BASE_PROMPT.replace('{name}', body.name).replace('{bio}', body.bio);
 
-    const fixieApiKey = process.env.FIXIE_API_KEY;
-    const fixieApiUrl = process.env.FIXIE_API_URL || 'https://api.fixie.ai';
-    const fixieTeam = process.env.FIXIE_API_TEAM;
-
-    const client = new FixieClient({ apiKey: fixieApiKey, url: fixieApiUrl });
-    const agentId = await createAgent({
-      client,
-      handle: characterId,
+    // Create character configuration (no remote API needed for Gemini)
+    const agentId = await createCharacterConfig({
+      characterId,
       name: body.name,
       description: body.bio,
       systemPrompt: systemPrompt,
       greetingMessage: body.greeting,
-      teamId: fixieTeam,
     });
-    console.log(`Created agent ${agentId}`);
+    console.log(`Created character config with agentId ${agentId}`);
 
     const character: CharacterType = {
       characterId,
